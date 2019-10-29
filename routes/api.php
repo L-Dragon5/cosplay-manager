@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 // User Routes
 Route::post('login', 'UserController@login');
 Route::post('register', 'UserController@register');
+Route::get('checkUser', 'UserController@checkUser');
 
 Route::middleware('auth:api')->group(function () {
     // Series Routes

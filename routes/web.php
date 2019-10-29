@@ -14,3 +14,11 @@
 Route::get('/', function () {
     return view('authenticated');
 });
+
+Route::get('/auth/login', function () {
+    return view('auth.login');
+})->name('login');
+
+Route::get('/auth/register', function () {
+    return view('auth.register');
+})->name('register');

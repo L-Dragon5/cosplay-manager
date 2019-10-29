@@ -3,9 +3,36 @@ import ReactDOM from 'react-dom'
 import axios from 'axios'
 import M from 'materialize-css'
 import $ from 'jquery'
-import { Route, NavLink, Router } from 'react-router-dom'
+import { Redirect, Route, NavLink, Router } from 'react-router-dom'
+
+// Components
+import Helper from './components/Helper'
 
 class AuthenticatedMain extends Component {
+  componentDidMount () {
+    if (Helper.checkLocalStorage()) {
+      const token = (localStorage.getItem('token') !== null) ? localStorage.getItem('token') : null
+
+      const formData = new FormData()
+      formData.set('token', token)
+
+      // Check Logged in State
+      axios.get('/api/checkUser', formData, {
+        headers: {
+          Accept: 'application/json',
+          Authorization: 'Bearer' + token,
+          'content-type': 'multipart/form-data'
+        }
+      }).then(response => {
+        console.log(response)
+      }).catch(error => {
+        if (error.response) {
+          window.location.replace(error.response.data.message)
+        }
+      })
+    }
+  }
+
   render () {
     return (
       <div className="container">

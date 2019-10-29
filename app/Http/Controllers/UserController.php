@@ -16,10 +16,10 @@ class UserController extends Controller
      * Attempt to login user
      */
     public function login(Request $request) {
-        if(Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $user = Auth::user();
 
-            return return_json_message($user->createToken('FanEventScheduleToken')->accessToken, $this->successStatus);
+            return return_json_message($user->createToken('CosplayManagerToken')->accessToken, $this->successStatus);
         } else {
             return return_json_message('Incorrect login credentials provided', $this->errorStatus);
         }
@@ -35,7 +35,7 @@ class UserController extends Controller
             'c_password' => 'required|same:password',
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             return return_json_message($validator->errors(), $this->errorStatus);
         }
 
@@ -43,6 +43,18 @@ class UserController extends Controller
         $input['password'] = bcrypt($input['password']);
         $user = User::create($input);
 
-        return return_json_message($user->createToken('FanEventScheduleToken')->accessToken, $this->successStatus);
+        return return_json_message($user->createToken('CosplayManagerToken')->accessToken, $this->successStatus);
+    }
+
+    public function checkUser(Request $request) {
+        $token = $request->token;
+
+        if (empty($token) || $token === 'null') {
+            return return_json_message(route('login'), $this->errorStatus);
+        } else {
+            // TODO: Check if token is expired
+        }
+
+        return return_json_message('User verified', $this->successStatus);
     }
 }
