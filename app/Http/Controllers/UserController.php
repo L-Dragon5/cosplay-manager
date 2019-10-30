@@ -33,10 +33,16 @@ class UserController extends Controller
             'email' => 'required|email',
             'password' => 'required',
             'c_password' => 'required|same:password',
+            'g-recaptcha-response' => 'required|recaptcha',
         ]);
 
         if ($validator->fails()) {
             return return_json_message($validator->errors(), $this->errorStatus);
+        }
+
+        $existing_user = User::where('email', $request->email)->first();
+        if (!empty($existing_user)) {
+            return return_json_message(['email' => 'E-mail is already registered'], $this->errorStatus);
         }
 
         $input = $request->all();
@@ -52,7 +58,10 @@ class UserController extends Controller
         if (empty($token) || $token === 'null') {
             return return_json_message(route('login'), $this->errorStatus);
         } else {
-            // TODO: Check if token is expired
+            $user = auth()->guard('api')->user();
+            if (empty($user)) {
+                return return_json_message(route('login'), $this->errorStatus);
+            }
         }
 
         return return_json_message('User verified', $this->successStatus);

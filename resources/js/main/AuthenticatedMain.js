@@ -11,20 +11,18 @@ import Helper from './components/Helper'
 class AuthenticatedMain extends Component {
   componentDidMount () {
     if (Helper.checkLocalStorage()) {
-      const token = (localStorage.getItem('token') !== null) ? localStorage.getItem('token') : null
+      const token = Helper.getToken()
 
       const formData = new FormData()
       formData.set('token', token)
 
       // Check Logged in State
-      axios.get('/api/checkUser', formData, {
+      axios.post('/api/checkUser', formData, {
         headers: {
           Accept: 'application/json',
-          Authorization: 'Bearer' + token,
+          Authorization: 'Bearer ' + token,
           'content-type': 'multipart/form-data'
         }
-      }).then(response => {
-        console.log(response)
       }).catch(error => {
         if (error.response) {
           window.location.replace(error.response.data.message)
@@ -39,9 +37,7 @@ class AuthenticatedMain extends Component {
         <div className="row justify-content-center">
           <div className="col-md-8">
             <div className="card">
-              <div className="card-header">Example Component</div>
-
-              <div className="card-body">I'm an example component!</div>
+              <div className="card-header">Main Page Area</div>
             </div>
           </div>
         </div>
