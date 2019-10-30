@@ -15,6 +15,10 @@ Route::get('/', function () {
     return view('authenticated');
 });
 
+Route::get('/{any}', function () {
+    return view('authenticated');
+});
+
 Route::get('/auth/login', function () {
     return view('auth.login');
 })->name('login');

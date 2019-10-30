@@ -1,12 +1,18 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import axios from 'axios'
-import M from 'materialize-css'
 import $ from 'jquery'
-import { Redirect, Route, NavLink, Router } from 'react-router-dom'
+import { Route, BrowserRouter, Switch } from 'react-router-dom'
+
+// Include
+import Navbar from './components/include/Navbar'
 
 // Components
 import Helper from './components/Helper'
+
+// Pages
+import SeriesGridPage from './components/pages/SeriesGridPage'
+import AllCosplaysPage from './components/pages/AllCosplaysPage'
 
 class AuthenticatedMain extends Component {
   componentDidMount () {
@@ -33,15 +39,15 @@ class AuthenticatedMain extends Component {
 
   render () {
     return (
-      <div className="container">
-        <div className="row justify-content-center">
-          <div className="col-md-8">
-            <div className="card">
-              <div className="card-header">Main Page Area</div>
-            </div>
-          </div>
+      <BrowserRouter>
+        <div>
+          <Navbar />
+          <Switch>
+            <Route exact path='/' component={SeriesGridPage} />
+            <Route path='/all-cosplays' component={AllCosplaysPage} />
+          </Switch>
         </div>
-      </div>
+      </BrowserRouter>
     )
   }
 }
