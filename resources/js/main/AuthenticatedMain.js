@@ -11,8 +11,11 @@ import Navbar from './components/include/Navbar'
 import Helper from './components/Helper'
 
 // Pages
-import CosplayGridPage from './components/pages/CosplayGridPage'
 import AllCosplaysPage from './components/pages/AllCosplaysPage'
+
+import SeriesGrid from './components/pages/CosplayGrid/SeriesGrid'
+import CharacterGrid from './components/pages/CosplayGrid/CharacterGrid'
+import OutfitGrid from './components/pages/CosplayGrid/OutfitGrid'
 
 class AuthenticatedMain extends Component {
   componentDidMount () {
@@ -43,7 +46,10 @@ class AuthenticatedMain extends Component {
         <div>
           <Navbar />
           <Switch>
-            <Route exact path='/' component={CosplayGridPage} />
+            <Route exact path='/' component={SeriesGrid} />
+            <Route exact path='/s-:series' component={CharacterGrid} />
+            <Route exact path='/s-:series/c-:character' component={OutfitGrid} />
+
             <Route path='/all-cosplays' component={AllCosplaysPage} />
           </Switch>
         </div>

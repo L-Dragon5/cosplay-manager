@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import M from 'materialize-css'
 import $ from 'jquery'
 
-class Card extends Component {
+class OutfitCard extends Component {
   constructor (props) {
     super(props)
 
@@ -31,8 +31,8 @@ class Card extends Component {
 
   render () {
     return (
-      <div className='card medium'>
-        <div className='card-image'>
+      <div className='outfit card medium'>
+        <div className='outfit__images card-image'>
           <div className='carousel carousel-slider'>
             {this.images.map((item, i) => {
               const url = '#' + i + '!'
@@ -57,4 +57,4 @@ class Card extends Component {
   }
 }
 
-export default Card
+export default OutfitCard

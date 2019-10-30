@@ -15,7 +15,7 @@ Route::get('/', function () {
     return view('authenticated');
 });
 
-Route::get('/{any}', function () {
+Route::get('/{any}/{all?}', function () {
     return view('authenticated');
 });
 

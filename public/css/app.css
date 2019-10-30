@@ -426,10 +426,108 @@ nav .brand-logo {
   }
 }
 
+.series-grid {
+  display: -webkit-box;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.series-grid .series {
+  -webkit-box-flex: 1;
+          flex: 1 0 auto;
+  width: 100%;
+  margin: 0 10px 16px 0;
+  cursor: pointer;
+}
+
+@media (min-width: 600px) {
+  .series-grid .series {
+    -webkit-box-flex: 1;
+            flex: 1 0 250px;
+  }
+}
+
+@media (min-width: 992px) {
+  .series-grid .series {
+    max-width: 500px;
+  }
+}
+
+.series-grid .series__image {
+  height: 100%;
+  width: 100%;
+  max-height: 200px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-bottom: none;
+}
+
+.series-grid .series__image img {
+  height: 100%;
+  width: 100%;
+  -o-object-fit: contain;
+     object-fit: contain;
+}
+
+.series-grid .series__title {
+  text-align: center;
+  padding: 10px;
+  background-color: #3490dc;
+  color: white;
+}
+
+.character-grid {
+  display: -webkit-box;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.character-grid .character {
+  -webkit-box-flex: 1;
+          flex: 1 0 auto;
+  width: 100%;
+  margin: 0 10px 16px 0;
+  cursor: pointer;
+}
+
+@media (min-width: 600px) {
+  .character-grid .character {
+    -webkit-box-flex: 1;
+            flex: 1 0 150px;
+  }
+}
+
+@media (min-width: 992px) {
+  .character-grid .character {
+    max-width: 300px;
+  }
+}
+
+.character-grid .character__image {
+  height: 100%;
+  width: 100%;
+  max-height: 400px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-bottom: none;
+}
+
+.character-grid .character__image img {
+  height: 100%;
+  width: 100%;
+  -o-object-fit: contain;
+     object-fit: contain;
+}
+
+.character-grid .character__title {
+  text-align: center;
+  padding: 10px;
+  background-color: #3490dc;
+  color: white;
+}
+
 .outfit-grid {
   display: grid;
-  grid-gap: 10px;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-gap: 20px 10px;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
 }
 
 .outfit-grid .card {
@@ -437,16 +535,16 @@ nav .brand-logo {
   margin: 0;
 }
 
-.outfit-grid .card .card-image {
+.outfit-grid .card-image {
   max-height: 86%;
 }
 
-.outfit-grid .card .card-action span {
+.outfit-grid .card-action span {
   margin: 0;
   font-size: 1.15rem;
 }
 
-.outfit-grid .card .card-reveal ul {
+.outfit-grid .card-reveal ul {
   font-size: 1.15rem;
 }
 

@@ -78261,8 +78261,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
 /* harmony import */ var _components_include_Navbar__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/include/Navbar */ "./resources/js/main/components/include/Navbar.js");
 /* harmony import */ var _components_Helper__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./components/Helper */ "./resources/js/main/components/Helper.js");
-/* harmony import */ var _components_pages_CosplayGridPage__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./components/pages/CosplayGridPage */ "./resources/js/main/components/pages/CosplayGridPage.js");
-/* harmony import */ var _components_pages_AllCosplaysPage__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./components/pages/AllCosplaysPage */ "./resources/js/main/components/pages/AllCosplaysPage.js");
+/* harmony import */ var _components_pages_AllCosplaysPage__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./components/pages/AllCosplaysPage */ "./resources/js/main/components/pages/AllCosplaysPage.js");
+/* harmony import */ var _components_pages_CosplayGrid_SeriesGrid__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./components/pages/CosplayGrid/SeriesGrid */ "./resources/js/main/components/pages/CosplayGrid/SeriesGrid.js");
+/* harmony import */ var _components_pages_CosplayGrid_CharacterGrid__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./components/pages/CosplayGrid/CharacterGrid */ "./resources/js/main/components/pages/CosplayGrid/CharacterGrid.js");
+/* harmony import */ var _components_pages_CosplayGrid_OutfitGrid__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./components/pages/CosplayGrid/OutfitGrid */ "./resources/js/main/components/pages/CosplayGrid/OutfitGrid.js");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -78290,6 +78292,8 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
  // Components
 
  // Pages
+
+
 
 
 
@@ -78332,10 +78336,18 @@ function (_Component) {
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_4__["BrowserRouter"], null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_components_include_Navbar__WEBPACK_IMPORTED_MODULE_5__["default"], null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_4__["Switch"], null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_4__["Route"], {
         exact: true,
         path: "/",
-        component: _components_pages_CosplayGridPage__WEBPACK_IMPORTED_MODULE_9__["default"]
+        component: _components_pages_CosplayGrid_SeriesGrid__WEBPACK_IMPORTED_MODULE_8__["default"]
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_4__["Route"], {
+        exact: true,
+        path: "/s-:series",
+        component: _components_pages_CosplayGrid_CharacterGrid__WEBPACK_IMPORTED_MODULE_9__["default"]
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_4__["Route"], {
+        exact: true,
+        path: "/s-:series/c-:character",
+        component: _components_pages_CosplayGrid_OutfitGrid__WEBPACK_IMPORTED_MODULE_10__["default"]
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_4__["Route"], {
         path: "/all-cosplays",
-        component: _components_pages_AllCosplaysPage__WEBPACK_IMPORTED_MODULE_8__["default"]
+        component: _components_pages_AllCosplaysPage__WEBPACK_IMPORTED_MODULE_7__["default"]
       }))));
     }
   }]);
@@ -79138,6 +79150,334 @@ function (_Component) {
 
 /***/ }),
 
+/***/ "./resources/js/main/components/pages/CosplayGrid/Character.js":
+/*!*********************************************************************!*\
+  !*** ./resources/js/main/components/pages/CosplayGrid/Character.js ***!
+  \*********************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+
+
+var Character =
+/*#__PURE__*/
+function (_Component) {
+  _inherits(Character, _Component);
+
+  function Character(props) {
+    var _this;
+
+    _classCallCheck(this, Character);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Character).call(this, props));
+    _this.id = props.id !== undefined ? props.id : null;
+    _this.title = props.title !== undefined ? props.title : 'Default Character';
+    _this.image = props.image !== undefined ? props.image : 'https://via.placeholder.com/200x400';
+    _this.seriesID = props.seriesID !== undefined ? props.seriesID : null;
+    _this.handleClick = _this.handleClick.bind(_assertThisInitialized(_this));
+    return _this;
+  }
+
+  _createClass(Character, [{
+    key: "handleClick",
+    value: function handleClick() {
+      window.location.href = '/s-' + this.seriesID + '/c-' + this.id;
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "character",
+        onClick: this.handleClick
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "character__image"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
+        src: this.image
+      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "character__title"
+      }, this.title));
+    }
+  }]);
+
+  return Character;
+}(react__WEBPACK_IMPORTED_MODULE_0__["Component"]);
+
+/* harmony default export */ __webpack_exports__["default"] = (Character);
+
+/***/ }),
+
+/***/ "./resources/js/main/components/pages/CosplayGrid/CharacterGrid.js":
+/*!*************************************************************************!*\
+  !*** ./resources/js/main/components/pages/CosplayGrid/CharacterGrid.js ***!
+  \*************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var materialize_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! materialize-css */ "./node_modules/materialize-css/dist/js/materialize.js");
+/* harmony import */ var materialize_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(materialize_css__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _Helper__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../Helper */ "./resources/js/main/components/Helper.js");
+/* harmony import */ var _Character__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Character */ "./resources/js/main/components/pages/CosplayGrid/Character.js");
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+
+
+
+ // Components
+
+
+
+
+var CharacterGrid =
+/*#__PURE__*/
+function (_Component) {
+  _inherits(CharacterGrid, _Component);
+
+  function CharacterGrid(props) {
+    var _this;
+
+    _classCallCheck(this, CharacterGrid);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(CharacterGrid).call(this, props));
+    _this.seriesID = props.match.params.series !== undefined ? props.match.params.series : null;
+    _this.token = _Helper__WEBPACK_IMPORTED_MODULE_4__["default"].getToken();
+    _this.handleAdd = _this.handleAdd.bind(_assertThisInitialized(_this));
+    return _this;
+  }
+
+  _createClass(CharacterGrid, [{
+    key: "handleAdd",
+    value: function handleAdd() {
+      console.log('clicked on add character button');
+    }
+  }, {
+    key: "handleInit",
+    value: function handleInit() {
+      materialize_css__WEBPACK_IMPORTED_MODULE_2___default.a.FloatingActionButton.init(jquery__WEBPACK_IMPORTED_MODULE_3___default()('.fixed-action-btn'));
+    }
+  }, {
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      window.addEventListener('DOMContentLoaded', this.handleInit);
+
+      if (document.readyState !== 'loading') {
+        this.handleInit();
+      }
+    }
+  }, {
+    key: "componentWillUnmount",
+    value: function componentWillUnmount() {
+      window.removeEventListener('DOMContentLoaded', this.handleInit);
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("main", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h5", null, "Series Name"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "character-grid"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Character__WEBPACK_IMPORTED_MODULE_5__["default"], {
+        key: "c-1",
+        id: 1,
+        title: "Character 1",
+        seriesID: this.seriesID
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Character__WEBPACK_IMPORTED_MODULE_5__["default"], {
+        key: "c-2",
+        id: 2,
+        title: "Character 2",
+        seriesID: this.seriesID
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Character__WEBPACK_IMPORTED_MODULE_5__["default"], {
+        key: "c-3",
+        id: 3,
+        title: "Character 3",
+        seriesID: this.seriesID
+      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "fixed-action-btn"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+        className: "btn-large red",
+        style: {
+          display: 'flex'
+        },
+        onClick: this.handleAdd
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+        className: "large material-icons"
+      }, "add"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, "Add Character"))));
+    }
+  }]);
+
+  return CharacterGrid;
+}(react__WEBPACK_IMPORTED_MODULE_0__["Component"]);
+
+/* harmony default export */ __webpack_exports__["default"] = (CharacterGrid);
+
+/***/ }),
+
+/***/ "./resources/js/main/components/pages/CosplayGrid/OutfitGrid.js":
+/*!**********************************************************************!*\
+  !*** ./resources/js/main/components/pages/CosplayGrid/OutfitGrid.js ***!
+  \**********************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var materialize_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! materialize-css */ "./node_modules/materialize-css/dist/js/materialize.js");
+/* harmony import */ var materialize_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(materialize_css__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _Helper__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../Helper */ "./resources/js/main/components/Helper.js");
+/* harmony import */ var _OutfitCard__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../OutfitCard */ "./resources/js/main/components/pages/OutfitCard.js");
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+
+
+
+ // Components
+
+
+
+
+var OutfitGrid =
+/*#__PURE__*/
+function (_Component) {
+  _inherits(OutfitGrid, _Component);
+
+  function OutfitGrid(props) {
+    var _this;
+
+    _classCallCheck(this, OutfitGrid);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(OutfitGrid).call(this, props));
+    _this.seriesID = props.match.params.series !== undefined ? props.match.params.series : null;
+    _this.characterID = props.match.params.character !== undefined ? props.match.params.character : null;
+    _this.token = _Helper__WEBPACK_IMPORTED_MODULE_4__["default"].getToken();
+    _this.handleAdd = _this.handleAdd.bind(_assertThisInitialized(_this));
+    return _this;
+  }
+
+  _createClass(OutfitGrid, [{
+    key: "handleAdd",
+    value: function handleAdd() {
+      console.log('clicked on add outfit button');
+    }
+  }, {
+    key: "handleInit",
+    value: function handleInit() {
+      materialize_css__WEBPACK_IMPORTED_MODULE_2___default.a.FloatingActionButton.init(jquery__WEBPACK_IMPORTED_MODULE_3___default()('.fixed-action-btn'));
+    }
+  }, {
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      window.addEventListener('DOMContentLoaded', this.handleInit);
+
+      if (document.readyState !== 'loading') {
+        this.handleInit();
+      }
+    }
+  }, {
+    key: "componentWillUnmount",
+    value: function componentWillUnmount() {
+      window.removeEventListener('DOMContentLoaded', this.handleInit);
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("main", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h5", null, "Series Name - Character Name"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "outfit-grid"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_OutfitCard__WEBPACK_IMPORTED_MODULE_5__["default"], {
+        title: "Card 1"
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_OutfitCard__WEBPACK_IMPORTED_MODULE_5__["default"], {
+        title: "Card 2"
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_OutfitCard__WEBPACK_IMPORTED_MODULE_5__["default"], {
+        title: "Card 3"
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_OutfitCard__WEBPACK_IMPORTED_MODULE_5__["default"], {
+        title: "Card 4"
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_OutfitCard__WEBPACK_IMPORTED_MODULE_5__["default"], {
+        title: "Card 5"
+      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "fixed-action-btn"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+        className: "btn-large red",
+        style: {
+          display: 'flex'
+        },
+        onClick: this.handleAdd
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+        className: "large material-icons"
+      }, "add"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, "Add Outfit"))));
+    }
+  }]);
+
+  return OutfitGrid;
+}(react__WEBPACK_IMPORTED_MODULE_0__["Component"]);
+
+/* harmony default export */ __webpack_exports__["default"] = (OutfitGrid);
+
+/***/ }),
+
 /***/ "./resources/js/main/components/pages/CosplayGrid/Series.js":
 /*!******************************************************************!*\
   !*** ./resources/js/main/components/pages/CosplayGrid/Series.js ***!
@@ -79159,9 +79499,9 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
@@ -79180,16 +79520,24 @@ function (_Component) {
     _classCallCheck(this, Series);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Series).call(this, props));
+    _this.id = props.id !== undefined ? props.id : null;
     _this.title = props.title !== undefined ? props.title : 'Default Series';
-    _this.image = props.image !== undefined ? props.image : 'https://via.placeholder.com/300';
+    _this.image = props.image !== undefined ? props.image : 'https://via.placeholder.com/300x200';
+    _this.handleClick = _this.handleClick.bind(_assertThisInitialized(_this));
     return _this;
   }
 
   _createClass(Series, [{
+    key: "handleClick",
+    value: function handleClick() {
+      window.location.href = '/s-' + this.id;
+    }
+  }, {
     key: "render",
     value: function render() {
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "series"
+        className: "series",
+        onClick: this.handleClick
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "series__image"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
@@ -79295,11 +79643,15 @@ function (_Component) {
   }, {
     key: "render",
     value: function render() {
-      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("main", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h5", null, "Series"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "series-grid"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Series__WEBPACK_IMPORTED_MODULE_5__["default"], {
+        key: "s-1",
+        id: 1,
         title: "Series 1"
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Series__WEBPACK_IMPORTED_MODULE_5__["default"], {
+        key: "s-2",
+        id: 2,
         title: "Series 2"
       })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "fixed-action-btn"
@@ -79322,10 +79674,10 @@ function (_Component) {
 
 /***/ }),
 
-/***/ "./resources/js/main/components/pages/CosplayGridPage.js":
-/*!***************************************************************!*\
-  !*** ./resources/js/main/components/pages/CosplayGridPage.js ***!
-  \***************************************************************/
+/***/ "./resources/js/main/components/pages/OutfitCard.js":
+/*!**********************************************************!*\
+  !*** ./resources/js/main/components/pages/OutfitCard.js ***!
+  \**********************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -79333,7 +79685,10 @@ function (_Component) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _CosplayGrid_SeriesGrid__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./CosplayGrid/SeriesGrid */ "./resources/js/main/components/pages/CosplayGrid/SeriesGrid.js");
+/* harmony import */ var materialize_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! materialize-css */ "./node_modules/materialize-css/dist/js/materialize.js");
+/* harmony import */ var materialize_css__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(materialize_css__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_2__);
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -79352,32 +79707,90 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
- // Components
 
 
 
-var CosplayGridPage =
+
+var OutfitCard =
 /*#__PURE__*/
 function (_Component) {
-  _inherits(CosplayGridPage, _Component);
+  _inherits(OutfitCard, _Component);
 
-  function CosplayGridPage() {
-    _classCallCheck(this, CosplayGridPage);
+  function OutfitCard(props) {
+    var _this;
 
-    return _possibleConstructorReturn(this, _getPrototypeOf(CosplayGridPage).apply(this, arguments));
+    _classCallCheck(this, OutfitCard);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(OutfitCard).call(this, props));
+    _this.title = props.title !== undefined ? props.title : 'Default Title';
+    _this.images = props.images !== undefined ? props.images : ['https://via.placeholder.com/342', 'https://via.placeholder.com/322'];
+    _this.bought_date = props.bought_date !== undefined ? props.bought_date : 'N/A';
+    _this.times_worn = props.times_worn !== undefined ? props.times_worn : 'N/A';
+    return _this;
   }
 
-  _createClass(CosplayGridPage, [{
+  _createClass(OutfitCard, [{
+    key: "handleInit",
+    value: function handleInit() {
+      materialize_css__WEBPACK_IMPORTED_MODULE_1___default.a.Carousel.init(jquery__WEBPACK_IMPORTED_MODULE_2___default()('.carousel'), {
+        fullWidth: true,
+        indicators: true,
+        noWrap: true
+      });
+    }
+  }, {
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      var _this2 = this;
+
+      window.addEventListener('DOMContentLoaded', this.handleInit);
+
+      if (document.readyState !== 'loading') {
+        setTimeout(function () {
+          _this2.handleInit();
+        }, 50);
+      }
+    }
+  }, {
+    key: "componentWillUnmount",
+    value: function componentWillUnmount() {
+      window.removeEventListener('DOMContentLoaded', this.handleInit);
+    }
+  }, {
     key: "render",
     value: function render() {
-      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("main", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_CosplayGrid_SeriesGrid__WEBPACK_IMPORTED_MODULE_1__["default"], null));
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "outfit card medium"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "outfit__images card-image"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "carousel carousel-slider"
+      }, this.images.map(function (item, i) {
+        var url = '#' + i + '!';
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+          key: i,
+          className: "carousel-item",
+          href: url
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
+          src: item,
+          className: "activator"
+        }));
+      }))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "card-action activator"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, this.title)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "card-reveal"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+        className: "card-title grey-text text-darken-4"
+      }, this.title, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+        className: "material-icons right"
+      }, "close")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("ul", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("strong", null, "Bought Date:"), " ", this.bought_date), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("strong", null, "Times Worn:"), " ", this.times_worn))));
     }
   }]);
 
-  return CosplayGridPage;
+  return OutfitCard;
 }(react__WEBPACK_IMPORTED_MODULE_0__["Component"]);
 
-/* harmony default export */ __webpack_exports__["default"] = (CosplayGridPage);
+/* harmony default export */ __webpack_exports__["default"] = (OutfitCard);
 
 /***/ }),
 
