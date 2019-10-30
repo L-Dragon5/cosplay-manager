@@ -11,7 +11,7 @@ import Navbar from './components/include/Navbar'
 import Helper from './components/Helper'
 
 // Pages
-import SeriesGridPage from './components/pages/SeriesGridPage'
+import CosplayGridPage from './components/pages/CosplayGridPage'
 import AllCosplaysPage from './components/pages/AllCosplaysPage'
 
 class AuthenticatedMain extends Component {
@@ -43,7 +43,7 @@ class AuthenticatedMain extends Component {
         <div>
           <Navbar />
           <Switch>
-            <Route exact path='/' component={SeriesGridPage} />
+            <Route exact path='/' component={CosplayGridPage} />
             <Route path='/all-cosplays' component={AllCosplaysPage} />
           </Switch>
         </div>

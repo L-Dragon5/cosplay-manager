@@ -78261,7 +78261,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
 /* harmony import */ var _components_include_Navbar__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/include/Navbar */ "./resources/js/main/components/include/Navbar.js");
 /* harmony import */ var _components_Helper__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./components/Helper */ "./resources/js/main/components/Helper.js");
-/* harmony import */ var _components_pages_SeriesGridPage__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./components/pages/SeriesGridPage */ "./resources/js/main/components/pages/SeriesGridPage.js");
+/* harmony import */ var _components_pages_CosplayGridPage__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./components/pages/CosplayGridPage */ "./resources/js/main/components/pages/CosplayGridPage.js");
 /* harmony import */ var _components_pages_AllCosplaysPage__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./components/pages/AllCosplaysPage */ "./resources/js/main/components/pages/AllCosplaysPage.js");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -78332,7 +78332,7 @@ function (_Component) {
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_4__["BrowserRouter"], null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_components_include_Navbar__WEBPACK_IMPORTED_MODULE_5__["default"], null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_4__["Switch"], null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_4__["Route"], {
         exact: true,
         path: "/",
-        component: _components_pages_SeriesGridPage__WEBPACK_IMPORTED_MODULE_7__["default"]
+        component: _components_pages_CosplayGridPage__WEBPACK_IMPORTED_MODULE_9__["default"]
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_4__["Route"], {
         path: "/all-cosplays",
         component: _components_pages_AllCosplaysPage__WEBPACK_IMPORTED_MODULE_8__["default"]
@@ -79031,7 +79031,7 @@ function (_Component) {
         to: "/",
         exact: true,
         activeClassName: "active"
-      }, "Series Grid")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
+      }, "Cosplay Grid")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
         className: this.getNavLinkClass('/all-cosplays')
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["NavLink"], {
         to: "/all-cosplays",
@@ -79046,7 +79046,7 @@ function (_Component) {
         exact: true,
         className: "sidenav-close",
         activeClassName: "active"
-      }, "Series Grid")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
+      }, "Cosplay Grid")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
         className: this.getNavLinkClass('/all-cosplays')
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["NavLink"], {
         to: "/all-cosplays",
@@ -79138,10 +79138,10 @@ function (_Component) {
 
 /***/ }),
 
-/***/ "./resources/js/main/components/pages/SeriesGridPage.js":
-/*!**************************************************************!*\
-  !*** ./resources/js/main/components/pages/SeriesGridPage.js ***!
-  \**************************************************************/
+/***/ "./resources/js/main/components/pages/CosplayGrid/Series.js":
+/*!******************************************************************!*\
+  !*** ./resources/js/main/components/pages/CosplayGrid/Series.js ***!
+  \******************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -79149,11 +79149,6 @@ function (_Component) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
-/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _Helper__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../Helper */ "./resources/js/main/components/Helper.js");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -79174,36 +79169,215 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 
 
+var Series =
+/*#__PURE__*/
+function (_Component) {
+  _inherits(Series, _Component);
+
+  function Series(props) {
+    var _this;
+
+    _classCallCheck(this, Series);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Series).call(this, props));
+    _this.title = props.title !== undefined ? props.title : 'Default Series';
+    _this.image = props.image !== undefined ? props.image : 'https://via.placeholder.com/300';
+    return _this;
+  }
+
+  _createClass(Series, [{
+    key: "render",
+    value: function render() {
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "series"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "series__image"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
+        src: this.image
+      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "series__title"
+      }, this.title));
+    }
+  }]);
+
+  return Series;
+}(react__WEBPACK_IMPORTED_MODULE_0__["Component"]);
+
+/* harmony default export */ __webpack_exports__["default"] = (Series);
+
+/***/ }),
+
+/***/ "./resources/js/main/components/pages/CosplayGrid/SeriesGrid.js":
+/*!**********************************************************************!*\
+  !*** ./resources/js/main/components/pages/CosplayGrid/SeriesGrid.js ***!
+  \**********************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var materialize_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! materialize-css */ "./node_modules/materialize-css/dist/js/materialize.js");
+/* harmony import */ var materialize_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(materialize_css__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _Helper__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../Helper */ "./resources/js/main/components/Helper.js");
+/* harmony import */ var _Series__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Series */ "./resources/js/main/components/pages/CosplayGrid/Series.js");
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+
+
+
  // Components
 
 
 
-var SeriesGridPage =
+
+var SeriesGrid =
 /*#__PURE__*/
 function (_Component) {
-  _inherits(SeriesGridPage, _Component);
+  _inherits(SeriesGrid, _Component);
 
-  function SeriesGridPage(props) {
+  function SeriesGrid(props) {
     var _this;
 
-    _classCallCheck(this, SeriesGridPage);
+    _classCallCheck(this, SeriesGrid);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(SeriesGridPage).call(this, props));
-    _this.token = _Helper__WEBPACK_IMPORTED_MODULE_3__["default"].getToken();
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(SeriesGrid).call(this, props));
+    _this.token = _Helper__WEBPACK_IMPORTED_MODULE_4__["default"].getToken();
+    _this.handleAdd = _this.handleAdd.bind(_assertThisInitialized(_this));
     return _this;
   }
 
-  _createClass(SeriesGridPage, [{
+  _createClass(SeriesGrid, [{
+    key: "handleAdd",
+    value: function handleAdd() {
+      console.log('clicked on add series button');
+    }
+  }, {
+    key: "handleInit",
+    value: function handleInit() {
+      materialize_css__WEBPACK_IMPORTED_MODULE_2___default.a.FloatingActionButton.init(jquery__WEBPACK_IMPORTED_MODULE_3___default()('.fixed-action-btn'));
+    }
+  }, {
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      window.addEventListener('DOMContentLoaded', this.handleInit);
+
+      if (document.readyState !== 'loading') {
+        this.handleInit();
+      }
+    }
+  }, {
+    key: "componentWillUnmount",
+    value: function componentWillUnmount() {
+      window.removeEventListener('DOMContentLoaded', this.handleInit);
+    }
+  }, {
     key: "render",
     value: function render() {
-      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("main", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h5", null, "Series Grid Page"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "Welcome to the starting point."));
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "series-grid"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Series__WEBPACK_IMPORTED_MODULE_5__["default"], {
+        title: "Series 1"
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Series__WEBPACK_IMPORTED_MODULE_5__["default"], {
+        title: "Series 2"
+      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "fixed-action-btn"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+        className: "btn-large red",
+        style: {
+          display: 'flex'
+        },
+        onClick: this.handleAdd
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+        className: "large material-icons"
+      }, "add"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, "Add Series"))));
     }
   }]);
 
-  return SeriesGridPage;
+  return SeriesGrid;
 }(react__WEBPACK_IMPORTED_MODULE_0__["Component"]);
 
-/* harmony default export */ __webpack_exports__["default"] = (SeriesGridPage);
+/* harmony default export */ __webpack_exports__["default"] = (SeriesGrid);
+
+/***/ }),
+
+/***/ "./resources/js/main/components/pages/CosplayGridPage.js":
+/*!***************************************************************!*\
+  !*** ./resources/js/main/components/pages/CosplayGridPage.js ***!
+  \***************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _CosplayGrid_SeriesGrid__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./CosplayGrid/SeriesGrid */ "./resources/js/main/components/pages/CosplayGrid/SeriesGrid.js");
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+ // Components
+
+
+
+var CosplayGridPage =
+/*#__PURE__*/
+function (_Component) {
+  _inherits(CosplayGridPage, _Component);
+
+  function CosplayGridPage() {
+    _classCallCheck(this, CosplayGridPage);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(CosplayGridPage).apply(this, arguments));
+  }
+
+  _createClass(CosplayGridPage, [{
+    key: "render",
+    value: function render() {
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("main", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_CosplayGrid_SeriesGrid__WEBPACK_IMPORTED_MODULE_1__["default"], null));
+    }
+  }]);
+
+  return CosplayGridPage;
+}(react__WEBPACK_IMPORTED_MODULE_0__["Component"]);
+
+/* harmony default export */ __webpack_exports__["default"] = (CosplayGridPage);
 
 /***/ }),
 

@@ -40,14 +40,14 @@ class Navbar extends Component {
             <NavLink to='/' exact className='brand-logo'>Cosplay Manager</NavLink>
             <a href='#' data-target='mobile-nav' className='sidenav-trigger'><i className='material-icons'>menu</i></a>
             <ul className='right hide-on-med-and-down'>
-              <li className={this.getNavLinkClass('/')}><NavLink to='/' exact activeClassName='active'>Series Grid</NavLink></li>
+              <li className={this.getNavLinkClass('/')}><NavLink to='/' exact activeClassName='active'>Cosplay Grid</NavLink></li>
               <li className={this.getNavLinkClass('/all-cosplays')}><NavLink to='/all-cosplays' activeClassName='active'>All Cosplays</NavLink></li>
             </ul>
           </div>
         </nav>
 
         <ul id='mobile-nav' className='sidenav'>
-          <li className={this.getNavLinkClass('/')}><NavLink to='/' exact className='sidenav-close' activeClassName='active'>Series Grid</NavLink></li>
+          <li className={this.getNavLinkClass('/')}><NavLink to='/' exact className='sidenav-close' activeClassName='active'>Cosplay Grid</NavLink></li>
           <li className={this.getNavLinkClass('/all-cosplays')}><NavLink to='/all-cosplays' className='sidenav-close' activeClassName='active'>All Cosplays</NavLink></li>
         </ul>
       </div>

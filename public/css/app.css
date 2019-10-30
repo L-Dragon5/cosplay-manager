@@ -426,3 +426,27 @@ nav .brand-logo {
   }
 }
 
+.outfit-grid {
+  display: grid;
+  grid-gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.outfit-grid .card {
+  width: 100%;
+  margin: 0;
+}
+
+.outfit-grid .card .card-image {
+  max-height: 86%;
+}
+
+.outfit-grid .card .card-action span {
+  margin: 0;
+  font-size: 1.15rem;
+}
+
+.outfit-grid .card .card-reveal ul {
+  font-size: 1.15rem;
+}
+
