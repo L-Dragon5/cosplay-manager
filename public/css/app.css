@@ -517,7 +517,7 @@ nav .brand-logo {
      object-fit: contain;
 }
 
-.character-grid .character__title {
+.character-grid .character__name {
   text-align: center;
   padding: 10px;
   background-color: #3490dc;
@@ -546,5 +546,26 @@ nav .brand-logo {
 
 .outfit-grid .card-reveal ul {
   font-size: 1.15rem;
+}
+
+.outfit__images {
+  max-height: calc(400px - 57px) !important;
+}
+
+.outfit__images {
+  max-height: 343px !important;
+}
+
+.carousel {
+  max-height: 343px;
+}
+
+.carousel-item > img {
+  height: 100%;
+  width: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  -o-object-position: center center;
+     object-position: center center;
 }
 

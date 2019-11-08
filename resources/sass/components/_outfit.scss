@@ -1,0 +1,18 @@
+.outfit {
+  &__images {
+    max-height: 343px !important;
+  }
+}
+
+.carousel {
+  max-height: 343px;
+
+  &-item {
+    & > img {
+      height: 100%;
+      width: 100%;
+      object-fit: cover;
+      object-position: center center;
+    }
+  }
+}

@@ -26,6 +26,8 @@ class CharacterGrid extends Component {
   }
 
   componentDidMount () {
+    document.title = '[Series] Characters | Cosplay Manager'
+
     window.addEventListener('DOMContentLoaded', this.handleInit)
     if (document.readyState !== 'loading') {
       this.handleInit()

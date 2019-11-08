@@ -71,7 +71,7 @@
       }
     }
   
-    &__title {
+    &__name {
       text-align: center;
       padding: 10px;
       background-color: $blue;
@@ -108,3 +108,8 @@
   }
 }
 
+.outfit {
+  &__images {
+    max-height: calc(400px - 57px) !important;
+  }
+}

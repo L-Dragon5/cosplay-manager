@@ -12,6 +12,10 @@ class AllCosplaysPage extends Component {
     this.token = Helper.getToken()
   }
 
+  componentDidMount () {
+    document.title = 'All Cosplays | Cosplay Manager'
+  }
+
   render () {
     return (
       <main>

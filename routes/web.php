@@ -15,10 +15,6 @@ Route::get('/', function () {
     return view('authenticated');
 });
 
-Route::get('/{any}/{all?}', function () {
-    return view('authenticated');
-});
-
 Route::get('/auth/login', function () {
     return view('auth.login');
 })->name('login');
@@ -26,3 +22,7 @@ Route::get('/auth/login', function () {
 Route::get('/auth/register', function () {
     return view('auth.register');
 })->name('register');
+
+Route::get('/{any}/{all?}', function () {
+    return view('authenticated');
+});

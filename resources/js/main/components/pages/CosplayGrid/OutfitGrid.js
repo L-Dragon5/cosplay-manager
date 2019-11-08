@@ -27,6 +27,8 @@ class OutfitGrid extends Component {
   }
 
   componentDidMount () {
+    document.title = '[Series Name] Character Name - Outfits | Cosplay Manager'
+
     window.addEventListener('DOMContentLoaded', this.handleInit)
     if (document.readyState !== 'loading') {
       this.handleInit()

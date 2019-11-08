@@ -5,7 +5,7 @@ class Character extends Component {
     super(props)
 
     this.id = (props.id !== undefined) ? props.id : null
-    this.title = (props.title !== undefined) ? props.title : 'Default Character'
+    this.name = (props.name !== undefined) ? props.name : 'Default Character'
     this.image = (props.image !== undefined) ? props.image : 'https://via.placeholder.com/200x400'
     this.seriesID = (props.seriesID !== undefined) ? props.seriesID : null
 
@@ -22,8 +22,8 @@ class Character extends Component {
         <div className='character__image'>
           <img src={this.image} />
         </div>
-        <div className='character__title'>
-          {this.title}
+        <div className='character__name'>
+          {this.name}
         </div>
       </div>
     )

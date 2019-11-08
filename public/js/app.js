@@ -79137,6 +79137,11 @@ function (_Component) {
   }
 
   _createClass(AllCosplaysPage, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      document.title = 'All Cosplays | Cosplay Manager';
+    }
+  }, {
     key: "render",
     value: function render() {
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("main", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h5", null, "All Cosplays Page"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "This is the point where you see all the cosplays."));
@@ -79193,7 +79198,7 @@ function (_Component) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Character).call(this, props));
     _this.id = props.id !== undefined ? props.id : null;
-    _this.title = props.title !== undefined ? props.title : 'Default Character';
+    _this.name = props.name !== undefined ? props.name : 'Default Character';
     _this.image = props.image !== undefined ? props.image : 'https://via.placeholder.com/200x400';
     _this.seriesID = props.seriesID !== undefined ? props.seriesID : null;
     _this.handleClick = _this.handleClick.bind(_assertThisInitialized(_this));
@@ -79216,8 +79221,8 @@ function (_Component) {
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
         src: this.image
       })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "character__title"
-      }, this.title));
+        className: "character__name"
+      }, this.name));
     }
   }]);
 
@@ -79303,6 +79308,7 @@ function (_Component) {
   }, {
     key: "componentDidMount",
     value: function componentDidMount() {
+      document.title = '[Series] Characters | Cosplay Manager';
       window.addEventListener('DOMContentLoaded', this.handleInit);
 
       if (document.readyState !== 'loading') {
@@ -79431,6 +79437,7 @@ function (_Component) {
   }, {
     key: "componentDidMount",
     value: function componentDidMount() {
+      document.title = '[Series Name] Character Name - Outfits | Cosplay Manager';
       window.addEventListener('DOMContentLoaded', this.handleInit);
 
       if (document.readyState !== 'loading') {
@@ -79629,6 +79636,7 @@ function (_Component) {
   }, {
     key: "componentDidMount",
     value: function componentDidMount() {
+      document.title = 'Series Grid | Cosplay Manager';
       window.addEventListener('DOMContentLoaded', this.handleInit);
 
       if (document.readyState !== 'loading') {
@@ -79725,6 +79733,7 @@ function (_Component) {
     _this.title = props.title !== undefined ? props.title : 'Default Title';
     _this.images = props.images !== undefined ? props.images : ['https://via.placeholder.com/342', 'https://via.placeholder.com/322'];
     _this.bought_date = props.bought_date !== undefined ? props.bought_date : 'N/A';
+    _this.storage_location = props.storage_location !== undefined ? props.storage_location : 'N/A';
     _this.times_worn = props.times_worn !== undefined ? props.times_worn : 'N/A';
     return _this;
   }
@@ -79783,7 +79792,7 @@ function (_Component) {
         className: "card-title grey-text text-darken-4"
       }, this.title, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
         className: "material-icons right"
-      }, "close")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("ul", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("strong", null, "Bought Date:"), " ", this.bought_date), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("strong", null, "Times Worn:"), " ", this.times_worn))));
+      }, "close")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("ul", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("strong", null, "Bought Date:"), " ", this.bought_date), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("strong", null, "Storage Location:"), " ", this.storage_location), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("strong", null, "Times Worn:"), " ", this.times_worn))));
     }
   }]);
 
