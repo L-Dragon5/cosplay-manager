@@ -11,6 +11,11 @@ class CharacterGrid extends Component {
   constructor (props) {
     super(props)
 
+    this.state = {
+      seriesTitle: null,
+      characters: null
+    }
+
     this.seriesID = (props.match.params.series !== undefined) ? props.match.params.series : null
     this.token = Helper.getToken()
 
@@ -25,8 +30,51 @@ class CharacterGrid extends Component {
     M.FloatingActionButton.init($('.fixed-action-btn'))
   }
 
+  getSeriesTitle () {
+    axios.get('/api/series/' + this.seriesID, {
+      headers: {
+        Accept: 'application/json',
+        Authorization: 'Bearer ' + this.token
+      }
+    }).then(response => {
+      if (response.data) {
+        this.setState({
+          seriesTitle: response.data.title
+        })
+
+        if (this.state.seriesTitle !== null) {
+          document.title = '[' + this.state.seriesTitle + '] Characters | Cosplay Manager'
+        }
+      }
+    }).catch(error => {
+      if (error.response) {
+        console.error(error.response)
+      }
+    })
+  }
+
+  getCharacters () {
+    axios.get('/api/characters/' + this.seriesID, {
+      headers: {
+        Accept: 'application/json',
+        Authorization: 'Bearer ' + this.token
+      }
+    }).then(response => {
+      if (response.data) {
+        this.setState({
+          characters: response.data
+        })
+      }
+    }).catch(error => {
+      if (error.response) {
+        console.error(error.response)
+      }
+    })
+  }
+
   componentDidMount () {
-    document.title = '[Series] Characters | Cosplay Manager'
+    this.getSeriesTitle()
+    this.getCharacters()
 
     window.addEventListener('DOMContentLoaded', this.handleInit)
     if (document.readyState !== 'loading') {
@@ -39,13 +87,18 @@ class CharacterGrid extends Component {
   }
 
   render () {
+    const characters = this.state.characters
+    const seriesTitle = this.state.seriesTitle
+
     return (
       <main>
-        <h5>Series Name</h5>
+        <h5>{seriesTitle}</h5>
         <div className='character-grid'>
-          <Character key='c-1' id={1} title='Character 1' seriesID={this.seriesID} />
-          <Character key='c-2' id={2} title='Character 2' seriesID={this.seriesID} />
-          <Character key='c-3' id={3} title='Character 3' seriesID={this.seriesID} />
+          { characters &&
+            characters.map((item, key) => {
+              return <Character key={'c-' + item.id} id={item.id} seriesID={this.seriesID} name={item.name} image={item.image} />
+            })
+          }
         </div>
 
         <div className='fixed-action-btn'>

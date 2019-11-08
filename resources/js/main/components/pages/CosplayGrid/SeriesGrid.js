@@ -11,6 +11,10 @@ class SeriesGrid extends Component {
   constructor (props) {
     super(props)
 
+    this.state = {
+      series: null
+    }
+
     this.token = Helper.getToken()
 
     this.handleAdd = this.handleAdd.bind(this)
@@ -24,7 +28,28 @@ class SeriesGrid extends Component {
     M.FloatingActionButton.init($('.fixed-action-btn'))
   }
 
+  getSeries () {
+    axios.get('/api/series', {
+      headers: {
+        Accept: 'application/json',
+        Authorization: 'Bearer ' + this.token
+      }
+    }).then(response => {
+      if (response.data) {
+        this.setState({
+          series: response.data
+        })
+      }
+    }).catch(error => {
+      if (error.response) {
+        console.error(error.response)
+      }
+    })
+  }
+
   componentDidMount () {
+    this.getSeries()
+
     document.title = 'Series Grid | Cosplay Manager'
 
     window.addEventListener('DOMContentLoaded', this.handleInit)
@@ -38,12 +63,17 @@ class SeriesGrid extends Component {
   }
 
   render () {
+    const series = this.state.series
+
     return (
       <main>
         <h5>Series</h5>
         <div className='series-grid'>
-          <Series key='s-1' id={1} title='Series 1' />
-          <Series key='s-2' id={2} title='Series 2' />
+          { series &&
+            series.map((item, key) => {
+              return <Series key={'s-' + item.id} id={item.id} title={item.title} image={item.image} />
+            })
+          }
         </div>
 
         <div className='fixed-action-btn'>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Series;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Validator;
 
 class SeriesController extends Controller
@@ -15,7 +16,10 @@ class SeriesController extends Controller
      */
     public function index()
     {
-        //
+        $user_id = Auth::user()->id;
+        $series = Series::where('user_id', $user_id)->orderBy('title', 'ASC')->get();
+
+        return $series;
     }
 
     /**
@@ -37,9 +41,10 @@ class SeriesController extends Controller
      * @param  \App\Series  $series
      * @return \Illuminate\Http\Response
      */
-    public function show(Series $series)
+    public function show($id, Series $series)
     {
-        //
+        $series = Series::find($id);
+        return $series;
     }
 
     /**

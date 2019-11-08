@@ -28,6 +28,7 @@ Route::middleware('auth:api')->group(function () {
 
     // Character Routes
     Route::get('characters', 'CharacterController@index');
+    Route::get('characters/{id}', 'CharacterController@indexBySeries');
     Route::get('character/{id}', 'CharacterController@show');
     Route::post('character/create', 'CharacterController@store');
     Route::post('character/update/{id}', 'CharacterController@update');
@@ -35,6 +36,7 @@ Route::middleware('auth:api')->group(function () {
 
     // Outfit Routes
     Route::get('outfits', 'OutfitController@index');
+    Route::get('outfits/{id}', 'OutfitController@indexByCharacter');
     Route::get('outfit/{id}', 'OutfitController@show');
     Route::post('outfit/create', 'OutfitController@store');
     Route::post('outfit/update/{id}', 'OutfitController@update');

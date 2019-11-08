@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Character;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Validator;
 
 class CharacterController extends Controller
@@ -15,7 +16,23 @@ class CharacterController extends Controller
      */
     public function index()
     {
-        //
+        $user_id = Auth::user()->id;
+        $characters = Character::where('user_id', $user_id)->orderBy('name', 'ASC')->get();
+
+        return $characters;
+    }
+
+    /**
+     * Display a listing of the resource by series.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function indexBySeries($id)
+    {
+        $user_id = Auth::user()->id;
+        $characters = Character::where([['user_id', $user_id], ['series_id', $id]])->orderBy('name', 'ASC')->get();
+
+        return $characters;
     }
 
     /**
@@ -37,9 +54,10 @@ class CharacterController extends Controller
      * @param  \App\Character  $character
      * @return \Illuminate\Http\Response
      */
-    public function show(Character $character)
+    public function show($id, Character $character)
     {
-        //
+        $character = Character::find($id);
+        return $character;
     }
 
     /**

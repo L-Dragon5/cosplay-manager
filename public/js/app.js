@@ -79199,7 +79199,7 @@ function (_Component) {
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Character).call(this, props));
     _this.id = props.id !== undefined ? props.id : null;
     _this.name = props.name !== undefined ? props.name : 'Default Character';
-    _this.image = props.image !== undefined ? props.image : 'https://via.placeholder.com/200x400';
+    _this.image = props.image !== undefined && props.image !== null ? props.image : 'https://via.placeholder.com/200x400';
     _this.seriesID = props.seriesID !== undefined ? props.seriesID : null;
     _this.handleClick = _this.handleClick.bind(_assertThisInitialized(_this));
     return _this;
@@ -79289,6 +79289,10 @@ function (_Component) {
     _classCallCheck(this, CharacterGrid);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(CharacterGrid).call(this, props));
+    _this.state = {
+      seriesTitle: null,
+      characters: null
+    };
     _this.seriesID = props.match.params.series !== undefined ? props.match.params.series : null;
     _this.token = _Helper__WEBPACK_IMPORTED_MODULE_4__["default"].getToken();
     _this.handleAdd = _this.handleAdd.bind(_assertThisInitialized(_this));
@@ -79306,9 +79310,58 @@ function (_Component) {
       materialize_css__WEBPACK_IMPORTED_MODULE_2___default.a.FloatingActionButton.init(jquery__WEBPACK_IMPORTED_MODULE_3___default()('.fixed-action-btn'));
     }
   }, {
+    key: "getSeriesTitle",
+    value: function getSeriesTitle() {
+      var _this2 = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_1___default.a.get('/api/series/' + this.seriesID, {
+        headers: {
+          Accept: 'application/json',
+          Authorization: 'Bearer ' + this.token
+        }
+      }).then(function (response) {
+        if (response.data) {
+          _this2.setState({
+            seriesTitle: response.data.title
+          });
+
+          if (_this2.state.seriesTitle !== null) {
+            document.title = '[' + _this2.state.seriesTitle + '] Characters | Cosplay Manager';
+          }
+        }
+      })["catch"](function (error) {
+        if (error.response) {
+          console.error(error.response);
+        }
+      });
+    }
+  }, {
+    key: "getCharacters",
+    value: function getCharacters() {
+      var _this3 = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_1___default.a.get('/api/characters/' + this.seriesID, {
+        headers: {
+          Accept: 'application/json',
+          Authorization: 'Bearer ' + this.token
+        }
+      }).then(function (response) {
+        if (response.data) {
+          _this3.setState({
+            characters: response.data
+          });
+        }
+      })["catch"](function (error) {
+        if (error.response) {
+          console.error(error.response);
+        }
+      });
+    }
+  }, {
     key: "componentDidMount",
     value: function componentDidMount() {
-      document.title = '[Series] Characters | Cosplay Manager';
+      this.getSeriesTitle();
+      this.getCharacters();
       window.addEventListener('DOMContentLoaded', this.handleInit);
 
       if (document.readyState !== 'loading') {
@@ -79323,23 +79376,20 @@ function (_Component) {
   }, {
     key: "render",
     value: function render() {
-      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("main", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h5", null, "Series Name"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      var _this4 = this;
+
+      var characters = this.state.characters;
+      var seriesTitle = this.state.seriesTitle;
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("main", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h5", null, seriesTitle), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "character-grid"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Character__WEBPACK_IMPORTED_MODULE_5__["default"], {
-        key: "c-1",
-        id: 1,
-        title: "Character 1",
-        seriesID: this.seriesID
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Character__WEBPACK_IMPORTED_MODULE_5__["default"], {
-        key: "c-2",
-        id: 2,
-        title: "Character 2",
-        seriesID: this.seriesID
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Character__WEBPACK_IMPORTED_MODULE_5__["default"], {
-        key: "c-3",
-        id: 3,
-        title: "Character 3",
-        seriesID: this.seriesID
+      }, characters && characters.map(function (item, key) {
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Character__WEBPACK_IMPORTED_MODULE_5__["default"], {
+          key: 'c-' + item.id,
+          id: item.id,
+          seriesID: _this4.seriesID,
+          name: item.name,
+          image: item.image
+        });
       })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "fixed-action-btn"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
@@ -79417,6 +79467,11 @@ function (_Component) {
     _classCallCheck(this, OutfitGrid);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(OutfitGrid).call(this, props));
+    _this.state = {
+      seriesTitle: null,
+      characterName: null,
+      outfits: null
+    };
     _this.seriesID = props.match.params.series !== undefined ? props.match.params.series : null;
     _this.characterID = props.match.params.character !== undefined ? props.match.params.character : null;
     _this.token = _Helper__WEBPACK_IMPORTED_MODULE_4__["default"].getToken();
@@ -79435,9 +79490,85 @@ function (_Component) {
       materialize_css__WEBPACK_IMPORTED_MODULE_2___default.a.FloatingActionButton.init(jquery__WEBPACK_IMPORTED_MODULE_3___default()('.fixed-action-btn'));
     }
   }, {
+    key: "getSeriesTitle",
+    value: function getSeriesTitle() {
+      var _this2 = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_1___default.a.get('/api/series/' + this.seriesID, {
+        headers: {
+          Accept: 'application/json',
+          Authorization: 'Bearer ' + this.token
+        }
+      }).then(function (response) {
+        if (response.data) {
+          _this2.setState({
+            seriesTitle: response.data.title
+          });
+
+          if (_this2.state.seriesTitle !== null) {
+            document.title = '[' + _this2.state.seriesTitle + '] Character Name | Cosplay Manager';
+          }
+        }
+      })["catch"](function (error) {
+        if (error.response) {
+          console.error(error.response);
+        }
+      });
+    }
+  }, {
+    key: "getCharacterName",
+    value: function getCharacterName() {
+      var _this3 = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_1___default.a.get('/api/character/' + this.characterID, {
+        headers: {
+          Accept: 'application/json',
+          Authorization: 'Bearer ' + this.token
+        }
+      }).then(function (response) {
+        if (response.data) {
+          _this3.setState({
+            characterName: response.data.name
+          });
+
+          if (_this3.state.seriesTitle !== null) {
+            document.title = '[' + _this3.state.seriesTitle + '] ' + _this3.state.characterName + ' | Cosplay Manager';
+          }
+        }
+      })["catch"](function (error) {
+        if (error.response) {
+          console.error(error.response);
+        }
+      });
+    }
+  }, {
+    key: "getOutfits",
+    value: function getOutfits() {
+      var _this4 = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_1___default.a.get('/api/outfits/' + this.characterID, {
+        headers: {
+          Accept: 'application/json',
+          Authorization: 'Bearer ' + this.token
+        }
+      }).then(function (response) {
+        if (response.data) {
+          _this4.setState({
+            outfits: response.data
+          });
+        }
+      })["catch"](function (error) {
+        if (error.response) {
+          console.error(error.response);
+        }
+      });
+    }
+  }, {
     key: "componentDidMount",
     value: function componentDidMount() {
-      document.title = '[Series Name] Character Name - Outfits | Cosplay Manager';
+      this.getSeriesTitle();
+      this.getCharacterName();
+      this.getOutfits();
       window.addEventListener('DOMContentLoaded', this.handleInit);
 
       if (document.readyState !== 'loading') {
@@ -79452,18 +79583,21 @@ function (_Component) {
   }, {
     key: "render",
     value: function render() {
-      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("main", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h5", null, "Series Name - Character Name"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      var outfits = this.state.outfits;
+      var seriesTitle = this.state.seriesTitle;
+      var characterName = this.state.characterName;
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("main", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h5", null, seriesTitle, " - ", characterName), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "outfit-grid"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_OutfitCard__WEBPACK_IMPORTED_MODULE_5__["default"], {
-        title: "Card 1"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_OutfitCard__WEBPACK_IMPORTED_MODULE_5__["default"], {
-        title: "Card 2"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_OutfitCard__WEBPACK_IMPORTED_MODULE_5__["default"], {
-        title: "Card 3"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_OutfitCard__WEBPACK_IMPORTED_MODULE_5__["default"], {
-        title: "Card 4"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_OutfitCard__WEBPACK_IMPORTED_MODULE_5__["default"], {
-        title: "Card 5"
+      }, outfits && outfits.map(function (item, key) {
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_OutfitCard__WEBPACK_IMPORTED_MODULE_5__["default"], {
+          key: 'o-' + item.id,
+          id: item.id,
+          title: item.title,
+          images: item.images,
+          bought_date: item.bought_date,
+          storage_location: item.storage_location,
+          times_worn: item.times_worn
+        });
       })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "fixed-action-btn"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
@@ -79529,7 +79663,7 @@ function (_Component) {
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Series).call(this, props));
     _this.id = props.id !== undefined ? props.id : null;
     _this.title = props.title !== undefined ? props.title : 'Default Series';
-    _this.image = props.image !== undefined ? props.image : 'https://via.placeholder.com/300x200';
+    _this.image = props.image !== undefined && props.image !== null ? props.image : 'https://via.placeholder.com/300x200';
     _this.handleClick = _this.handleClick.bind(_assertThisInitialized(_this));
     return _this;
   }
@@ -79618,6 +79752,9 @@ function (_Component) {
     _classCallCheck(this, SeriesGrid);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(SeriesGrid).call(this, props));
+    _this.state = {
+      series: null
+    };
     _this.token = _Helper__WEBPACK_IMPORTED_MODULE_4__["default"].getToken();
     _this.handleAdd = _this.handleAdd.bind(_assertThisInitialized(_this));
     return _this;
@@ -79634,8 +79771,31 @@ function (_Component) {
       materialize_css__WEBPACK_IMPORTED_MODULE_2___default.a.FloatingActionButton.init(jquery__WEBPACK_IMPORTED_MODULE_3___default()('.fixed-action-btn'));
     }
   }, {
+    key: "getSeries",
+    value: function getSeries() {
+      var _this2 = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_1___default.a.get('/api/series', {
+        headers: {
+          Accept: 'application/json',
+          Authorization: 'Bearer ' + this.token
+        }
+      }).then(function (response) {
+        if (response.data) {
+          _this2.setState({
+            series: response.data
+          });
+        }
+      })["catch"](function (error) {
+        if (error.response) {
+          console.error(error.response);
+        }
+      });
+    }
+  }, {
     key: "componentDidMount",
     value: function componentDidMount() {
+      this.getSeries();
       document.title = 'Series Grid | Cosplay Manager';
       window.addEventListener('DOMContentLoaded', this.handleInit);
 
@@ -79651,16 +79811,16 @@ function (_Component) {
   }, {
     key: "render",
     value: function render() {
+      var series = this.state.series;
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("main", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h5", null, "Series"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "series-grid"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Series__WEBPACK_IMPORTED_MODULE_5__["default"], {
-        key: "s-1",
-        id: 1,
-        title: "Series 1"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Series__WEBPACK_IMPORTED_MODULE_5__["default"], {
-        key: "s-2",
-        id: 2,
-        title: "Series 2"
+      }, series && series.map(function (item, key) {
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Series__WEBPACK_IMPORTED_MODULE_5__["default"], {
+          key: 's-' + item.id,
+          id: item.id,
+          title: item.title,
+          image: item.image
+        });
       })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "fixed-action-btn"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
@@ -79730,11 +79890,12 @@ function (_Component) {
     _classCallCheck(this, OutfitCard);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(OutfitCard).call(this, props));
+    _this.id = props.id !== undefined ? props.id : null;
     _this.title = props.title !== undefined ? props.title : 'Default Title';
-    _this.images = props.images !== undefined ? props.images : ['https://via.placeholder.com/342', 'https://via.placeholder.com/322'];
-    _this.bought_date = props.bought_date !== undefined ? props.bought_date : 'N/A';
-    _this.storage_location = props.storage_location !== undefined ? props.storage_location : 'N/A';
-    _this.times_worn = props.times_worn !== undefined ? props.times_worn : 'N/A';
+    _this.images = props.images !== undefined && props.images !== null ? props.images : ['https://via.placeholder.com/342', 'https://via.placeholder.com/322'];
+    _this.bought_date = props.bought_date !== undefined && props.bought_date !== null ? props.bought_date : 'N/A';
+    _this.storage_location = props.storage_location !== undefined && props.storage_location !== null ? props.storage_location : 'N/A';
+    _this.times_worn = props.times_worn !== undefined && props.times_worn !== null ? props.times_worn : 'N/A';
     return _this;
   }
 

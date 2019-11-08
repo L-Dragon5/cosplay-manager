@@ -6,7 +6,7 @@ class Series extends Component {
 
     this.id = (props.id !== undefined) ? props.id : null
     this.title = (props.title !== undefined) ? props.title : 'Default Series'
-    this.image = (props.image !== undefined) ? props.image : 'https://via.placeholder.com/300x200'
+    this.image = (props.image !== undefined && props.image !== null) ? props.image : 'https://via.placeholder.com/300x200'
 
     this.handleClick = this.handleClick.bind(this)
   }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Outfit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Validator;
 
 class OutfitController extends Controller
@@ -15,7 +16,23 @@ class OutfitController extends Controller
      */
     public function index()
     {
-        //
+        $user_id = Auth::user()->id;
+        $outfits = Outfit::where('user_id', $user_id)->orderBy('title', 'ASC')->get();
+
+        return $outfits;
+    }
+
+    /**
+     * Display a listing of the resource by character.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function indexByCharacter($id)
+    {
+        $user_id = Auth::user()->id;
+        $outfits = Outfit::where([['user_id', $user_id], ['character_id', $id]])->orderBy('title', 'ASC')->get();
+
+        return $outfits;
     }
 
     /**
