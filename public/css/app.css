@@ -438,6 +438,10 @@ nav .brand-logo {
   width: 100%;
   margin: 0 10px 16px 0;
   cursor: pointer;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
 }
 
 @media (min-width: 600px) {
@@ -469,10 +473,28 @@ nav .brand-logo {
 }
 
 .series-grid .series__title {
-  text-align: center;
-  padding: 10px;
   background-color: #3490dc;
   color: white;
+  display: -webkit-box;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+          flex-direction: row;
+}
+
+.series-grid .series__title__text {
+  text-align: center;
+  padding: 10px;
+  width: 100%;
+}
+
+.series-grid .series__icon a {
+  height: 62px;
+  line-height: 62px;
+}
+
+.series-grid .series__icon a i {
+  font-size: 1.8rem;
 }
 
 .character-grid {
@@ -487,6 +509,10 @@ nav .brand-logo {
   width: 100%;
   margin: 0 10px 16px 0;
   cursor: pointer;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
 }
 
 @media (min-width: 600px) {
@@ -518,10 +544,28 @@ nav .brand-logo {
 }
 
 .character-grid .character__name {
-  text-align: center;
-  padding: 10px;
   background-color: #3490dc;
   color: white;
+  display: -webkit-box;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+          flex-direction: row;
+}
+
+.character-grid .character__name__text {
+  text-align: center;
+  padding: 10px;
+  width: 100%;
+}
+
+.character-grid .character__icon a {
+  height: 62px;
+  line-height: 62px;
+}
+
+.character-grid .character__icon a i {
+  font-size: 1.8rem;
 }
 
 .outfit-grid {
@@ -530,42 +574,78 @@ nav .brand-logo {
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
 }
 
-.outfit-grid .card {
+.outfit .card {
   width: 100%;
   margin: 0;
 }
 
-.outfit-grid .card-image {
+.outfit .card-image {
   max-height: 86%;
 }
 
-.outfit-grid .card-action span {
+.outfit .card-action {
+  display: -webkit-box;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+          flex-direction: row;
+  padding: 0;
+}
+
+.outfit .card-action span {
   margin: 0;
+  width: 100%;
   font-size: 1.15rem;
+  padding: 16px 24px;
 }
 
-.outfit-grid .card-reveal ul {
+.outfit .card-reveal ul {
   font-size: 1.15rem;
-}
-
-.outfit__images {
-  max-height: calc(400px - 57px) !important;
 }
 
 .outfit__images {
   max-height: 343px !important;
 }
 
+.outfit--future {
+  border: 2px solid #a8efc2;
+}
+
 .outfit--future .card-action {
   background-color: #a8efc2;
+}
+
+.outfit--unworn {
+  border: 2px solid #b8e6ff;
 }
 
 .outfit--unworn .card-action {
   background-color: #b8e6ff;
 }
 
+.outfit--worn {
+  border: 2px solid #ffd0e7;
+}
+
 .outfit--worn .card-action {
   background-color: #ffd0e7;
+}
+
+.outfit__icon {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+
+.outfit__icon a {
+  height: 57px;
+  line-height: 57px;
+  margin-right: 0 !important;
+}
+
+.outfit__icon a i {
+  color: black;
 }
 
 .carousel {

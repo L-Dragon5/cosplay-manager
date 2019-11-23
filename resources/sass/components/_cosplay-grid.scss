@@ -7,6 +7,7 @@
     width: 100%;
     margin: 0 10px 16px 0;
     cursor: pointer;
+    user-select: none;
 
     @include respond-above(sm) {
       flex: 1 0 250px;
@@ -31,10 +32,27 @@
     }
   
     &__title {
-      text-align: center;
-      padding: 10px;
       background-color: $blue;
       color: white;
+      display: flex;
+      flex-direction: row;
+
+      &__text {
+        text-align: center;
+        padding: 10px;
+        width: 100%;
+      }
+    }
+
+    &__icon {
+      & a {
+        height: 62px;
+        line-height: 62px;
+
+        & i {
+          font-size: 1.8rem;
+        }
+      }
     }
   }
 }
@@ -48,6 +66,7 @@
     width: 100%;
     margin: 0 10px 16px 0;
     cursor: pointer;
+    user-select: none;
 
     @include respond-above(sm) {
       flex: 1 0 150px;
@@ -72,10 +91,27 @@
     }
   
     &__name {
-      text-align: center;
-      padding: 10px;
       background-color: $blue;
       color: white;
+      display: flex;
+      flex-direction: row;
+
+      &__text {
+        text-align: center;
+        padding: 10px;
+        width: 100%;
+      }
+    }
+
+    &__icon {
+      & a {
+        height: 62px;
+        line-height: 62px;
+
+        & i {
+          font-size: 1.8rem;
+        }
+      }
     }
   }
 }
@@ -84,32 +120,4 @@
   display: grid;
   grid-gap: 20px 10px;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-
-  & .card {
-    width: 100%;
-    margin: 0;
-
-    &-image {
-      max-height: 86%;
-    }
-
-    &-action {
-      & span {
-        margin: 0;
-        font-size: 1.15rem;
-      }
-    }
-
-    &-reveal {
-      ul {
-        font-size: 1.15rem;
-      }
-    }
-  }
-}
-
-.outfit {
-  &__images {
-    max-height: calc(400px - 57px) !important;
-  }
 }

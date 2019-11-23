@@ -79136,7 +79136,7 @@ function (_Component) {
         required: true
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
         htmlFor: "name"
-      }, "Name")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }, "Name *")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "input-field col s12"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "file-field input-field"
@@ -79564,7 +79564,7 @@ function (_Component) {
         required: true
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
         htmlFor: "title"
-      }, "Title")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }, "Title *")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "input-field col s12"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "file-field input-field"
@@ -79889,6 +79889,8 @@ function (_Component) {
     _this.seriesID = props.seriesID !== undefined ? props.seriesID : null;
     _this.outfitCount = props.outfitCount !== undefined ? props.outfitCount + (props.outfitCount === 1 ? ' Outfit' : ' Outfits') : '0 Outfits';
     _this.handleClick = _this.handleClick.bind(_assertThisInitialized(_this));
+    _this.handleEdit = _this.handleEdit.bind(_assertThisInitialized(_this));
+    _this.handleDelete = _this.handleDelete.bind(_assertThisInitialized(_this));
     return _this;
   }
 
@@ -79896,6 +79898,18 @@ function (_Component) {
     key: "handleClick",
     value: function handleClick() {
       window.location.href = '/s-' + this.seriesID + '/c-' + this.id;
+    }
+  }, {
+    key: "handleEdit",
+    value: function handleEdit(e) {
+      e.stopPropagation();
+      console.log('clicked on edit button for id: ' + this.id);
+    }
+  }, {
+    key: "handleDelete",
+    value: function handleDelete(e) {
+      e.stopPropagation();
+      console.log('clicked on delete button for id: ' + this.id);
     }
   }, {
     key: "render",
@@ -79909,7 +79923,23 @@ function (_Component) {
         src: this.image
       })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "character__name"
-      }, this.name, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), this.outfitCount));
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "character__icon",
+        onClick: this.handleEdit
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+        className: "btn-flat teal lighten-2"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+        className: "material-icons"
+      }, "edit"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "character__name__text"
+      }, this.name, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), this.outfitCount), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "character__icon",
+        onClick: this.handleDelete
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+        className: "btn-flat red lighten-2"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+        className: "material-icons"
+      }, "delete")))));
     }
   }]);
 
@@ -80387,6 +80417,8 @@ function (_Component) {
     _this.image = props.image !== undefined && props.image !== null ? '/storage/' + props.image : 'https://via.placeholder.com/300x200';
     _this.characterCount = props.characterCount !== undefined ? props.characterCount + (props.characterCount === 1 ? ' Character' : ' Characters') : '0 Characters';
     _this.handleClick = _this.handleClick.bind(_assertThisInitialized(_this));
+    _this.handleEdit = _this.handleEdit.bind(_assertThisInitialized(_this));
+    _this.handleDelete = _this.handleDelete.bind(_assertThisInitialized(_this));
     return _this;
   }
 
@@ -80394,6 +80426,18 @@ function (_Component) {
     key: "handleClick",
     value: function handleClick() {
       window.location.href = '/s-' + this.id;
+    }
+  }, {
+    key: "handleEdit",
+    value: function handleEdit(e) {
+      e.stopPropagation();
+      console.log('clicked on edit button for id: ' + this.id);
+    }
+  }, {
+    key: "handleDelete",
+    value: function handleDelete(e) {
+      e.stopPropagation();
+      console.log('clicked on delete button for id: ' + this.id);
     }
   }, {
     key: "render",
@@ -80407,7 +80451,23 @@ function (_Component) {
         src: this.image
       })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "series__title"
-      }, this.title, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), this.characterCount));
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "series__icon",
+        onClick: this.handleEdit
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+        className: "btn-flat teal lighten-2"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+        className: "material-icons"
+      }, "edit"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "series__title__text"
+      }, this.title, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), this.characterCount), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "series__icon",
+        onClick: this.handleDelete
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+        className: "btn-flat red lighten-2"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+        className: "material-icons"
+      }, "delete")))));
     }
   }]);
 
@@ -80605,9 +80665,9 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
@@ -80635,6 +80695,8 @@ function (_Component) {
     _this.bought_date = props.bought_date !== undefined && props.bought_date !== null ? props.bought_date : 'N/A';
     _this.storage_location = props.storage_location !== undefined && props.storage_location !== null ? props.storage_location : 'N/A';
     _this.times_worn = props.times_worn !== undefined && props.times_worn !== null ? props.times_worn : 'N/A';
+    _this.handleEdit = _this.handleEdit.bind(_assertThisInitialized(_this));
+    _this.handleDelete = _this.handleDelete.bind(_assertThisInitialized(_this));
     return _this;
   }
 
@@ -80646,6 +80708,18 @@ function (_Component) {
         indicators: true,
         noWrap: true
       });
+    }
+  }, {
+    key: "handleEdit",
+    value: function handleEdit(e) {
+      e.stopPropagation();
+      console.log('clicked on edit button for id: ' + this.id);
+    }
+  }, {
+    key: "handleDelete",
+    value: function handleDelete(e) {
+      e.stopPropagation();
+      console.log('clicked on delete button for id: ' + this.id);
     }
   }, {
     key: "componentDidMount",
@@ -80695,8 +80769,24 @@ function (_Component) {
           className: "activator"
         }));
       }))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "card-action activator"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, this.title)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "card-action"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "outfit__icon",
+        onClick: this.handleEdit
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+        className: "btn-flat teal lighten-2"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+        className: "material-icons"
+      }, "edit"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+        className: "activator"
+      }, this.title), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "outfit__icon",
+        onClick: this.handleDelete
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+        className: "btn-flat red lighten-2"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+        className: "material-icons"
+      }, "delete")))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "card-reveal"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
         className: "card-title grey-text text-darken-4"

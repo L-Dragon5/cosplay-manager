@@ -1,23 +1,71 @@
 .outfit {
+  & .card {
+    width: 100%;
+    margin: 0;
+
+    &-image {
+      max-height: 86%;
+    }
+
+    &-action {
+      display: flex;
+      flex-direction: row;
+      padding: 0;
+
+      & span {
+        margin: 0;
+        width: 100%;
+        font-size: 1.15rem;
+        padding: 16px 24px;
+      }
+    }
+
+    &-reveal {
+      ul {
+        font-size: 1.15rem;
+      }
+    }
+  }
+
   &__images {
     max-height: 343px !important;
   }
 
   &--future {
+    border: 2px solid #a8efc2;
+
     & .card-action {
-      background-color:#a8efc2;
+      background-color: #a8efc2;
     }
   }
 
   &--unworn {
+    border: 2px solid #b8e6ff;
+
     & .card-action {
       background-color: #b8e6ff;
     }
   }
 
   &--worn {
+    border: 2px solid #ffd0e7;
+
     & .card-action {
       background-color: #ffd0e7;
+    }
+  }
+
+  &__icon {
+    user-select: none;
+    
+    & a {
+      height: 57px;
+      line-height: 57px;
+      margin-right: 0 !important;
+
+      & i {
+        color: black;
+      }
     }
   }
 }

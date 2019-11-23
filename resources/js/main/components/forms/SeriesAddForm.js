@@ -55,7 +55,7 @@ class SeriesAddForm extends Component {
 
             <div className='input-field col s12'>
               <input id='title' type='text' name='title' className='validate' required />
-              <label htmlFor='title'>Title</label>
+              <label htmlFor='title'>Title *</label>
             </div>
 
             <div className='input-field col s12'>

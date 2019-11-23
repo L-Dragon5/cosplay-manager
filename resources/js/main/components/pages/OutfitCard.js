@@ -13,10 +13,23 @@ class OutfitCard extends Component {
     this.bought_date = (props.bought_date !== undefined && props.bought_date !== null) ? props.bought_date : 'N/A'
     this.storage_location = (props.storage_location !== undefined && props.storage_location !== null) ? props.storage_location : 'N/A'
     this.times_worn = (props.times_worn !== undefined && props.times_worn !== null) ? props.times_worn : 'N/A'
+
+    this.handleEdit = this.handleEdit.bind(this)
+    this.handleDelete = this.handleDelete.bind(this)
   }
 
   handleInit () {
     M.Carousel.init($('.carousel'), { fullWidth: true, indicators: true, noWrap: true })
+  }
+
+  handleEdit (e) {
+    e.stopPropagation()
+    console.log('clicked on edit button for id: ' + this.id)
+  }
+
+  handleDelete (e) {
+    e.stopPropagation()
+    console.log('clicked on delete button for id: ' + this.id)
   }
 
   componentDidMount () {
@@ -54,8 +67,16 @@ class OutfitCard extends Component {
           </div>
         </div>
 
-        <div className='card-action activator'>
-          <span>{this.title}</span>
+        <div className='card-action'>
+          <div className='outfit__icon' onClick={this.handleEdit}>
+            <a className='btn-flat teal lighten-2'><i className='material-icons'>edit</i></a>
+          </div>
+
+          <span className='activator'>{this.title}</span>
+
+          <div className='outfit__icon' onClick={this.handleDelete}>
+            <a className='btn-flat red lighten-2'><i className='material-icons'>delete</i></a>
+          </div>
         </div>
 
         <div className='card-reveal'>

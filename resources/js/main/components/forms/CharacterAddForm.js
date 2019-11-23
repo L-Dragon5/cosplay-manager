@@ -57,7 +57,7 @@ class CharacterAddForm extends Component {
 
             <div className='input-field col s12'>
               <input id='name' type='text' name='name' className='validate' required />
-              <label htmlFor='name'>Name</label>
+              <label htmlFor='name'>Name *</label>
             </div>
 
             <div className='input-field col s12'>
