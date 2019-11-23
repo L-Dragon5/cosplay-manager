@@ -5,27 +5,22 @@ import $ from 'jquery'
 
 // Components
 import Helper from '../../Helper'
+import Modal from '../../Modal'
 import Series from './Series'
+import SeriesAddForm from '../../forms/SeriesAddForm'
 
 class SeriesGrid extends Component {
   constructor (props) {
     super(props)
 
     this.state = {
-      series: null
+      series: null,
+      renderForm: false
     }
 
     this.token = Helper.getToken()
 
-    this.handleAdd = this.handleAdd.bind(this)
-  }
-
-  handleAdd () {
-    console.log('clicked on add series button')
-  }
-
-  handleInit () {
-    M.FloatingActionButton.init($('.fixed-action-btn'))
+    this.handleFormUnmount = this.handleFormUnmount.bind(this)
   }
 
   getSeries () {
@@ -37,7 +32,8 @@ class SeriesGrid extends Component {
     }).then(response => {
       if (response.data) {
         this.setState({
-          series: response.data
+          series: response.data,
+          renderForm: true
         })
       }
     }).catch(error => {
@@ -45,6 +41,19 @@ class SeriesGrid extends Component {
         console.error(error.response)
       }
     })
+  }
+
+  handleInit () {
+    M.Modal.init($('.modal'))
+    M.FloatingActionButton.init($('.fixed-action-btn'))
+  }
+
+  handleFormUnmount () {
+    this.setState({
+      renderForm: false
+    })
+
+    this.getSeries()
   }
 
   componentDidMount () {
@@ -76,11 +85,15 @@ class SeriesGrid extends Component {
           }
         </div>
 
-        <div className='fixed-action-btn'>
-          <a className='btn-large red' style={{ display: 'flex' }} onClick={this.handleAdd}>
+        <div className='fixed-action-btn modal-trigger' data-target='series-grid-modal'>
+          <a className='btn-large red' style={{ display: 'flex' }}>
             <i className='large material-icons'>add</i><span>Add Series</span>
           </a>
         </div>
+
+        <Modal id='series-grid-modal'>
+          { this.state.renderForm ? <SeriesAddForm token={this.token} unmount={this.handleFormUnmount} /> : null }
+        </Modal>
       </main>
     )
   }

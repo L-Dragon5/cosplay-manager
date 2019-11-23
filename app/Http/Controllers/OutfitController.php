@@ -55,7 +55,7 @@ class OutfitController extends Controller
     public function show(Outfit $outfit)
     {
         /*
-        id, user_id, character_id, title, images, bought_date, storage_location, times_worn
+        id, user_id, character_id, title, images, status, bought_date, storage_location, times_worn
         */
     }
 

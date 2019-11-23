@@ -11,6 +11,7 @@ class Outfit extends Model
         'character_id',
         'title',
         'images',
+        'status',
         'bought_date',
         'storage_location',
         'times_worn'

@@ -5,7 +5,9 @@ import $ from 'jquery'
 
 // Components
 import Helper from '../../Helper'
+import Modal from '../../Modal'
 import Character from './Character'
+import CharacterAddForm from '../../forms/CharacterAddForm'
 
 class CharacterGrid extends Component {
   constructor (props) {
@@ -13,21 +15,14 @@ class CharacterGrid extends Component {
 
     this.state = {
       seriesTitle: null,
-      characters: null
+      characters: null,
+      renderForm: false
     }
 
     this.seriesID = (props.match.params.series !== undefined) ? props.match.params.series : null
     this.token = Helper.getToken()
 
-    this.handleAdd = this.handleAdd.bind(this)
-  }
-
-  handleAdd () {
-    console.log('clicked on add character button')
-  }
-
-  handleInit () {
-    M.FloatingActionButton.init($('.fixed-action-btn'))
+    this.handleFormUnmount = this.handleFormUnmount.bind(this)
   }
 
   getSeriesTitle () {
@@ -62,7 +57,8 @@ class CharacterGrid extends Component {
     }).then(response => {
       if (response.data) {
         this.setState({
-          characters: response.data
+          characters: response.data,
+          renderForm: true
         })
       }
     }).catch(error => {
@@ -70,6 +66,19 @@ class CharacterGrid extends Component {
         console.error(error.response)
       }
     })
+  }
+
+  handleInit () {
+    M.Modal.init($('.modal'))
+    M.FloatingActionButton.init($('.fixed-action-btn'))
+  }
+
+  handleFormUnmount () {
+    this.setState({
+      renderForm: false
+    })
+
+    this.getCharacters()
   }
 
   componentDidMount () {
@@ -101,12 +110,16 @@ class CharacterGrid extends Component {
           }
         </div>
 
-        <div className='fixed-action-btn'>
-          <a className='btn-large red' style={{ display: 'flex' }} onClick={this.handleAdd}>
+        <div className='fixed-action-btn modal-trigger' data-target='character-grid-modal'>
+          <a className='btn-large red' style={{ display: 'flex' }}>
             <i className='large material-icons'>add</i><span>Add Character
             </span>
           </a>
         </div>
+
+        <Modal id='character-grid-modal'>
+          { this.state.renderForm ? <CharacterAddForm token={this.token} seriesID={this.seriesID} unmount={this.handleFormUnmount} /> : null }
+        </Modal>
       </main>
     )
   }
