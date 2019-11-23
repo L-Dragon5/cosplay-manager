@@ -556,6 +556,18 @@ nav .brand-logo {
   max-height: 343px !important;
 }
 
+.outfit--future .card-action {
+  background-color: #a8efc2;
+}
+
+.outfit--unworn .card-action {
+  background-color: #b8e6ff;
+}
+
+.outfit--worn .card-action {
+  background-color: #ffd0e7;
+}
+
 .carousel {
   max-height: 343px;
 }

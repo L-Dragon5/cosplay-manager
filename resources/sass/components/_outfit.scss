@@ -2,6 +2,24 @@
   &__images {
     max-height: 343px !important;
   }
+
+  &--future {
+    & .card-action {
+      background-color:#a8efc2;
+    }
+  }
+
+  &--unworn {
+    & .card-action {
+      background-color: #b8e6ff;
+    }
+  }
+
+  &--worn {
+    & .card-action {
+      background-color: #ffd0e7;
+    }
+  }
 }
 
 .carousel {

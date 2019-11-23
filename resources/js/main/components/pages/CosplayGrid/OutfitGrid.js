@@ -137,6 +137,7 @@ class OutfitGrid extends Component {
                 id={item.id}
                 title={item.title}
                 images={item.images}
+                status={item.status}
                 bought_date={item.bought_date}
                 storage_location={item.storage_location}
                 times_worn={item.times_worn} />

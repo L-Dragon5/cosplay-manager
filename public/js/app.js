@@ -80308,6 +80308,7 @@ function (_Component) {
           id: item.id,
           title: item.title,
           images: item.images,
+          status: item.status,
           bought_date: item.bought_date,
           storage_location: item.storage_location,
           times_worn: item.times_worn
@@ -80629,7 +80630,8 @@ function (_Component) {
     _this = _possibleConstructorReturn(this, _getPrototypeOf(OutfitCard).call(this, props));
     _this.id = props.id !== undefined ? props.id : null;
     _this.title = props.title !== undefined ? props.title : 'Default Title';
-    _this.images = props.images !== undefined && props.images !== null ? props.images : ['https://via.placeholder.com/342', 'https://via.placeholder.com/322'];
+    _this.images = props.images !== undefined && props.images !== null && props.images.length ? props.images : ['https://via.placeholder.com/342', 'https://via.placeholder.com/322'];
+    _this.status = props.status !== undefined && props.status !== null ? props.status : -1;
     _this.bought_date = props.bought_date !== undefined && props.bought_date !== null ? props.bought_date : 'N/A';
     _this.storage_location = props.storage_location !== undefined && props.storage_location !== null ? props.storage_location : 'N/A';
     _this.times_worn = props.times_worn !== undefined && props.times_worn !== null ? props.times_worn : 'N/A';
@@ -80666,8 +80668,18 @@ function (_Component) {
   }, {
     key: "render",
     value: function render() {
+      var statusClass = ''; // 0 = Future Cosplay, 1 = Owned & Unworn, 2 = Worn
+
+      if (this.status === 0) {
+        statusClass = 'outfit--future';
+      } else if (this.status === 1) {
+        statusClass = 'outfit--unworn';
+      } else if (this.status === 2) {
+        statusClass = 'outfit--worn';
+      }
+
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "outfit card medium"
+        className: 'outfit ' + statusClass + ' card medium'
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "outfit__images card-image"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
