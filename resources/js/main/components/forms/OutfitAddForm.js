@@ -61,23 +61,23 @@ class OutfitAddForm extends Component {
 
             <div className='input-field col s12 m6'>
               <input id='title' type='text' name='title' className='validate' required />
-              <label htmlFor='title'>Outfit Title</label>
+              <label htmlFor='title'>Outfit Title *</label>
             </div>
 
             <div className='input-field col s12 m6'>
-              <select>
-                <option value='0' selected>Future Cosplay</option>
+              <select name='status' defaultValue='0'>
+                <option value='0'>Future Cosplay</option>
                 <option value='1'>Owned & Unworn</option>
                 <option value='2'>Worn</option>
               </select>
-              <label>Outfit Status</label>
+              <label>Outfit Status *</label>
             </div>
 
             <div className='input-field col s12'>
               <div className='file-field input-field'>
                 <div className='btn'>
                   <span>Images</span>
-                  <input id='images' type='file' name='images' multiple />
+                  <input id='images' type='file' name='images[]' accept='image/*' multiple />
                 </div>
                 <div className='file-path-wrapper'>
                   <input className='file-path validate' type='text' name='image_text' placeholder='Upload one or more files' />
@@ -96,7 +96,7 @@ class OutfitAddForm extends Component {
             </div>
 
             <div className='input-field col s12 m4'>
-              <textarea id='times_worn' class='materialize-textarea' name='times_worn' />
+              <textarea id='times_worn' className='materialize-textarea' name='times_worn' />
               <label htmlFor='times_worn'>Times Worn</label>
             </div>
 

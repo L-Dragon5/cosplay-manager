@@ -5,7 +5,9 @@ import $ from 'jquery'
 
 // Components
 import Helper from '../../Helper'
+import Modal from '../../Modal'
 import OutfitCard from '../OutfitCard'
+import OutfitAddForm from '../../forms/OutfitAddForm'
 
 class OutfitGrid extends Component {
   constructor (props) {
@@ -14,22 +16,15 @@ class OutfitGrid extends Component {
     this.state = {
       seriesTitle: null,
       characterName: null,
-      outfits: null
+      outfits: null,
+      renderForm: false
     }
 
     this.seriesID = (props.match.params.series !== undefined) ? props.match.params.series : null
     this.characterID = (props.match.params.character !== undefined) ? props.match.params.character : null
     this.token = Helper.getToken()
 
-    this.handleAdd = this.handleAdd.bind(this)
-  }
-
-  handleAdd () {
-    console.log('clicked on add outfit button')
-  }
-
-  handleInit () {
-    M.FloatingActionButton.init($('.fixed-action-btn'))
+    this.handleFormUnmount = this.handleFormUnmount.bind(this)
   }
 
   getSeriesTitle () {
@@ -87,7 +82,8 @@ class OutfitGrid extends Component {
     }).then(response => {
       if (response.data) {
         this.setState({
-          outfits: response.data
+          outfits: response.data,
+          renderForm: true
         })
       }
     }).catch(error => {
@@ -95,6 +91,19 @@ class OutfitGrid extends Component {
         console.error(error.response)
       }
     })
+  }
+
+  handleInit () {
+    M.Modal.init($('.modal'))
+    M.FloatingActionButton.init($('.fixed-action-btn'))
+  }
+
+  handleFormUnmount () {
+    this.setState({
+      renderForm: false
+    })
+
+    this.getOUtfits()
   }
 
   componentDidMount () {
@@ -135,12 +144,16 @@ class OutfitGrid extends Component {
           }
         </div>
 
-        <div className='fixed-action-btn'>
-          <a className='btn-large red' style={{ display: 'flex' }} onClick={this.handleAdd}>
+        <div className='fixed-action-btn modal-trigger' data-target='outfit-grid-modal'>
+          <a className='btn-large red' style={{ display: 'flex' }}>
             <i className='large material-icons'>add</i><span>Add Outfit
             </span>
           </a>
         </div>
+
+        <Modal id='outfit-grid-modal'>
+          { this.state.renderForm ? <OutfitAddForm token={this.token} characterID={this.characterID} unmount={this.handleFormUnmount} /> : null }
+        </Modal>
       </main>
     )
   }

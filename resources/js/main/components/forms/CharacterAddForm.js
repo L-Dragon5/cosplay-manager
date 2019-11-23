@@ -64,7 +64,7 @@ class CharacterAddForm extends Component {
               <div className='file-field input-field'>
                 <div className='btn'>
                   <span>Image</span>
-                  <input id='image' type='file' name='image' />
+                  <input id='image' type='file' name='image' accept='image/*' />
                 </div>
                 <div className='file-path-wrapper'>
                   <input className='file-path validate' type='text' name='image_text' />

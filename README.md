@@ -30,7 +30,7 @@ Styled using Google's Material Design via MaterializeCSS.
     - Name
     - Image
 - Outfit
-  - Add / Edit/ Delete
+  - ~~Add~~ / Edit / Delete
   - Fields:
     - User ID
     - Character ID

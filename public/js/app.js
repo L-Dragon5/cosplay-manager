@@ -79145,7 +79145,8 @@ function (_Component) {
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, "Image"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
         id: "image",
         type: "file",
-        name: "image"
+        name: "image",
+        accept: "image/*"
       })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "file-path-wrapper"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
@@ -79193,6 +79194,243 @@ function (_Component) {
 }(react__WEBPACK_IMPORTED_MODULE_0__["Component"]);
 
 /* harmony default export */ __webpack_exports__["default"] = (CharacterAddForm);
+
+/***/ }),
+
+/***/ "./resources/js/main/components/forms/OutfitAddForm.js":
+/*!*************************************************************!*\
+  !*** ./resources/js/main/components/forms/OutfitAddForm.js ***!
+  \*************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var materialize_css__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! materialize-css */ "./node_modules/materialize-css/dist/js/materialize.js");
+/* harmony import */ var materialize_css__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(materialize_css__WEBPACK_IMPORTED_MODULE_3__);
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+
+
+
+
+
+var OutfitAddForm =
+/*#__PURE__*/
+function (_Component) {
+  _inherits(OutfitAddForm, _Component);
+
+  function OutfitAddForm(props) {
+    var _this;
+
+    _classCallCheck(this, OutfitAddForm);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(OutfitAddForm).call(this, props));
+    _this.token = props.token;
+    _this.characterID = props.characterID;
+    _this.handleSubmit = _this.handleSubmit.bind(_assertThisInitialized(_this));
+    return _this;
+  }
+
+  _createClass(OutfitAddForm, [{
+    key: "handleSubmit",
+    value: function handleSubmit(e) {
+      var _this2 = this;
+
+      e.preventDefault();
+      jquery__WEBPACK_IMPORTED_MODULE_2___default()('.modal-errors').html('').hide();
+      jquery__WEBPACK_IMPORTED_MODULE_2___default()('#modal-loader').show();
+      jquery__WEBPACK_IMPORTED_MODULE_2___default()('#modal-submit').hide();
+      var formData = new FormData(e.target);
+      formData.set('character_id', this.characterID);
+      axios__WEBPACK_IMPORTED_MODULE_1___default.a.post('/api/outfit/create', formData, {
+        headers: {
+          Accept: 'application/json',
+          Authorization: 'Bearer ' + this.token,
+          'content-type': 'multipart/form-data'
+        }
+      }).then(function (response) {
+        if (response.status === 200) {
+          materialize_css__WEBPACK_IMPORTED_MODULE_3___default.a.toast({
+            html: response.data.message
+          });
+          jquery__WEBPACK_IMPORTED_MODULE_2___default()('#modal-close').trigger('click');
+
+          _this2.props.unmount();
+        }
+      })["catch"](function (error) {
+        if (error.response) {
+          var html = '';
+
+          for (var _i = 0, _Object$entries = Object.entries(error.response.data.message); _i < _Object$entries.length; _i++) {
+            var _Object$entries$_i = _slicedToArray(_Object$entries[_i], 2),
+                key = _Object$entries$_i[0],
+                value = _Object$entries$_i[1];
+
+            html += key + ': ' + value + '<br>';
+          }
+
+          jquery__WEBPACK_IMPORTED_MODULE_2___default()('.modal-errors').html(html).show();
+        }
+      }).then(function () {
+        jquery__WEBPACK_IMPORTED_MODULE_2___default()('#modal-loader').hide();
+        jquery__WEBPACK_IMPORTED_MODULE_2___default()('#modal-submit').show();
+      });
+    }
+  }, {
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      materialize_css__WEBPACK_IMPORTED_MODULE_3___default.a.FormSelect.init(jquery__WEBPACK_IMPORTED_MODULE_2___default()('select'));
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "row"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
+        className: "col s12",
+        onSubmit: this.handleSubmit
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "row"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "modal-errors col s12"
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "input-field col s12 m6"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        id: "title",
+        type: "text",
+        name: "title",
+        className: "validate",
+        required: true
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+        htmlFor: "title"
+      }, "Outfit Title *")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "input-field col s12 m6"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("select", {
+        name: "status",
+        defaultValue: "0"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", {
+        value: "0"
+      }, "Future Cosplay"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", {
+        value: "1"
+      }, "Owned & Unworn"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", {
+        value: "2"
+      }, "Worn")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Outfit Status *")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "input-field col s12"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "file-field input-field"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "btn"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, "Images"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        id: "images",
+        type: "file",
+        name: "images[]",
+        accept: "image/*",
+        multiple: true
+      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "file-path-wrapper"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        className: "file-path validate",
+        type: "text",
+        name: "image_text",
+        placeholder: "Upload one or more files"
+      })))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "input-field col s12 m4"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        id: "bought_date",
+        type: "date",
+        name: "bought_date",
+        className: "validate"
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+        htmlFor: "bought_date"
+      }, "Bought Date")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "input-field col s12 m4"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        id: "storage_location",
+        type: "text",
+        name: "storage_location",
+        className: "validate"
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+        htmlFor: "storage_location"
+      }, "Storage Location")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "input-field col s12 m4"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("textarea", {
+        id: "times_worn",
+        className: "materialize-textarea",
+        name: "times_worn"
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+        htmlFor: "times_worn"
+      }, "Times Worn")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "right-align"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        id: "modal-submit",
+        type: "submit",
+        className: "waves-effect waves-green btn"
+      }, "Add"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        id: "modal-loader",
+        style: {
+          display: 'none'
+        },
+        className: "preloader-wrapper small active"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "spinner-layer spinner-green-only"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "circle-clipper left"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "circle"
+      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "gap-patch"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "circle"
+      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "circle-clipper right"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "circle"
+      })))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        id: "modal-close",
+        type: "button",
+        className: "modal-close",
+        style: {
+          display: 'none'
+        }
+      })))));
+    }
+  }]);
+
+  return OutfitAddForm;
+}(react__WEBPACK_IMPORTED_MODULE_0__["Component"]);
+
+/* harmony default export */ __webpack_exports__["default"] = (OutfitAddForm);
 
 /***/ }),
 
@@ -79335,7 +79573,8 @@ function (_Component) {
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, "Image"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
         id: "image",
         type: "file",
-        name: "image"
+        name: "image",
+        accept: "image/*"
       })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "file-path-wrapper"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
@@ -79646,8 +79885,9 @@ function (_Component) {
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Character).call(this, props));
     _this.id = props.id !== undefined ? props.id : null;
     _this.name = props.name !== undefined ? props.name : 'Default Character';
-    _this.image = props.image !== undefined && props.image !== null ? 'storage/' + props.image : 'https://via.placeholder.com/200x400';
+    _this.image = props.image !== undefined && props.image !== null ? '/storage/' + props.image : 'https://via.placeholder.com/200x400';
     _this.seriesID = props.seriesID !== undefined ? props.seriesID : null;
+    _this.outfitCount = props.outfitCount !== undefined ? props.outfitCount + ' Outfits' : '0 Outfits';
     _this.handleClick = _this.handleClick.bind(_assertThisInitialized(_this));
     return _this;
   }
@@ -79669,7 +79909,7 @@ function (_Component) {
         src: this.image
       })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "character__name"
-      }, this.name));
+      }, this.name, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), this.outfitCount));
     }
   }]);
 
@@ -79845,7 +80085,8 @@ function (_Component) {
           id: item.id,
           seriesID: _this4.seriesID,
           name: item.name,
-          image: item.image
+          image: item.image,
+          outfitCount: item.outfit_count
         });
       })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "fixed-action-btn modal-trigger",
@@ -79892,7 +80133,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
 /* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _Helper__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../Helper */ "./resources/js/main/components/Helper.js");
-/* harmony import */ var _OutfitCard__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../OutfitCard */ "./resources/js/main/components/pages/OutfitCard.js");
+/* harmony import */ var _Modal__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../Modal */ "./resources/js/main/components/Modal.js");
+/* harmony import */ var _OutfitCard__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../OutfitCard */ "./resources/js/main/components/pages/OutfitCard.js");
+/* harmony import */ var _forms_OutfitAddForm__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../forms/OutfitAddForm */ "./resources/js/main/components/forms/OutfitAddForm.js");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -79919,6 +80162,8 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 
 
+
+
 var OutfitGrid =
 /*#__PURE__*/
 function (_Component) {
@@ -79933,26 +80178,17 @@ function (_Component) {
     _this.state = {
       seriesTitle: null,
       characterName: null,
-      outfits: null
+      outfits: null,
+      renderForm: false
     };
     _this.seriesID = props.match.params.series !== undefined ? props.match.params.series : null;
     _this.characterID = props.match.params.character !== undefined ? props.match.params.character : null;
     _this.token = _Helper__WEBPACK_IMPORTED_MODULE_4__["default"].getToken();
-    _this.handleAdd = _this.handleAdd.bind(_assertThisInitialized(_this));
+    _this.handleFormUnmount = _this.handleFormUnmount.bind(_assertThisInitialized(_this));
     return _this;
   }
 
   _createClass(OutfitGrid, [{
-    key: "handleAdd",
-    value: function handleAdd() {
-      console.log('clicked on add outfit button');
-    }
-  }, {
-    key: "handleInit",
-    value: function handleInit() {
-      materialize_css__WEBPACK_IMPORTED_MODULE_2___default.a.FloatingActionButton.init(jquery__WEBPACK_IMPORTED_MODULE_3___default()('.fixed-action-btn'));
-    }
-  }, {
     key: "getSeriesTitle",
     value: function getSeriesTitle() {
       var _this2 = this;
@@ -80017,7 +80253,8 @@ function (_Component) {
       }).then(function (response) {
         if (response.data) {
           _this4.setState({
-            outfits: response.data
+            outfits: response.data,
+            renderForm: true
           });
         }
       })["catch"](function (error) {
@@ -80025,6 +80262,20 @@ function (_Component) {
           console.error(error.response);
         }
       });
+    }
+  }, {
+    key: "handleInit",
+    value: function handleInit() {
+      materialize_css__WEBPACK_IMPORTED_MODULE_2___default.a.Modal.init(jquery__WEBPACK_IMPORTED_MODULE_3___default()('.modal'));
+      materialize_css__WEBPACK_IMPORTED_MODULE_2___default.a.FloatingActionButton.init(jquery__WEBPACK_IMPORTED_MODULE_3___default()('.fixed-action-btn'));
+    }
+  }, {
+    key: "handleFormUnmount",
+    value: function handleFormUnmount() {
+      this.setState({
+        renderForm: false
+      });
+      this.getOUtfits();
     }
   }, {
     key: "componentDidMount",
@@ -80052,7 +80303,7 @@ function (_Component) {
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("main", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h5", null, seriesTitle, " - ", characterName), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "outfit-grid"
       }, outfits && outfits.map(function (item, key) {
-        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_OutfitCard__WEBPACK_IMPORTED_MODULE_5__["default"], {
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_OutfitCard__WEBPACK_IMPORTED_MODULE_6__["default"], {
           key: 'o-' + item.id,
           id: item.id,
           title: item.title,
@@ -80062,16 +80313,22 @@ function (_Component) {
           times_worn: item.times_worn
         });
       })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "fixed-action-btn"
+        className: "fixed-action-btn modal-trigger",
+        "data-target": "outfit-grid-modal"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
         className: "btn-large red",
         style: {
           display: 'flex'
-        },
-        onClick: this.handleAdd
+        }
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
         className: "large material-icons"
-      }, "add"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, "Add Outfit"))));
+      }, "add"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, "Add Outfit"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Modal__WEBPACK_IMPORTED_MODULE_5__["default"], {
+        id: "outfit-grid-modal"
+      }, this.state.renderForm ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_forms_OutfitAddForm__WEBPACK_IMPORTED_MODULE_7__["default"], {
+        token: this.token,
+        characterID: this.characterID,
+        unmount: this.handleFormUnmount
+      }) : null));
     }
   }]);
 
@@ -80126,7 +80383,8 @@ function (_Component) {
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Series).call(this, props));
     _this.id = props.id !== undefined ? props.id : null;
     _this.title = props.title !== undefined ? props.title : 'Default Series';
-    _this.image = props.image !== undefined && props.image !== null ? 'storage/' + props.image : 'https://via.placeholder.com/300x200';
+    _this.image = props.image !== undefined && props.image !== null ? '/storage/' + props.image : 'https://via.placeholder.com/300x200';
+    _this.characterCount = props.characterCount !== undefined ? props.characterCount + ' Characters' : '0 Characters';
     _this.handleClick = _this.handleClick.bind(_assertThisInitialized(_this));
     return _this;
   }
@@ -80148,7 +80406,7 @@ function (_Component) {
         src: this.image
       })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "series__title"
-      }, this.title));
+      }, this.title, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), this.characterCount));
     }
   }]);
 
@@ -80292,7 +80550,8 @@ function (_Component) {
           key: 's-' + item.id,
           id: item.id,
           title: item.title,
-          image: item.image
+          image: item.image,
+          characterCount: item.character_count
         });
       })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "fixed-action-btn modal-trigger",

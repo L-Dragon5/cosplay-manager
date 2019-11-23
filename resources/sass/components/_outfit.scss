@@ -7,11 +7,15 @@
 .carousel {
   max-height: 343px;
 
+  & .carousel-item {
+    min-height: initial !important;
+  }
+
   &-item {
     & > img {
       height: 100%;
       width: 100%;
-      object-fit: cover;
+      object-fit: contain;
       object-position: center center;
     }
   }

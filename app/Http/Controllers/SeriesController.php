@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Series;
+use App\Character;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Validator;
@@ -23,6 +24,10 @@ class SeriesController extends Controller
         $user_id = Auth::user()->id;
         $series = Series::where('user_id', $user_id)->orderBy('title', 'ASC')->get();
 
+        foreach ($series as $s) {
+            $s->character_count = Character::where('series_id', '=', $s->id)->count();
+        }
+
         return $series;
     }
 
@@ -36,7 +41,7 @@ class SeriesController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'title' => 'string|required',
-            'image' => 'file|image',
+            'image' => 'file|image|nullable',
         ]);
 
         if($validator->fails()) {

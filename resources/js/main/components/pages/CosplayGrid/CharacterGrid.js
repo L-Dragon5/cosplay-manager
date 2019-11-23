@@ -105,7 +105,7 @@ class CharacterGrid extends Component {
         <div className='character-grid'>
           { characters &&
             characters.map((item, key) => {
-              return <Character key={'c-' + item.id} id={item.id} seriesID={this.seriesID} name={item.name} image={item.image} />
+              return <Character key={'c-' + item.id} id={item.id} seriesID={this.seriesID} name={item.name} image={item.image} outfitCount={item.outfit_count} />
             })
           }
         </div>

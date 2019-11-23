@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Character;
+use App\Outfit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Validator;
@@ -36,6 +37,10 @@ class CharacterController extends Controller
         $user_id = Auth::user()->id;
         $characters = Character::where([['user_id', $user_id], ['series_id', $id]])->orderBy('name', 'ASC')->get();
 
+        foreach ($characters as $c) {
+            $c->outfit_count = Outfit::where('character_id', '=', $c->id)->count();
+        }
+
         return $characters;
     }
 
@@ -47,13 +52,10 @@ class CharacterController extends Controller
      */
     public function store(Request $request)
     {
-        /*
-        id, user_id, series_id, name, image
-        */
         $validator = Validator::make($request->all(), [
             'name' => 'string|required',
             'series_id' => 'integer|required',
-            'image' => 'file|image',
+            'image' => 'file|image|nullable',
         ]);
 
         if($validator->fails()) {

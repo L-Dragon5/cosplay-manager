@@ -560,11 +560,15 @@ nav .brand-logo {
   max-height: 343px;
 }
 
+.carousel .carousel-item {
+  min-height: initial !important;
+}
+
 .carousel-item > img {
   height: 100%;
   width: 100%;
-  -o-object-fit: cover;
-     object-fit: cover;
+  -o-object-fit: contain;
+     object-fit: contain;
   -o-object-position: center center;
      object-position: center center;
 }
