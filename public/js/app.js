@@ -79887,7 +79887,7 @@ function (_Component) {
     _this.name = props.name !== undefined ? props.name : 'Default Character';
     _this.image = props.image !== undefined && props.image !== null ? '/storage/' + props.image : 'https://via.placeholder.com/200x400';
     _this.seriesID = props.seriesID !== undefined ? props.seriesID : null;
-    _this.outfitCount = props.outfitCount !== undefined ? props.outfitCount + ' Outfits' : '0 Outfits';
+    _this.outfitCount = props.outfitCount !== undefined ? props.outfitCount + (props.outfitCount === 1 ? ' Outfit' : ' Outfits') : '0 Outfits';
     _this.handleClick = _this.handleClick.bind(_assertThisInitialized(_this));
     return _this;
   }
@@ -80385,7 +80385,7 @@ function (_Component) {
     _this.id = props.id !== undefined ? props.id : null;
     _this.title = props.title !== undefined ? props.title : 'Default Series';
     _this.image = props.image !== undefined && props.image !== null ? '/storage/' + props.image : 'https://via.placeholder.com/300x200';
-    _this.characterCount = props.characterCount !== undefined ? props.characterCount + ' Characters' : '0 Characters';
+    _this.characterCount = props.characterCount !== undefined ? props.characterCount + (props.characterCount === 1 ? ' Character' : ' Characters') : '0 Characters';
     _this.handleClick = _this.handleClick.bind(_assertThisInitialized(_this));
     return _this;
   }
