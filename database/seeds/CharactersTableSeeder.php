@@ -14,19 +14,22 @@ class CharactersTableSeeder extends Seeder
         DB::table('characters')->insert([
             'user_id' => 1,
             'series_id' => 1,
-            'name' => 'Umi Sonoda'
+            'name' => 'Umi Sonoda',
+            'image' => '200x400.png'
         ]);
 
         DB::table('characters')->insert([
             'user_id' => 1,
             'series_id' => 1,
-            'name' => 'Maki Nishikino'
+            'name' => 'Maki Nishikino',
+            'image' => '200x400.png'
         ]);
 
         DB::table('characters')->insert([
             'user_id' => 1,
             'series_id' => 2,
-            'name' => 'Saber'
+            'name' => 'Saber',
+            'image' => '200x400.png'
         ]);
     }
 }

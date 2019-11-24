@@ -18,7 +18,7 @@ class CreateOutfitsTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('character_id');
             $table->text('title');
-            $table->text('images')->nullable();
+            $table->text('images');
             $table->tinyInteger('status')->default(0); // 0 = future, 1 = owned & unworn, 2 = worn
             $table->date('bought_date')->nullable();
             $table->text('storage_location')->nullable();

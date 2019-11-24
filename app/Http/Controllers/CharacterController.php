@@ -24,6 +24,11 @@ class CharacterController extends Controller
         $user_id = Auth::user()->id;
         $characters = Character::where('user_id', $user_id)->orderBy('name', 'ASC')->get();
 
+        foreach ($characters as $c) {
+            $c->outfit_count = Outfit::where('character_id', '=', $c->id)->count();
+            $c->image = '/storage/' . $c->image;
+        }
+
         return $characters;
     }
 
@@ -40,6 +45,7 @@ class CharacterController extends Controller
 
         foreach ($characters as $c) {
             $c->outfit_count = Outfit::where('character_id', '=', $c->id)->count();
+            $c->image = '/storage/' . $c->image;
         }
 
         return $characters;
@@ -90,6 +96,8 @@ class CharacterController extends Controller
             $img->save(storage_path('app/public/character/' . $filename_to_store), 80);
 
             $character->image = 'character/' . $filename_to_store;
+        } else {
+            $character->image = '200x400.png';
         }
 
         $success = $character->save();
@@ -109,7 +117,14 @@ class CharacterController extends Controller
      */
     public function show($id)
     {
-        $character = Character::find($id);
+        $character = null;
+
+        try {
+            $character = Character::findOrFail($id);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return return_json_message('Invalid character id', 401);
+        }
+        
         return $character;
     }
 
@@ -122,7 +137,83 @@ class CharacterController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'name' => 'string|required',
+            'image' => 'file|image|nullable'
+        ]);
+
+        if($validator->fails()) {
+            return return_json_message($validator->errors(), $this->errorStatus);
+        }
+
+        $user_id = Auth::user()->id;
+
+        try {
+            $character = Character::findOrFail($id);
+
+            if ($character->user_id === $user_id) {
+                // If they want to change name
+                if ($request->has('name')) {
+                    $trimmed_name = trim($request->name);
+
+                    // Check if new name is same as old name
+                    if ($trimmed_name === $character->name) {
+                        // Do nothing
+                    } else if(check_for_duplicate($user_id, $request->name, 'characters', 'name')) {
+                        return return_json_message('Character name already exists.', $this->errorStatus);
+                    } else {
+                        $character->name = $trimmed_name;
+                    }
+                }
+
+                // If they want to change image
+                if ($request->hasFile('image')) {
+                    $filename_with_ext = $request->file('image')->getClientOriginalName();
+                    $filename = pathinfo($filename_with_ext, PATHINFO_FILENAME);
+                    $extension = $request->file('image')->getClientOriginalExtension();
+                    $filename_to_store = $filename . '_' . time() . '.' . $extension;
+        
+                    if (!file_exists(storage_path('app/public/character/'))) {
+                        mkdir(storage_path('app/public/character/'), 666, true);
+                    }
+
+                    // Create new image
+                    $img = Image::make($request->file('image'))->resize(null, 400, function ($constraint) {
+                        $constraint->aspectRatio();
+                    });
+                    $img->save(storage_path('app/public/character/' . $filename_to_store), 80);
+
+                    // Remove old image
+                    $old_image = $character->image;
+                    
+                    // Check if using placeholder image
+                    if ($old_image !== '200x400.png') {
+                        $old_image_path = storage_path('app/public/' . $old_image);
+
+                        if (file_exists($old_image_path)) {
+                            unlink($old_image_path);
+                        }
+                    }
+                    
+
+                    // Store path of new image
+                    $character->image = 'character/' . $filename_to_store;
+                }
+
+                $success = $character->save();
+
+                if ($success) {
+                    $character->image = '/storage/' . $character->image;
+                    return return_json_message('Updated character succesfully', $this->successStatus, ['character' => $character]);
+                } else {
+                    return return_json_message('Something went wrong while trying to update character', 401);
+                }
+            } else {
+                return return_json_message('You do not have permission to edit this character', $this->errorStatus);
+            }
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return return_json_message('Invalid character id', 401);
+        }
     }
 
     /**
@@ -134,18 +225,51 @@ class CharacterController extends Controller
     public function destroy($id)
     {
         $user_id = Auth::user()->id;
-        $character = Character::find($id);
+        $success = false;
 
-        if ($character->user_id === $user_id) {
-            $success = $character->delete();
-        } else {
-            $success = false;
-        }
+        try {
+            $character = Character::findOrFail($id);
 
-        if ($success) {
-            return return_json_message('Deleted character succesfully', $this->successStatus);
-        } else {
-            return return_json_message('Did not find a character to remove', 401);
+            if ($character->user_id === $user_id) {
+                // Delete all images from related outfits
+                $outfits = Outfit::where('character_id', $character->id)->get();
+
+                foreach ($outfits as $outfit) {
+                    $images = explode('||', $outfit->images);
+                    array_shift($images);
+
+                    foreach ($images as $image) {
+                        if ($image !== '300x400.png') {
+                            $image_path = storage_path('app/public/' . $image);
+
+                            if (file_exists($image_path)) {
+                                unlink($image_path);
+                            }
+                        }
+                    }
+                }
+
+                // Delete character image
+                if ($character->image !== '200x400.png') {
+                    $image_path = storage_path('app/public/' . $character->image);
+
+                    if (file_exists($image_path)) {
+                        unlink($image_path);
+                    }
+                }
+
+                $success = $character->delete();
+            } else {
+                return return_json_message('You do not have permission to delete this character', $this->errorStatus);
+            }
+    
+            if ($success) {
+                return return_json_message('Deleted character succesfully', $this->successStatus);
+            } else {
+                return return_json_message('Something went wrong while trying to remove character', 401);
+            }
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return return_json_message('Invalid character id', 401);
         }
     }
 }

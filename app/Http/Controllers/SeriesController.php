@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Series;
 use App\Character;
+use App\Outfit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Validator;
@@ -26,6 +27,7 @@ class SeriesController extends Controller
 
         foreach ($series as $s) {
             $s->character_count = Character::where('series_id', '=', $s->id)->count();
+            $s->image = '/storage/' . $s->image;
         }
 
         return $series;
@@ -74,6 +76,8 @@ class SeriesController extends Controller
             $img->save(storage_path('app/public/series/' . $filename_to_store), 80);
 
             $series->image = 'series/' . $filename_to_store;
+        } else {
+            $series->image = '300x200.png';
         }
 
         $success = $series->save();
@@ -93,7 +97,14 @@ class SeriesController extends Controller
      */
     public function show($id)
     {
-        $series = Series::find($id);
+        $series = null;
+
+        try {
+            $series = Series::findOrFail($id);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return return_json_message('Invalid series id', 401);
+        }
+        
         return $series;
     }
 
@@ -106,7 +117,82 @@ class SeriesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'title' => 'string|required',
+            'image' => 'file|image|nullable'
+        ]);
+
+        if($validator->fails()) {
+            return return_json_message($validator->errors(), $this->errorStatus);
+        }
+
+        $user_id = Auth::user()->id;
+
+        try {
+            $series = Series::findOrFail($id);
+
+            if ($series->user_id === $user_id) {
+                // If they want to change title
+                if ($request->has('title')) {
+                    $trimmed_title = trim($request->title);
+
+                    // Check if new title is same as old title
+                    if ($trimmed_title === $series->title) {
+                        // Do nothing
+                    } else if(check_for_duplicate($user_id, $request->title, 'series', 'title')) {
+                        return return_json_message('Series title already exists.', $this->errorStatus);
+                    } else {
+                        $series->title = $trimmed_title;
+                    }
+                }
+
+                // If they want to change image
+                if ($request->hasFile('image')) {
+                    $filename_with_ext = $request->file('image')->getClientOriginalName();
+                    $filename = pathinfo($filename_with_ext, PATHINFO_FILENAME);
+                    $extension = $request->file('image')->getClientOriginalExtension();
+                    $filename_to_store = $filename . '_' . time() . '.' . $extension;
+        
+                    if (!file_exists(storage_path('app/public/series/'))) {
+                        mkdir(storage_path('app/public/series/'), 666, true);
+                    }
+
+                    // Create new image
+                    $img = Image::make($request->file('image'))->resize(null, 200, function ($constraint) {
+                        $constraint->aspectRatio();
+                    });
+                    $img->save(storage_path('app/public/series/' . $filename_to_store), 80);
+
+                    // Remove old image
+                    $old_image = $series->image;
+                    
+                    // Check if using placeholder image
+                    if ($old_image !== '300x200.png') {
+                        $old_image_path = storage_path('app/public/' . $old_image);
+
+                        if (file_exists($old_image_path)) {
+                            unlink($old_image_path);
+                        }
+                    }
+
+                    // Store path of new image
+                    $series->image = 'series/' . $filename_to_store;
+                }
+
+                $success = $series->save();
+
+                if ($success) {
+                    $series->image = '/storage/' . $series->image;
+                    return return_json_message('Updated series succesfully', $this->successStatus, ['series' => $series]);
+                } else {
+                    return return_json_message('Something went wrong while trying to update series', 401);
+                }
+            } else {
+                return return_json_message('You do not have permission to edit this series', $this->errorStatus);
+            }
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return return_json_message('Invalid series id', 401);
+        }
     }
 
     /**
@@ -118,18 +204,62 @@ class SeriesController extends Controller
     public function destroy($id)
     {
         $user_id = Auth::user()->id;
-        $series = Series::find($id);
 
-        if ($series->user_id === $user_id) {
-            $success = $series->delete();
-        } else {
+        try {
+            $series = Series::findOrFail($id);
             $success = false;
-        }
 
-        if ($success) {
-            return return_json_message('Deleted series succesfully', $this->successStatus);
-        } else {
-            return return_json_message('Did not find a series to remove', 401);
+            if ($series->user_id === $user_id) {
+                // Delete all images from related characters and outfits
+                $characters = Character::where('series_id', $id)->get();
+                foreach ($characters as $character) {
+                    $outfits = Outfit::where('character_id', $character->id)->get();
+
+                    foreach ($outfits as $outfit) {
+                        $images = explode('||', $outfit->images);
+                        array_shift($images);
+
+                        foreach ($images as $image) {
+                            if ($image !== '300x400.png') {
+                                $image_path = storage_path('app/public/' . $image);
+    
+                                if (file_exists($image_path)) {
+                                    unlink($image_path);
+                                }
+                            }
+                        }
+                    }
+
+                    if ($character->image !== '200x400.png') {
+                        $image_path = storage_path('app/public/' . $character->image);
+
+                        if (file_exists($image_path)) {
+                            unlink($image_path);
+                        }
+                    }
+                }
+
+                // Delete series image
+                if ($series->image !== '300x200.png') {
+                    $image_path = storage_path('app/public/' . $series->image);
+
+                    if (file_exists($image_path)) {
+                        unlink($image_path);
+                    }
+                }
+
+                $success = $series->delete();
+            } else {
+                return return_json_message('You do not have permission to delete this series', $this->errorStatus);
+            }
+    
+            if ($success) {
+                return return_json_message('Deleted series succesfully', $this->successStatus);
+            } else {
+                return return_json_message('Something went wrong while trying to remove series', 401);
+            }
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return return_json_message('Invalid series id', 401);
         }
     }
 }

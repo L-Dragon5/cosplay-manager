@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
  */
 if (!function_exists('strip_and_lower')) {
   function strip_and_lower($string) {
-    return strtolower(preg_replace('/[^a-zA-Z0-9-_\.]/', '',$string));
+    return strtolower(preg_replace('/[^a-zA-Z0-9-_\.]/', '', $string));
   }
 }
 
@@ -15,8 +15,14 @@ if (!function_exists('strip_and_lower')) {
  * Return a json encoded message.
  */
 if (!function_exists('return_json_message')) {
-  function return_json_message($message, $statusCode) {
-    return response()->json(['message' => $message], $statusCode);
+  function return_json_message($message, $statusCode, $extraArray = null) {
+    $return = ['message' => $message];
+    
+    if (!empty($extraArray)) {
+      $return = array_merge($return, $extraArray);
+    }
+    
+    return response()->json($return, $statusCode);
   }
 }
 

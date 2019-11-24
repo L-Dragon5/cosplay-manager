@@ -78425,7 +78425,7 @@ function (_Component) {
     key: "passToken",
     value: function passToken(data) {
       if (_components_Helper__WEBPACK_IMPORTED_MODULE_4__["default"].setToken(data)) {
-        window.location.href = '/';
+        window.location.replace('/');
       } else {
         alert('Your browser doesn\'t support the login storage option. Please use an updated browser.');
       }
@@ -79201,6 +79201,212 @@ function (_Component) {
 
 /***/ }),
 
+/***/ "./resources/js/main/components/forms/CharacterEditForm.js":
+/*!*****************************************************************!*\
+  !*** ./resources/js/main/components/forms/CharacterEditForm.js ***!
+  \*****************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var materialize_css__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! materialize-css */ "./node_modules/materialize-css/dist/js/materialize.js");
+/* harmony import */ var materialize_css__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(materialize_css__WEBPACK_IMPORTED_MODULE_3__);
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+
+
+
+
+
+var CharacterEditForm =
+/*#__PURE__*/
+function (_Component) {
+  _inherits(CharacterEditForm, _Component);
+
+  function CharacterEditForm(props) {
+    var _this;
+
+    _classCallCheck(this, CharacterEditForm);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(CharacterEditForm).call(this, props));
+    _this.token = props.token;
+    _this.id = props.id;
+    _this.name = props.name;
+    _this.handleSubmit = _this.handleSubmit.bind(_assertThisInitialized(_this));
+    return _this;
+  }
+
+  _createClass(CharacterEditForm, [{
+    key: "handleSubmit",
+    value: function handleSubmit(e) {
+      var _this2 = this;
+
+      e.preventDefault();
+      jquery__WEBPACK_IMPORTED_MODULE_2___default()('#modal-errors-' + this.id).html('').hide();
+      jquery__WEBPACK_IMPORTED_MODULE_2___default()('#modal-loader-' + this.id).show();
+      jquery__WEBPACK_IMPORTED_MODULE_2___default()('#modal-submit-' + this.id).hide();
+      var formData = new FormData(e.target);
+      axios__WEBPACK_IMPORTED_MODULE_1___default.a.post('/api/character/update/' + this.id, formData, {
+        headers: {
+          Accept: 'application/json',
+          Authorization: 'Bearer ' + this.token,
+          'content-type': 'multipart/form-data'
+        }
+      }).then(function (response) {
+        if (response.status === 200) {
+          materialize_css__WEBPACK_IMPORTED_MODULE_3___default.a.toast({
+            html: response.data.message
+          });
+          jquery__WEBPACK_IMPORTED_MODULE_2___default()('#modal-close-' + _this2.id).trigger('click');
+
+          _this2.props.unmount(JSON.stringify(response.data.character));
+        }
+      })["catch"](function (error) {
+        if (error.response) {
+          var html = '';
+
+          if (Array.isArray(error.response)) {
+            for (var _i = 0, _Object$entries = Object.entries(error.response.data.message); _i < _Object$entries.length; _i++) {
+              var _Object$entries$_i = _slicedToArray(_Object$entries[_i], 2),
+                  key = _Object$entries$_i[0],
+                  value = _Object$entries$_i[1];
+
+              html += key + ': ' + value + '<br>';
+            }
+          } else {
+            html += error.response.data.message;
+          }
+
+          jquery__WEBPACK_IMPORTED_MODULE_2___default()('#modal-errors-' + _this2.id).html(html).show();
+        }
+      }).then(function () {
+        jquery__WEBPACK_IMPORTED_MODULE_2___default()('#modal-loader-' + _this2.id).hide();
+        jquery__WEBPACK_IMPORTED_MODULE_2___default()('#modal-submit-' + _this2.id).show();
+      });
+    }
+  }, {
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      materialize_css__WEBPACK_IMPORTED_MODULE_3___default.a.updateTextFields();
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "row"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
+        className: "col s12",
+        onSubmit: this.handleSubmit
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "row"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        id: 'modal-errors-' + this.id,
+        className: "modal-errors col s12"
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "input-field col s12"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        id: 'name-' + this.id,
+        type: "text",
+        name: "name",
+        className: "validate",
+        defaultValue: this.name,
+        required: true
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+        htmlFor: 'name-' + this.id
+      }, "Name *")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "input-field col s12"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "file-field input-field"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "btn"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, "Image"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        id: 'image-' + this.id,
+        type: "file",
+        name: "image",
+        accept: "image/*"
+      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "file-path-wrapper"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        className: "file-path validate",
+        type: "text",
+        name: "image_text"
+      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+        className: "helper-text"
+      }, "Leave blank to keep image the same."))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "right-align"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        id: 'modal-submit-' + this.id,
+        type: "submit",
+        className: "waves-effect waves-green btn"
+      }, "Save"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        id: 'modal-loader-' + this.id,
+        style: {
+          display: 'none'
+        },
+        className: "preloader-wrapper small active"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "spinner-layer spinner-green-only"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "circle-clipper left"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "circle"
+      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "gap-patch"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "circle"
+      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "circle-clipper right"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "circle"
+      })))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        id: 'modal-close-' + this.id,
+        type: "button",
+        className: "modal-close",
+        style: {
+          display: 'none'
+        }
+      })))));
+    }
+  }]);
+
+  return CharacterEditForm;
+}(react__WEBPACK_IMPORTED_MODULE_0__["Component"]);
+
+/* harmony default export */ __webpack_exports__["default"] = (CharacterEditForm);
+
+/***/ }),
+
 /***/ "./resources/js/main/components/forms/OutfitAddForm.js":
 /*!*************************************************************!*\
   !*** ./resources/js/main/components/forms/OutfitAddForm.js ***!
@@ -79637,6 +79843,212 @@ function (_Component) {
 
 /***/ }),
 
+/***/ "./resources/js/main/components/forms/SeriesEditForm.js":
+/*!**************************************************************!*\
+  !*** ./resources/js/main/components/forms/SeriesEditForm.js ***!
+  \**************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var materialize_css__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! materialize-css */ "./node_modules/materialize-css/dist/js/materialize.js");
+/* harmony import */ var materialize_css__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(materialize_css__WEBPACK_IMPORTED_MODULE_3__);
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+
+
+
+
+
+var SeriesEditForm =
+/*#__PURE__*/
+function (_Component) {
+  _inherits(SeriesEditForm, _Component);
+
+  function SeriesEditForm(props) {
+    var _this;
+
+    _classCallCheck(this, SeriesEditForm);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(SeriesEditForm).call(this, props));
+    _this.token = props.token;
+    _this.id = props.id;
+    _this.title = props.title;
+    _this.handleSubmit = _this.handleSubmit.bind(_assertThisInitialized(_this));
+    return _this;
+  }
+
+  _createClass(SeriesEditForm, [{
+    key: "handleSubmit",
+    value: function handleSubmit(e) {
+      var _this2 = this;
+
+      e.preventDefault();
+      jquery__WEBPACK_IMPORTED_MODULE_2___default()('#modal-errors-' + this.id).html('').hide();
+      jquery__WEBPACK_IMPORTED_MODULE_2___default()('#modal-loader-' + this.id).show();
+      jquery__WEBPACK_IMPORTED_MODULE_2___default()('#modal-submit-' + this.id).hide();
+      var formData = new FormData(e.target);
+      axios__WEBPACK_IMPORTED_MODULE_1___default.a.post('/api/series/update/' + this.id, formData, {
+        headers: {
+          Accept: 'application/json',
+          Authorization: 'Bearer ' + this.token,
+          'content-type': 'multipart/form-data'
+        }
+      }).then(function (response) {
+        if (response.status === 200) {
+          materialize_css__WEBPACK_IMPORTED_MODULE_3___default.a.toast({
+            html: response.data.message
+          });
+          jquery__WEBPACK_IMPORTED_MODULE_2___default()('#modal-close-' + _this2.id).trigger('click');
+
+          _this2.props.unmount(JSON.stringify(response.data.series));
+        }
+      })["catch"](function (error) {
+        if (error.response) {
+          var html = '';
+
+          if (Array.isArray(error.response)) {
+            for (var _i = 0, _Object$entries = Object.entries(error.response.data.message); _i < _Object$entries.length; _i++) {
+              var _Object$entries$_i = _slicedToArray(_Object$entries[_i], 2),
+                  key = _Object$entries$_i[0],
+                  value = _Object$entries$_i[1];
+
+              html += key + ': ' + value + '<br>';
+            }
+          } else {
+            html += error.response.data.message;
+          }
+
+          jquery__WEBPACK_IMPORTED_MODULE_2___default()('#modal-errors-' + _this2.id).html(html).show();
+        }
+      }).then(function () {
+        jquery__WEBPACK_IMPORTED_MODULE_2___default()('#modal-loader-' + _this2.id).hide();
+        jquery__WEBPACK_IMPORTED_MODULE_2___default()('#modal-submit-' + _this2.id).show();
+      });
+    }
+  }, {
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      materialize_css__WEBPACK_IMPORTED_MODULE_3___default.a.updateTextFields();
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "row"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
+        className: "col s12",
+        onSubmit: this.handleSubmit
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "row"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        id: 'modal-errors-' + this.id,
+        className: "modal-errors col s12"
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "input-field col s12"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        id: 'title-' + this.id,
+        type: "text",
+        name: "title",
+        className: "validate",
+        defaultValue: this.title,
+        required: true
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+        htmlFor: 'title-' + this.id
+      }, "Title *")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "input-field col s12"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "file-field input-field"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "btn"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, "Image"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        id: 'image-' + this.id,
+        type: "file",
+        name: "image",
+        accept: "image/*"
+      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "file-path-wrapper"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        className: "file-path validate",
+        type: "text",
+        name: "image_text"
+      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+        className: "helper-text"
+      }, "Leave blank to keep image the same."))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "right-align"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        id: 'modal-submit-' + this.id,
+        type: "submit",
+        className: "waves-effect waves-green btn"
+      }, "Save"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        id: 'modal-loader-' + this.id,
+        style: {
+          display: 'none'
+        },
+        className: "preloader-wrapper small active"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "spinner-layer spinner-green-only"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "circle-clipper left"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "circle"
+      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "gap-patch"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "circle"
+      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "circle-clipper right"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "circle"
+      })))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        id: 'modal-close-' + this.id,
+        type: "button",
+        className: "modal-close",
+        style: {
+          display: 'none'
+        }
+      })))));
+    }
+  }]);
+
+  return SeriesEditForm;
+}(react__WEBPACK_IMPORTED_MODULE_0__["Component"]);
+
+/* harmony default export */ __webpack_exports__["default"] = (SeriesEditForm);
+
+/***/ }),
+
 /***/ "./resources/js/main/components/include/Navbar.js":
 /*!********************************************************!*\
   !*** ./resources/js/main/components/include/Navbar.js ***!
@@ -79868,6 +80280,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var materialize_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! materialize-css */ "./node_modules/materialize-css/dist/js/materialize.js");
 /* harmony import */ var materialize_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(materialize_css__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _Modal__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../Modal */ "./resources/js/main/components/Modal.js");
+/* harmony import */ var _forms_CharacterEditForm__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../forms/CharacterEditForm */ "./resources/js/main/components/forms/CharacterEditForm.js");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
@@ -79898,6 +80314,9 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 
 
+
+
+
 var Character =
 /*#__PURE__*/
 function (_Component) {
@@ -79910,17 +80329,17 @@ function (_Component) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Character).call(this, props));
     _this.state = {
-      visible: true
+      visible: true,
+      name: props.name !== undefined ? props.name : 'ERROR',
+      image: props.image
     };
     _this.token = props.token;
     _this.id = props.id !== undefined ? props.id : null;
-    _this.name = props.name !== undefined ? props.name : 'Default Character';
-    _this.image = props.image !== undefined && props.image !== null ? '/storage/' + props.image : 'https://via.placeholder.com/200x400';
     _this.seriesID = props.seriesID !== undefined ? props.seriesID : null;
     _this.outfitCount = props.outfitCount !== undefined ? props.outfitCount + (props.outfitCount === 1 ? ' Outfit' : ' Outfits') : '0 Outfits';
     _this.handleClick = _this.handleClick.bind(_assertThisInitialized(_this));
-    _this.handleEdit = _this.handleEdit.bind(_assertThisInitialized(_this));
     _this.handleDelete = _this.handleDelete.bind(_assertThisInitialized(_this));
+    _this.handleFormUnmount = _this.handleFormUnmount.bind(_assertThisInitialized(_this));
     return _this;
   }
 
@@ -79930,19 +80349,13 @@ function (_Component) {
       window.location.href = '/s-' + this.seriesID + '/c-' + this.id;
     }
   }, {
-    key: "handleEdit",
-    value: function handleEdit(e) {
-      e.stopPropagation();
-      console.log('clicked on edit button for id: ' + this.id);
-    }
-  }, {
     key: "handleDelete",
     value: function handleDelete(e) {
       var _this2 = this;
 
       e.stopPropagation();
 
-      if (confirm('Are you sure you want to delete this character [' + this.name + ']? This will delete all outfits in this character and is not reversible.')) {
+      if (confirm('Are you sure you want to delete this character [' + this.state.name + ']? This will delete all outfits in this character and is not reversible.')) {
         var answer = prompt('Please enter DELETE to confirm.');
 
         if (answer === 'DELETE') {
@@ -79991,35 +80404,82 @@ function (_Component) {
       }
     }
   }, {
+    key: "handleInit",
+    value: function handleInit() {
+      materialize_css__WEBPACK_IMPORTED_MODULE_2___default.a.Modal.init(jquery__WEBPACK_IMPORTED_MODULE_3___default()('.modal'));
+    }
+  }, {
+    key: "handleFormUnmount",
+    value: function handleFormUnmount(data) {
+      var obj = JSON.parse(data);
+
+      if (obj) {
+        this.setState({
+          name: obj.name,
+          image: obj.image
+        });
+      }
+    }
+  }, {
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      window.addEventListener('DOMContentLoaded', this.handleInit);
+
+      if (document.readyState !== 'loading') {
+        this.handleInit();
+      }
+    }
+  }, {
+    key: "componentWillUnmount",
+    value: function componentWillUnmount() {
+      window.removeEventListener('DOMContentLoaded', this.handleInit);
+    }
+  }, {
     key: "render",
     value: function render() {
       if (this.state.visible) {
-        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-          className: "character",
-          onClick: this.handleClick
-        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-          className: "character__image"
-        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-          src: this.image
-        })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-          className: "character__name"
-        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-          className: "character__icon",
-          onClick: this.handleEdit
-        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
-          className: "btn-flat teal lighten-2"
-        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
-          className: "material-icons"
-        }, "edit"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-          className: "character__name__text"
-        }, this.name, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), this.outfitCount), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-          className: "character__icon",
-          onClick: this.handleDelete
-        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
-          className: "btn-flat red lighten-2"
-        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
-          className: "material-icons"
-        }, "delete")))));
+        var modalName = 'series-single-modal-' + this.id;
+
+        if (this.state.name && this.state.image) {
+          return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0___default.a.Fragment, null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+            className: "character",
+            onClick: this.handleClick
+          }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+            className: "character__image"
+          }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
+            src: this.state.image
+          })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+            className: "character__name"
+          }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+            className: "character__icon modal-trigger",
+            "data-target": modalName,
+            onClick: function onClick(e) {
+              return e.stopPropagation();
+            }
+          }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+            className: "btn-flat teal lighten-2"
+          }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+            className: "material-icons"
+          }, "edit"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+            className: "character__name__text"
+          }, this.state.name, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), this.outfitCount), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+            className: "character__icon",
+            onClick: this.handleDelete
+          }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+            className: "btn-flat red lighten-2"
+          }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+            className: "material-icons"
+          }, "delete"))))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Modal__WEBPACK_IMPORTED_MODULE_4__["default"], {
+            id: modalName
+          }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_forms_CharacterEditForm__WEBPACK_IMPORTED_MODULE_5__["default"], {
+            token: this.token,
+            id: this.id,
+            name: this.state.name,
+            unmount: this.handleFormUnmount
+          })));
+        } else {
+          return null;
+        }
       } else {
         return null;
       }
@@ -80568,6 +81028,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var materialize_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! materialize-css */ "./node_modules/materialize-css/dist/js/materialize.js");
 /* harmony import */ var materialize_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(materialize_css__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _Modal__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../Modal */ "./resources/js/main/components/Modal.js");
+/* harmony import */ var _forms_SeriesEditForm__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../forms/SeriesEditForm */ "./resources/js/main/components/forms/SeriesEditForm.js");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
@@ -80598,6 +81062,9 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 
 
+
+
+
 var Series =
 /*#__PURE__*/
 function (_Component) {
@@ -80610,16 +81077,16 @@ function (_Component) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Series).call(this, props));
     _this.state = {
-      visible: true
+      visible: true,
+      title: props.title !== undefined ? props.title : 'ERROR',
+      image: props.image
     };
     _this.token = props.token;
     _this.id = props.id !== undefined ? props.id : null;
-    _this.title = props.title !== undefined ? props.title : 'Default Series';
-    _this.image = props.image !== undefined && props.image !== null ? '/storage/' + props.image : 'https://via.placeholder.com/300x200';
     _this.characterCount = props.characterCount !== undefined ? props.characterCount + (props.characterCount === 1 ? ' Character' : ' Characters') : '0 Characters';
     _this.handleClick = _this.handleClick.bind(_assertThisInitialized(_this));
-    _this.handleEdit = _this.handleEdit.bind(_assertThisInitialized(_this));
     _this.handleDelete = _this.handleDelete.bind(_assertThisInitialized(_this));
+    _this.handleFormUnmount = _this.handleFormUnmount.bind(_assertThisInitialized(_this));
     return _this;
   }
 
@@ -80629,19 +81096,13 @@ function (_Component) {
       window.location.href = '/s-' + this.id;
     }
   }, {
-    key: "handleEdit",
-    value: function handleEdit(e) {
-      e.stopPropagation();
-      console.log('clicked on edit button for id: ' + this.id);
-    }
-  }, {
     key: "handleDelete",
     value: function handleDelete(e) {
       var _this2 = this;
 
       e.stopPropagation();
 
-      if (confirm('Are you sure you want to delete this series [' + this.title + ']? This will delete all characters and outfit in this series and is not reversible.')) {
+      if (confirm('Are you sure you want to delete this series [' + this.state.title + ']? This will delete all characters and outfit in this series and is not reversible.')) {
         var answer = prompt('Please enter DELETE to confirm.');
 
         if (answer === 'DELETE') {
@@ -80690,35 +81151,82 @@ function (_Component) {
       }
     }
   }, {
+    key: "handleInit",
+    value: function handleInit() {
+      materialize_css__WEBPACK_IMPORTED_MODULE_2___default.a.Modal.init(jquery__WEBPACK_IMPORTED_MODULE_3___default()('.modal'));
+    }
+  }, {
+    key: "handleFormUnmount",
+    value: function handleFormUnmount(data) {
+      var obj = JSON.parse(data);
+
+      if (obj) {
+        this.setState({
+          title: obj.title,
+          image: obj.image
+        });
+      }
+    }
+  }, {
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      window.addEventListener('DOMContentLoaded', this.handleInit);
+
+      if (document.readyState !== 'loading') {
+        this.handleInit();
+      }
+    }
+  }, {
+    key: "componentWillUnmount",
+    value: function componentWillUnmount() {
+      window.removeEventListener('DOMContentLoaded', this.handleInit);
+    }
+  }, {
     key: "render",
     value: function render() {
       if (this.state.visible) {
-        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-          className: "series",
-          onClick: this.handleClick
-        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-          className: "series__image"
-        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-          src: this.image
-        })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-          className: "series__title"
-        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-          className: "series__icon",
-          onClick: this.handleEdit
-        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
-          className: "btn-flat teal lighten-2"
-        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
-          className: "material-icons"
-        }, "edit"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-          className: "series__title__text"
-        }, this.title, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), this.characterCount), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-          className: "series__icon",
-          onClick: this.handleDelete
-        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
-          className: "btn-flat red lighten-2"
-        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
-          className: "material-icons"
-        }, "delete")))));
+        var modalName = 'series-single-modal-' + this.id;
+
+        if (this.state.title && this.state.image) {
+          return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0___default.a.Fragment, null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+            className: "series",
+            onClick: this.handleClick
+          }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+            className: "series__image"
+          }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
+            src: this.state.image
+          })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+            className: "series__title"
+          }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+            className: "series__icon modal-trigger",
+            "data-target": modalName,
+            onClick: function onClick(e) {
+              return e.stopPropagation();
+            }
+          }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+            className: "btn-flat teal lighten-2"
+          }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+            className: "material-icons"
+          }, "edit"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+            className: "series__title__text"
+          }, this.state.title, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), this.characterCount), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+            className: "series__icon",
+            onClick: this.handleDelete
+          }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+            className: "btn-flat red lighten-2"
+          }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+            className: "material-icons"
+          }, "delete"))))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Modal__WEBPACK_IMPORTED_MODULE_4__["default"], {
+            id: modalName
+          }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_forms_SeriesEditForm__WEBPACK_IMPORTED_MODULE_5__["default"], {
+            token: this.token,
+            id: this.id,
+            title: this.state.title,
+            unmount: this.handleFormUnmount
+          })));
+        } else {
+          return null;
+        }
       } else {
         return null;
       }
@@ -80934,8 +81442,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var materialize_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! materialize-css */ "./node_modules/materialize-css/dist/js/materialize.js");
 /* harmony import */ var materialize_css__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(materialize_css__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
-/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_3__);
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
@@ -80966,6 +81476,7 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 
 
+
 var OutfitCard =
 /*#__PURE__*/
 function (_Component) {
@@ -80978,16 +81489,16 @@ function (_Component) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(OutfitCard).call(this, props));
     _this.state = {
-      visible: true
+      visible: true,
+      title: props.title !== undefined ? props.title : 'ERROR',
+      images: props.images,
+      status: props.status !== undefined && props.status !== null ? props.status : -1,
+      bought_date: props.bought_date !== undefined && props.bought_date !== null ? props.bought_date : 'N/A',
+      storage_location: props.storage_location !== undefined && props.storage_location !== null ? props.storage_location : 'N/A',
+      times_worn: props.times_worn !== undefined && props.times_worn !== null ? props.times_worn : 'N/A'
     };
     _this.token = props.token;
     _this.id = props.id !== undefined ? props.id : null;
-    _this.title = props.title !== undefined ? props.title : 'Default Title';
-    _this.images = props.images !== undefined && props.images !== null && props.images.length ? props.images : ['https://via.placeholder.com/342', 'https://via.placeholder.com/322'];
-    _this.status = props.status !== undefined && props.status !== null ? props.status : -1;
-    _this.bought_date = props.bought_date !== undefined && props.bought_date !== null ? props.bought_date : 'N/A';
-    _this.storage_location = props.storage_location !== undefined && props.storage_location !== null ? props.storage_location : 'N/A';
-    _this.times_worn = props.times_worn !== undefined && props.times_worn !== null ? props.times_worn : 'N/A';
     _this.handleEdit = _this.handleEdit.bind(_assertThisInitialized(_this));
     _this.handleDelete = _this.handleDelete.bind(_assertThisInitialized(_this));
     return _this;
@@ -80996,7 +81507,7 @@ function (_Component) {
   _createClass(OutfitCard, [{
     key: "handleInit",
     value: function handleInit() {
-      materialize_css__WEBPACK_IMPORTED_MODULE_1___default.a.Carousel.init(jquery__WEBPACK_IMPORTED_MODULE_2___default()('.carousel'), {
+      materialize_css__WEBPACK_IMPORTED_MODULE_1___default.a.Carousel.init(jquery__WEBPACK_IMPORTED_MODULE_3___default()('.carousel'), {
         fullWidth: true,
         indicators: true,
         noWrap: true
@@ -81019,7 +81530,7 @@ function (_Component) {
         var answer = prompt('Please enter DELETE to confirm.');
 
         if (answer === 'DELETE') {
-          axios.get('/api/outfit/destroy/' + this.id, {
+          axios__WEBPACK_IMPORTED_MODULE_2___default.a.get('/api/outfit/destroy/' + this.id, {
             headers: {
               Accept: 'application/json',
               Authorization: 'Bearer ' + this.token,
@@ -81086,11 +81597,11 @@ function (_Component) {
     value: function render() {
       var statusClass = ''; // 0 = Future Cosplay, 1 = Owned & Unworn, 2 = Worn
 
-      if (this.status === 0) {
+      if (this.state.status === 0) {
         statusClass = 'outfit--future';
-      } else if (this.status === 1) {
+      } else if (this.state.status === 1) {
         statusClass = 'outfit--unworn';
-      } else if (this.status === 2) {
+      } else if (this.state.status === 2) {
         statusClass = 'outfit--worn';
       }
 
@@ -81101,7 +81612,7 @@ function (_Component) {
           className: "outfit__images card-image"
         }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
           className: "carousel carousel-slider"
-        }, this.images.map(function (item, i) {
+        }, this.state.images.map(function (item, i) {
           var url = '#' + i + '!';
           return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
             key: i,
@@ -81122,7 +81633,7 @@ function (_Component) {
           className: "material-icons"
         }, "edit"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
           className: "activator"
-        }, this.title), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        }, this.state.title), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
           className: "outfit__icon",
           onClick: this.handleDelete
         }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
@@ -81133,9 +81644,9 @@ function (_Component) {
           className: "card-reveal"
         }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
           className: "card-title grey-text text-darken-4"
-        }, this.title, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+        }, this.state.title, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
           className: "material-icons right"
-        }, "close")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("ul", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("strong", null, "Bought Date:"), " ", this.bought_date), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("strong", null, "Storage Location:"), " ", this.storage_location), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("strong", null, "Times Worn:"), " ", this.times_worn))));
+        }, "close")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("ul", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("strong", null, "Bought Date:"), " ", this.state.bought_date), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("strong", null, "Storage Location:"), " ", this.state.storage_location), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("strong", null, "Times Worn:"), " ", this.state.times_worn))));
       } else {
         return null;
       }

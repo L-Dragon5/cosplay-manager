@@ -18,7 +18,7 @@ class CreateCharactersTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('series_id');
             $table->text('name');
-            $table->text('image')->nullable();
+            $table->text('image');
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('series_id')->references('id')->on('series')->onDelete('cascade');

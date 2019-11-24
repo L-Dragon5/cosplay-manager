@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import M from 'materialize-css'
+import axios from 'axios'
 import $ from 'jquery'
 
 class OutfitCard extends Component {
@@ -7,18 +8,17 @@ class OutfitCard extends Component {
     super(props)
 
     this.state = {
-      visible: true
+      visible: true,
+      title: (props.title !== undefined) ? props.title : 'ERROR',
+      images: props.images,
+      status: (props.status !== undefined && props.status !== null) ? props.status : -1,
+      bought_date: (props.bought_date !== undefined && props.bought_date !== null) ? props.bought_date : 'N/A',
+      storage_location: (props.storage_location !== undefined && props.storage_location !== null) ? props.storage_location : 'N/A',
+      times_worn: (props.times_worn !== undefined && props.times_worn !== null) ? props.times_worn : 'N/A'
     }
 
     this.token = props.token
-
     this.id = (props.id !== undefined) ? props.id : null
-    this.title = (props.title !== undefined) ? props.title : 'Default Title'
-    this.images = (props.images !== undefined && props.images !== null && props.images.length) ? props.images : ['https://via.placeholder.com/342', 'https://via.placeholder.com/322']
-    this.status = (props.status !== undefined && props.status !== null) ? props.status : -1
-    this.bought_date = (props.bought_date !== undefined && props.bought_date !== null) ? props.bought_date : 'N/A'
-    this.storage_location = (props.storage_location !== undefined && props.storage_location !== null) ? props.storage_location : 'N/A'
-    this.times_worn = (props.times_worn !== undefined && props.times_worn !== null) ? props.times_worn : 'N/A'
 
     this.handleEdit = this.handleEdit.bind(this)
     this.handleDelete = this.handleDelete.bind(this)
@@ -35,7 +35,7 @@ class OutfitCard extends Component {
 
   handleDelete (e) {
     e.stopPropagation()
-    
+
     if (confirm('Are you sure you want to delete this outfit [' + this.title + ']? This action is not reversible.')) {
       const answer = prompt('Please enter DELETE to confirm.')
 
@@ -90,11 +90,11 @@ class OutfitCard extends Component {
   render () {
     let statusClass = ''
     // 0 = Future Cosplay, 1 = Owned & Unworn, 2 = Worn
-    if (this.status === 0) {
+    if (this.state.status === 0) {
       statusClass = 'outfit--future'
-    } else if (this.status === 1) {
+    } else if (this.state.status === 1) {
       statusClass = 'outfit--unworn'
-    } else if (this.status === 2) {
+    } else if (this.state.status === 2) {
       statusClass = 'outfit--worn'
     }
 
@@ -103,7 +103,7 @@ class OutfitCard extends Component {
         <div className={'outfit ' + statusClass + ' card medium'}>
           <div className='outfit__images card-image'>
             <div className='carousel carousel-slider'>
-              {this.images.map((item, i) => {
+              {this.state.images.map((item, i) => {
                 const url = '#' + i + '!'
                 return (<a key={i} className='carousel-item' href={url}><img src={item} className='activator' /></a>)
               })}
@@ -115,7 +115,7 @@ class OutfitCard extends Component {
               <a className='btn-flat teal lighten-2'><i className='material-icons'>edit</i></a>
             </div>
 
-            <span className='activator'>{this.title}</span>
+            <span className='activator'>{this.state.title}</span>
 
             <div className='outfit__icon' onClick={this.handleDelete}>
               <a className='btn-flat red lighten-2'><i className='material-icons'>delete</i></a>
@@ -123,11 +123,11 @@ class OutfitCard extends Component {
           </div>
 
           <div className='card-reveal'>
-            <span className='card-title grey-text text-darken-4'>{this.title}<i className='material-icons right'>close</i></span>
+            <span className='card-title grey-text text-darken-4'>{this.state.title}<i className='material-icons right'>close</i></span>
             <ul>
-              <li><strong>Bought Date:</strong> {this.bought_date}</li>
-              <li><strong>Storage Location:</strong> {this.storage_location}</li>
-              <li><strong>Times Worn:</strong> {this.times_worn}</li>
+              <li><strong>Bought Date:</strong> {this.state.bought_date}</li>
+              <li><strong>Storage Location:</strong> {this.state.storage_location}</li>
+              <li><strong>Times Worn:</strong> {this.state.times_worn}</li>
             </ul>
           </div>
         </div>

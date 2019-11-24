@@ -136,6 +136,8 @@ class OutfitController extends Controller
 
                 $outfit->images .= '||outfit/' . $filename_to_store;
             }
+        } else {
+            $outfit->image = '||300x400.png';
         }
 
         $success = $outfit->save();
@@ -181,18 +183,38 @@ class OutfitController extends Controller
     public function destroy($id)
     {
         $user_id = Auth::user()->id;
-        $outfit = Outfit::find($id);
+        $success = false;
 
-        if ($outfit->user_id === $user_id) {
-            $success = $outfit->delete();
-        } else {
-            $success = false;
-        }
+        try {
+            $outfit = Outfit::findOrFail($id);
 
-        if ($success) {
-            return return_json_message('Deleted outfit succesfully', $this->successStatus);
-        } else {
-            return return_json_message('Did not find a outfit to remove', 401);
+            if ($outfit->user_id === $user_id) {
+                // Delete outfit images
+                $images = explode('||', $outfit->images);
+                array_shift($images);
+
+                foreach ($images as $image) {
+                    if ($image !== '300x400.png') {
+                        $image_path = storage_path('app/public/' . $image);
+
+                        if (file_exists($image_path)) {
+                            unlink($image_path);
+                        }
+                    }
+                }
+                
+                $success = $outfit->delete();
+            } else {
+                return return_json_message('You do not have permission to delete this outfit', $this->errorStatus);
+            }
+    
+            if ($success) {
+                return return_json_message('Deleted outfit succesfully', $this->successStatus);
+            } else {
+                return return_json_message('Did not find a outfit to remove', 401);
+            }
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return return_json_message('Invalid outfit id', 401);
         }
     }
 }

@@ -15,7 +15,7 @@ class LoginPage extends Component {
 
   passToken (data) {
     if (Helper.setToken(data)) {
-      window.location.href = '/'
+      window.location.replace('/')
     } else {
       alert('Your browser doesn\'t support the login storage option. Please use an updated browser.')
     }
