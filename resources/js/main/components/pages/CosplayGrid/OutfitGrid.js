@@ -45,7 +45,17 @@ class OutfitGrid extends Component {
       }
     }).catch(error => {
       if (error.response) {
-        console.error(error.response)
+        let html = ''
+
+        if (Array.isArray(error.response)) {
+          for (const [key, value] of Object.entries(error.response.data.message)) {
+            html += key + ': ' + value + '<br>'
+          }
+        } else {
+          html += error.response.data.message
+        }
+
+        M.toast({ html: html })
       }
     })
   }
@@ -68,7 +78,17 @@ class OutfitGrid extends Component {
       }
     }).catch(error => {
       if (error.response) {
-        console.error(error.response)
+        let html = ''
+
+        if (Array.isArray(error.response)) {
+          for (const [key, value] of Object.entries(error.response.data.message)) {
+            html += key + ': ' + value + '<br>'
+          }
+        } else {
+          html += error.response.data.message
+        }
+
+        M.toast({ html: html })
       }
     })
   }
@@ -88,7 +108,17 @@ class OutfitGrid extends Component {
       }
     }).catch(error => {
       if (error.response) {
-        console.error(error.response)
+        let html = ''
+
+        if (Array.isArray(error.response)) {
+          for (const [key, value] of Object.entries(error.response.data.message)) {
+            html += key + ': ' + value + '<br>'
+          }
+        } else {
+          html += error.response.data.message
+        }
+
+        M.toast({ html: html })
       }
     })
   }

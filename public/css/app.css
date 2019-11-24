@@ -426,6 +426,12 @@ nav .brand-logo {
   }
 }
 
+.modal-errors {
+  background-color: lightpink;
+  margin-bottom: 1rem;
+  min-height: 0px !important;
+}
+
 .series-grid {
   display: -webkit-box;
   display: flex;

@@ -50,9 +50,13 @@ class SeriesController extends Controller
 
         $user_id = Auth::user()->id;
 
+        if (check_for_duplicate($user_id, $request->title, 'series', 'title')) {
+            return return_json_message('Series already exists with this title', $this->errorStatus);
+        }
+
         $series = new Series;
         $series->user_id = $user_id;
-        $series->title = $request->title;
+        $series->title = trim($request->title);
 
         if ($request->hasFile('image')) {
             $filename_with_ext = $request->file('image')->getClientOriginalName();

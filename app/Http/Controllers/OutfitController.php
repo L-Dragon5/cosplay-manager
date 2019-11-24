@@ -89,10 +89,14 @@ class OutfitController extends Controller
 
         $user_id = Auth::user()->id;
 
+        if (check_for_duplicate($user_id, $request->title, 'outfits', 'title')) {
+            return return_json_message('Outfit already exists with this title', $this->errorStatus);
+        }
+
         $outfit = new Outfit;
         $outfit->user_id = $user_id;
         $outfit->character_id = $request->character_id;
-        $outfit->title = $request->title;
+        $outfit->title = trim($request->title);
         $outfit->status = $request->status;
         $outfit->bought_date = $request->bought_date;
         $outfit->storage_location = $request->storage_location;

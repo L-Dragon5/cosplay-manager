@@ -1,0 +1,7 @@
+.modal {
+  &-errors {
+    background-color: lightpink;
+    margin-bottom: 1rem;
+    min-height: 0px !important;
+  }
+}

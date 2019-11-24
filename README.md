@@ -17,20 +17,20 @@ Styled using Google's Material Design via MaterializeCSS.
 ## To-Do
 - Style similar to Idol Tomodachi Site
 - Series
-  - ~~Add~~ / Edit / Delete
+  - ~~Add~~ / Edit / ~~Delete~~
   - Fields:
     - User ID
     - Title
     - Image
 - Character
-  - ~~Add~~ / Edit / Delete
+  - ~~Add~~ / Edit / ~~Delete~~
   - Fields:
     - User ID
     - Series ID
     - Name
     - Image
 - Outfit
-  - ~~Add~~ / Edit / Delete
+  - ~~Add~~ / Edit / ~~Delete~~
   - Fields:
     - User ID
     - Character ID

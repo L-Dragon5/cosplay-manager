@@ -55,10 +55,16 @@ class OutfitCard extends Component {
           }
         }).catch((error) => {
           if (error.response) {
-            var html = ''
-            for (const [key, value] of Object.entries(error.response.data.message)) {
-              html += key + ': ' + value + '<br>'
+            let html = ''
+
+            if (Array.isArray(error.response)) {
+              for (const [key, value] of Object.entries(error.response.data.message)) {
+                html += key + ': ' + value + '<br>'
+              }
+            } else {
+              html += error.response.data.message
             }
+
             M.toast({ html: html })
           }
         })

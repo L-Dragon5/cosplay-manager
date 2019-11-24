@@ -65,10 +65,14 @@ class CharacterController extends Controller
 
         $user_id = Auth::user()->id;
 
+        if (check_for_duplicate($user_id, $request->name, 'characters', 'name')) {
+            return return_json_message('Character already exists with this name', $this->errorStatus);
+        }
+
         $character = new Character;
         $character->user_id = $user_id;
         $character->series_id = $request->series_id;
-        $character->name = $request->name;
+        $character->name = trim($request->name);
 
         if ($request->hasFile('image')) {
             $filename_with_ext = $request->file('image')->getClientOriginalName();
