@@ -80,7 +80,13 @@ class SeriesGrid extends Component {
         <div className='series-grid'>
           { series &&
             series.map((item, key) => {
-              return <Series key={'s-' + item.id} id={item.id} title={item.title} image={item.image} characterCount={item.character_count} />
+              return <Series
+                key={'s-' + item.id}
+                token={this.token}
+                id={item.id}
+                title={item.title}
+                image={item.image}
+                characterCount={item.character_count} />
             })
           }
         </div>

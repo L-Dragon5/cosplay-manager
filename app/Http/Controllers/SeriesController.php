@@ -84,10 +84,10 @@ class SeriesController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Series  $series
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id, Series $series)
+    public function show($id)
     {
         $series = Series::find($id);
         return $series;
@@ -97,10 +97,10 @@ class SeriesController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Series  $series
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Series $series)
+    public function update(Request $request, $id)
     {
         //
     }
@@ -108,11 +108,24 @@ class SeriesController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Series  $series
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Series $series)
+    public function destroy($id)
     {
-        //
+        $user_id = Auth::user()->id;
+        $series = Series::find($id);
+
+        if ($series->user_id === $user_id) {
+            $success = $series->delete();
+        } else {
+            $success = false;
+        }
+
+        if ($success) {
+            return return_json_message('Deleted series succesfully', $this->successStatus);
+        } else {
+            return return_json_message('Did not find a series to remove', 401);
+        }
     }
 }

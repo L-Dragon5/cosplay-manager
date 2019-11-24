@@ -30,6 +30,7 @@ class CharacterController extends Controller
     /**
      * Display a listing of the resource by series.
      *
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function indexBySeries($id)
@@ -99,10 +100,10 @@ class CharacterController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Character  $character
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id, Character $character)
+    public function show($id)
     {
         $character = Character::find($id);
         return $character;
@@ -112,10 +113,10 @@ class CharacterController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Character  $character
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Character $character)
+    public function update(Request $request, $id)
     {
         //
     }
@@ -123,11 +124,24 @@ class CharacterController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Character  $character
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Character $character)
+    public function destroy($id)
     {
-        //
+        $user_id = Auth::user()->id;
+        $character = Character::find($id);
+
+        if ($character->user_id === $user_id) {
+            $success = $character->delete();
+        } else {
+            $success = false;
+        }
+
+        if ($success) {
+            return return_json_message('Deleted character succesfully', $this->successStatus);
+        } else {
+            return return_json_message('Did not find a character to remove', 401);
+        }
     }
 }

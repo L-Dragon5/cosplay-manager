@@ -103,7 +103,7 @@ class OutfitGrid extends Component {
       renderForm: false
     })
 
-    this.getOUtfits()
+    this.getOutfits()
   }
 
   componentDidMount () {
@@ -134,6 +134,7 @@ class OutfitGrid extends Component {
             outfits.map((item, key) => {
               return <OutfitCard
                 key={'o-' + item.id}
+                token={this.token}
                 id={item.id}
                 title={item.title}
                 images={item.images}

@@ -41,6 +41,7 @@ class OutfitController extends Controller
     /**
      * Display a listing of the resource by character.
      *
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function indexByCharacter($id)
@@ -145,10 +146,10 @@ class OutfitController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Outfit  $outfit
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Outfit $outfit)
+    public function show($id)
     {
         /*
         id, user_id, character_id, title, images, status, bought_date, storage_location, times_worn
@@ -159,10 +160,10 @@ class OutfitController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Outfit  $outfit
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Outfit $outfit)
+    public function update(Request $request, $id)
     {
         //
     }
@@ -170,11 +171,24 @@ class OutfitController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Outfit  $outfit
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Outfit $outfit)
+    public function destroy($id)
     {
-        //
+        $user_id = Auth::user()->id;
+        $outfit = Outfit::find($id);
+
+        if ($outfit->user_id === $user_id) {
+            $success = $outfit->delete();
+        } else {
+            $success = false;
+        }
+
+        if ($success) {
+            return return_json_message('Deleted outfit succesfully', $this->successStatus);
+        } else {
+            return return_json_message('Did not find a outfit to remove', 401);
+        }
     }
 }

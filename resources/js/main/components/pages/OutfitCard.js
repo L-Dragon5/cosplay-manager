@@ -6,6 +6,12 @@ class OutfitCard extends Component {
   constructor (props) {
     super(props)
 
+    this.state = {
+      visible: true
+    }
+
+    this.token = props.token
+
     this.id = (props.id !== undefined) ? props.id : null
     this.title = (props.title !== undefined) ? props.title : 'Default Title'
     this.images = (props.images !== undefined && props.images !== null && props.images.length) ? props.images : ['https://via.placeholder.com/342', 'https://via.placeholder.com/322']
@@ -29,7 +35,37 @@ class OutfitCard extends Component {
 
   handleDelete (e) {
     e.stopPropagation()
-    console.log('clicked on delete button for id: ' + this.id)
+    
+    if (confirm('Are you sure you want to delete this outfit [' + this.title + ']? This action is not reversible.')) {
+      const answer = prompt('Please enter DELETE to confirm.')
+
+      if (answer === 'DELETE') {
+        axios.get('/api/outfit/destroy/' + this.id, {
+          headers: {
+            Accept: 'application/json',
+            Authorization: 'Bearer ' + this.token,
+            'content-type': 'multipart/form-data'
+          }
+        }).then((response) => {
+          if (response.status === 200) {
+            M.toast({ html: response.data.message })
+            this.setState({
+              visible: false
+            })
+          }
+        }).catch((error) => {
+          if (error.response) {
+            var html = ''
+            for (const [key, value] of Object.entries(error.response.data.message)) {
+              html += key + ': ' + value + '<br>'
+            }
+            M.toast({ html: html })
+          }
+        })
+      } else {
+        M.toast({ html: 'Deletion cancelled' })
+      }
+    }
   }
 
   componentDidMount () {
@@ -56,39 +92,43 @@ class OutfitCard extends Component {
       statusClass = 'outfit--worn'
     }
 
-    return (
-      <div className={'outfit ' + statusClass + ' card medium'}>
-        <div className='outfit__images card-image'>
-          <div className='carousel carousel-slider'>
-            {this.images.map((item, i) => {
-              const url = '#' + i + '!'
-              return (<a key={i} className='carousel-item' href={url}><img src={item} className='activator' /></a>)
-            })}
-          </div>
-        </div>
-
-        <div className='card-action'>
-          <div className='outfit__icon' onClick={this.handleEdit}>
-            <a className='btn-flat teal lighten-2'><i className='material-icons'>edit</i></a>
+    if (this.state.visible) {
+      return (
+        <div className={'outfit ' + statusClass + ' card medium'}>
+          <div className='outfit__images card-image'>
+            <div className='carousel carousel-slider'>
+              {this.images.map((item, i) => {
+                const url = '#' + i + '!'
+                return (<a key={i} className='carousel-item' href={url}><img src={item} className='activator' /></a>)
+              })}
+            </div>
           </div>
 
-          <span className='activator'>{this.title}</span>
+          <div className='card-action'>
+            <div className='outfit__icon' onClick={this.handleEdit}>
+              <a className='btn-flat teal lighten-2'><i className='material-icons'>edit</i></a>
+            </div>
 
-          <div className='outfit__icon' onClick={this.handleDelete}>
-            <a className='btn-flat red lighten-2'><i className='material-icons'>delete</i></a>
+            <span className='activator'>{this.title}</span>
+
+            <div className='outfit__icon' onClick={this.handleDelete}>
+              <a className='btn-flat red lighten-2'><i className='material-icons'>delete</i></a>
+            </div>
+          </div>
+
+          <div className='card-reveal'>
+            <span className='card-title grey-text text-darken-4'>{this.title}<i className='material-icons right'>close</i></span>
+            <ul>
+              <li><strong>Bought Date:</strong> {this.bought_date}</li>
+              <li><strong>Storage Location:</strong> {this.storage_location}</li>
+              <li><strong>Times Worn:</strong> {this.times_worn}</li>
+            </ul>
           </div>
         </div>
-
-        <div className='card-reveal'>
-          <span className='card-title grey-text text-darken-4'>{this.title}<i className='material-icons right'>close</i></span>
-          <ul>
-            <li><strong>Bought Date:</strong> {this.bought_date}</li>
-            <li><strong>Storage Location:</strong> {this.storage_location}</li>
-            <li><strong>Times Worn:</strong> {this.times_worn}</li>
-          </ul>
-        </div>
-      </div>
-    )
+      )
+    } else {
+      return null
+    }
   }
 }
 

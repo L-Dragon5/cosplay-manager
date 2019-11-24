@@ -79852,7 +79852,19 @@ function (_Component) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var materialize_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! materialize-css */ "./node_modules/materialize-css/dist/js/materialize.js");
+/* harmony import */ var materialize_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(materialize_css__WEBPACK_IMPORTED_MODULE_2__);
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -79872,6 +79884,8 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 
 
+
+
 var Character =
 /*#__PURE__*/
 function (_Component) {
@@ -79883,6 +79897,10 @@ function (_Component) {
     _classCallCheck(this, Character);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Character).call(this, props));
+    _this.state = {
+      visible: true
+    };
+    _this.token = props.token;
     _this.id = props.id !== undefined ? props.id : null;
     _this.name = props.name !== undefined ? props.name : 'Default Character';
     _this.image = props.image !== undefined && props.image !== null ? '/storage/' + props.image : 'https://via.placeholder.com/200x400';
@@ -79908,38 +79926,87 @@ function (_Component) {
   }, {
     key: "handleDelete",
     value: function handleDelete(e) {
+      var _this2 = this;
+
       e.stopPropagation();
-      console.log('clicked on delete button for id: ' + this.id);
+
+      if (confirm('Are you sure you want to delete this character [' + this.name + ']? This will delete all outfits in this character and is not reversible.')) {
+        var answer = prompt('Please enter DELETE to confirm.');
+
+        if (answer === 'DELETE') {
+          axios__WEBPACK_IMPORTED_MODULE_1___default.a.get('/api/character/destroy/' + this.id, {
+            headers: {
+              Accept: 'application/json',
+              Authorization: 'Bearer ' + this.token,
+              'content-type': 'multipart/form-data'
+            }
+          }).then(function (response) {
+            if (response.status === 200) {
+              materialize_css__WEBPACK_IMPORTED_MODULE_2___default.a.toast({
+                html: response.data.message
+              });
+
+              _this2.setState({
+                visible: false
+              });
+            }
+          })["catch"](function (error) {
+            if (error.response) {
+              var html = '';
+
+              for (var _i = 0, _Object$entries = Object.entries(error.response.data.message); _i < _Object$entries.length; _i++) {
+                var _Object$entries$_i = _slicedToArray(_Object$entries[_i], 2),
+                    key = _Object$entries$_i[0],
+                    value = _Object$entries$_i[1];
+
+                html += key + ': ' + value + '<br>';
+              }
+
+              materialize_css__WEBPACK_IMPORTED_MODULE_2___default.a.toast({
+                html: html
+              });
+            }
+          });
+        } else {
+          materialize_css__WEBPACK_IMPORTED_MODULE_2___default.a.toast({
+            html: 'Deletion cancelled'
+          });
+        }
+      }
     }
   }, {
     key: "render",
     value: function render() {
-      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "character",
-        onClick: this.handleClick
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "character__image"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-        src: this.image
-      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "character__name"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "character__icon",
-        onClick: this.handleEdit
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
-        className: "btn-flat teal lighten-2"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
-        className: "material-icons"
-      }, "edit"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "character__name__text"
-      }, this.name, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), this.outfitCount), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "character__icon",
-        onClick: this.handleDelete
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
-        className: "btn-flat red lighten-2"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
-        className: "material-icons"
-      }, "delete")))));
+      if (this.state.visible) {
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          className: "character",
+          onClick: this.handleClick
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          className: "character__image"
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
+          src: this.image
+        })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          className: "character__name"
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          className: "character__icon",
+          onClick: this.handleEdit
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+          className: "btn-flat teal lighten-2"
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+          className: "material-icons"
+        }, "edit"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          className: "character__name__text"
+        }, this.name, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), this.outfitCount), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          className: "character__icon",
+          onClick: this.handleDelete
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+          className: "btn-flat red lighten-2"
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+          className: "material-icons"
+        }, "delete")))));
+      } else {
+        return null;
+      }
     }
   }]);
 
@@ -80112,6 +80179,7 @@ function (_Component) {
       }, characters && characters.map(function (item, key) {
         return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Character__WEBPACK_IMPORTED_MODULE_6__["default"], {
           key: 'c-' + item.id,
+          token: _this4.token,
           id: item.id,
           seriesID: _this4.seriesID,
           name: item.name,
@@ -80305,7 +80373,7 @@ function (_Component) {
       this.setState({
         renderForm: false
       });
-      this.getOUtfits();
+      this.getOutfits();
     }
   }, {
     key: "componentDidMount",
@@ -80327,6 +80395,8 @@ function (_Component) {
   }, {
     key: "render",
     value: function render() {
+      var _this5 = this;
+
       var outfits = this.state.outfits;
       var seriesTitle = this.state.seriesTitle;
       var characterName = this.state.characterName;
@@ -80335,6 +80405,7 @@ function (_Component) {
       }, outfits && outfits.map(function (item, key) {
         return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_OutfitCard__WEBPACK_IMPORTED_MODULE_6__["default"], {
           key: 'o-' + item.id,
+          token: _this5.token,
           id: item.id,
           title: item.title,
           images: item.images,
@@ -80381,7 +80452,19 @@ function (_Component) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var materialize_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! materialize-css */ "./node_modules/materialize-css/dist/js/materialize.js");
+/* harmony import */ var materialize_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(materialize_css__WEBPACK_IMPORTED_MODULE_2__);
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -80401,6 +80484,8 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 
 
+
+
 var Series =
 /*#__PURE__*/
 function (_Component) {
@@ -80412,6 +80497,10 @@ function (_Component) {
     _classCallCheck(this, Series);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Series).call(this, props));
+    _this.state = {
+      visible: true
+    };
+    _this.token = props.token;
     _this.id = props.id !== undefined ? props.id : null;
     _this.title = props.title !== undefined ? props.title : 'Default Series';
     _this.image = props.image !== undefined && props.image !== null ? '/storage/' + props.image : 'https://via.placeholder.com/300x200';
@@ -80436,38 +80525,87 @@ function (_Component) {
   }, {
     key: "handleDelete",
     value: function handleDelete(e) {
+      var _this2 = this;
+
       e.stopPropagation();
-      console.log('clicked on delete button for id: ' + this.id);
+
+      if (confirm('Are you sure you want to delete this series [' + this.title + ']? This will delete all characters and outfit in this series and is not reversible.')) {
+        var answer = prompt('Please enter DELETE to confirm.');
+
+        if (answer === 'DELETE') {
+          axios__WEBPACK_IMPORTED_MODULE_1___default.a.get('/api/series/destroy/' + this.id, {
+            headers: {
+              Accept: 'application/json',
+              Authorization: 'Bearer ' + this.token,
+              'content-type': 'multipart/form-data'
+            }
+          }).then(function (response) {
+            if (response.status === 200) {
+              materialize_css__WEBPACK_IMPORTED_MODULE_2___default.a.toast({
+                html: response.data.message
+              });
+
+              _this2.setState({
+                visible: false
+              });
+            }
+          })["catch"](function (error) {
+            if (error.response) {
+              var html = '';
+
+              for (var _i = 0, _Object$entries = Object.entries(error.response.data.message); _i < _Object$entries.length; _i++) {
+                var _Object$entries$_i = _slicedToArray(_Object$entries[_i], 2),
+                    key = _Object$entries$_i[0],
+                    value = _Object$entries$_i[1];
+
+                html += key + ': ' + value + '<br>';
+              }
+
+              materialize_css__WEBPACK_IMPORTED_MODULE_2___default.a.toast({
+                html: html
+              });
+            }
+          });
+        } else {
+          materialize_css__WEBPACK_IMPORTED_MODULE_2___default.a.toast({
+            html: 'Deletion cancelled'
+          });
+        }
+      }
     }
   }, {
     key: "render",
     value: function render() {
-      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "series",
-        onClick: this.handleClick
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "series__image"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-        src: this.image
-      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "series__title"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "series__icon",
-        onClick: this.handleEdit
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
-        className: "btn-flat teal lighten-2"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
-        className: "material-icons"
-      }, "edit"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "series__title__text"
-      }, this.title, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), this.characterCount), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "series__icon",
-        onClick: this.handleDelete
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
-        className: "btn-flat red lighten-2"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
-        className: "material-icons"
-      }, "delete")))));
+      if (this.state.visible) {
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          className: "series",
+          onClick: this.handleClick
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          className: "series__image"
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
+          src: this.image
+        })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          className: "series__title"
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          className: "series__icon",
+          onClick: this.handleEdit
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+          className: "btn-flat teal lighten-2"
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+          className: "material-icons"
+        }, "edit"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          className: "series__title__text"
+        }, this.title, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), this.characterCount), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          className: "series__icon",
+          onClick: this.handleDelete
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+          className: "btn-flat red lighten-2"
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+          className: "material-icons"
+        }, "delete")))));
+      } else {
+        return null;
+      }
     }
   }]);
 
@@ -80603,12 +80741,15 @@ function (_Component) {
   }, {
     key: "render",
     value: function render() {
+      var _this3 = this;
+
       var series = this.state.series;
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("main", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h5", null, "Series"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "series-grid"
       }, series && series.map(function (item, key) {
         return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Series__WEBPACK_IMPORTED_MODULE_6__["default"], {
           key: 's-' + item.id,
+          token: _this3.token,
           id: item.id,
           title: item.title,
           image: item.image,
@@ -80657,6 +80798,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_2__);
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -80688,6 +80837,10 @@ function (_Component) {
     _classCallCheck(this, OutfitCard);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(OutfitCard).call(this, props));
+    _this.state = {
+      visible: true
+    };
+    _this.token = props.token;
     _this.id = props.id !== undefined ? props.id : null;
     _this.title = props.title !== undefined ? props.title : 'Default Title';
     _this.images = props.images !== undefined && props.images !== null && props.images.length ? props.images : ['https://via.placeholder.com/342', 'https://via.placeholder.com/322'];
@@ -80718,19 +80871,64 @@ function (_Component) {
   }, {
     key: "handleDelete",
     value: function handleDelete(e) {
+      var _this2 = this;
+
       e.stopPropagation();
-      console.log('clicked on delete button for id: ' + this.id);
+
+      if (confirm('Are you sure you want to delete this outfit [' + this.title + ']? This action is not reversible.')) {
+        var answer = prompt('Please enter DELETE to confirm.');
+
+        if (answer === 'DELETE') {
+          axios.get('/api/outfit/destroy/' + this.id, {
+            headers: {
+              Accept: 'application/json',
+              Authorization: 'Bearer ' + this.token,
+              'content-type': 'multipart/form-data'
+            }
+          }).then(function (response) {
+            if (response.status === 200) {
+              materialize_css__WEBPACK_IMPORTED_MODULE_1___default.a.toast({
+                html: response.data.message
+              });
+
+              _this2.setState({
+                visible: false
+              });
+            }
+          })["catch"](function (error) {
+            if (error.response) {
+              var html = '';
+
+              for (var _i = 0, _Object$entries = Object.entries(error.response.data.message); _i < _Object$entries.length; _i++) {
+                var _Object$entries$_i = _slicedToArray(_Object$entries[_i], 2),
+                    key = _Object$entries$_i[0],
+                    value = _Object$entries$_i[1];
+
+                html += key + ': ' + value + '<br>';
+              }
+
+              materialize_css__WEBPACK_IMPORTED_MODULE_1___default.a.toast({
+                html: html
+              });
+            }
+          });
+        } else {
+          materialize_css__WEBPACK_IMPORTED_MODULE_1___default.a.toast({
+            html: 'Deletion cancelled'
+          });
+        }
+      }
     }
   }, {
     key: "componentDidMount",
     value: function componentDidMount() {
-      var _this2 = this;
+      var _this3 = this;
 
       window.addEventListener('DOMContentLoaded', this.handleInit);
 
       if (document.readyState !== 'loading') {
         setTimeout(function () {
-          _this2.handleInit();
+          _this3.handleInit();
         }, 50);
       }
     }
@@ -80752,47 +80950,51 @@ function (_Component) {
         statusClass = 'outfit--worn';
       }
 
-      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: 'outfit ' + statusClass + ' card medium'
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "outfit__images card-image"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "carousel carousel-slider"
-      }, this.images.map(function (item, i) {
-        var url = '#' + i + '!';
-        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
-          key: i,
-          className: "carousel-item",
-          href: url
-        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-          src: item,
+      if (this.state.visible) {
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          className: 'outfit ' + statusClass + ' card medium'
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          className: "outfit__images card-image"
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          className: "carousel carousel-slider"
+        }, this.images.map(function (item, i) {
+          var url = '#' + i + '!';
+          return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+            key: i,
+            className: "carousel-item",
+            href: url
+          }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
+            src: item,
+            className: "activator"
+          }));
+        }))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          className: "card-action"
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          className: "outfit__icon",
+          onClick: this.handleEdit
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+          className: "btn-flat teal lighten-2"
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+          className: "material-icons"
+        }, "edit"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
           className: "activator"
-        }));
-      }))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "card-action"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "outfit__icon",
-        onClick: this.handleEdit
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
-        className: "btn-flat teal lighten-2"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
-        className: "material-icons"
-      }, "edit"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
-        className: "activator"
-      }, this.title), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "outfit__icon",
-        onClick: this.handleDelete
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
-        className: "btn-flat red lighten-2"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
-        className: "material-icons"
-      }, "delete")))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "card-reveal"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
-        className: "card-title grey-text text-darken-4"
-      }, this.title, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
-        className: "material-icons right"
-      }, "close")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("ul", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("strong", null, "Bought Date:"), " ", this.bought_date), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("strong", null, "Storage Location:"), " ", this.storage_location), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("strong", null, "Times Worn:"), " ", this.times_worn))));
+        }, this.title), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          className: "outfit__icon",
+          onClick: this.handleDelete
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+          className: "btn-flat red lighten-2"
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+          className: "material-icons"
+        }, "delete")))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          className: "card-reveal"
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+          className: "card-title grey-text text-darken-4"
+        }, this.title, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+          className: "material-icons right"
+        }, "close")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("ul", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("strong", null, "Bought Date:"), " ", this.bought_date), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("strong", null, "Storage Location:"), " ", this.storage_location), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("strong", null, "Times Worn:"), " ", this.times_worn))));
+      } else {
+        return null;
+      }
     }
   }]);
 
