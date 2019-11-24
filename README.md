@@ -15,20 +15,6 @@ Styled using Google's Material Design via MaterializeCSS.
 - php artisan storage:link
 
 ## To-Do
-- Style similar to Idol Tomodachi Site
-- Series
-  - ~~Add~~ / Edit / ~~Delete~~
-  - Fields:
-    - User ID
-    - Title
-    - Image
-- Character
-  - ~~Add~~ / Edit / ~~Delete~~
-  - Fields:
-    - User ID
-    - Series ID
-    - Name
-    - Image
 - Outfit
   - ~~Add~~ / Edit / ~~Delete~~
   - Fields:
@@ -40,5 +26,7 @@ Styled using Google's Material Design via MaterializeCSS.
     - Bought Date
     - Storage Location
     - Times Worn
-- ~~Upload images~~
 - All Cosplays View (w/ search and filter)
+- ~~Series~~
+- ~~Character~~
+- ~~Upload images~~
