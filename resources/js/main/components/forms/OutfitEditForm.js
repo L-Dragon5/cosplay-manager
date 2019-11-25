@@ -61,6 +61,9 @@ class OutfitEditForm extends Component {
   componentDidMount () {
     M.updateTextFields()
     M.FormSelect.init($('select'))
+    M.Datepicker.init($('.datepicker'), {
+      format: 'yyyy-mm-dd'
+    })
   }
 
   render () {
@@ -104,7 +107,7 @@ class OutfitEditForm extends Component {
             </div>
 
             <div className='input-field col s12 m4'>
-              <input id={'bought-date-' + this.id} type='date' name='bought_date' className='validate' defaultValue={this.bought_date} />
+              <input id={'bought-date-' + this.id} type='text' name='bought_date' className='datepicker validate' defaultValue={this.bought_date} />
               <label htmlFor={'bought-date-' + this.id}>Bought Date</label>
             </div>
 

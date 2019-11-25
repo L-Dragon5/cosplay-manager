@@ -79547,6 +79547,9 @@ function (_Component) {
     key: "componentDidMount",
     value: function componentDidMount() {
       materialize_css__WEBPACK_IMPORTED_MODULE_3___default.a.FormSelect.init(jquery__WEBPACK_IMPORTED_MODULE_2___default()('select'));
+      materialize_css__WEBPACK_IMPORTED_MODULE_3___default.a.Datepicker.init(jquery__WEBPACK_IMPORTED_MODULE_2___default()('.datepicker'), {
+        format: 'yyyy-mm-dd'
+      });
     }
   }, {
     key: "render",
@@ -79614,9 +79617,9 @@ function (_Component) {
         className: "input-field col s12 m4"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
         id: "bought_date",
-        type: "date",
+        type: "text",
         name: "bought_date",
-        className: "validate"
+        className: "datepicker validate"
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
         htmlFor: "bought_date"
       }, "Bought Date")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -79803,6 +79806,9 @@ function (_Component) {
     value: function componentDidMount() {
       materialize_css__WEBPACK_IMPORTED_MODULE_3___default.a.updateTextFields();
       materialize_css__WEBPACK_IMPORTED_MODULE_3___default.a.FormSelect.init(jquery__WEBPACK_IMPORTED_MODULE_2___default()('select'));
+      materialize_css__WEBPACK_IMPORTED_MODULE_3___default.a.Datepicker.init(jquery__WEBPACK_IMPORTED_MODULE_2___default()('.datepicker'), {
+        format: 'yyyy-mm-dd'
+      });
     }
   }, {
     key: "render",
@@ -79872,9 +79878,9 @@ function (_Component) {
         className: "input-field col s12 m4"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
         id: 'bought-date-' + this.id,
-        type: "date",
+        type: "text",
         name: "bought_date",
-        className: "validate",
+        className: "datepicker validate",
         defaultValue: this.bought_date
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
         htmlFor: 'bought-date-' + this.id

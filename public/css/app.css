@@ -432,6 +432,14 @@ nav .brand-logo {
   min-height: 0px !important;
 }
 
+.datepicker-modal {
+  width: 90%;
+}
+
+.datepicker-controls .select-month input {
+  width: 80px;
+}
+
 .series-grid {
   display: grid;
   grid-gap: 20px 10px;
