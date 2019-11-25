@@ -56,7 +56,7 @@ class LoginPage extends Component {
             <div className='row'>
               <div className='col s12'>
                 <h4>Welcome to CosManage</h4>
-                <p>An easy to use manager for planning cosplays.</p>
+                <p>An easy to use website for planning cosplays and managing cosplays you own.</p>
               </div>
             </div>
 
