@@ -61,9 +61,9 @@ class SeriesController extends Controller
         $series->title = trim($request->title);
 
         if ($request->hasFile('image')) {
-            $series->image = save_image_uploaded($request->file('image'), 200, 'series');
+            $series->image = save_image_uploaded($request->file('image'), 'series', 200);
         } else if ($request->has('image_url') && !empty($request->image_url)) {
-            $series->image = save_image_url($request->image_url, 200, 'series');
+            $series->image = save_image_url($request->image_url, 'series', 200);
         } else {
             $series->image = '300x200.png';
         }

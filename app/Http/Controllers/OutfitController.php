@@ -106,9 +106,9 @@ class OutfitController extends Controller
         $outfit->times_worn = $request->times_worn;
 
         if ($request->hasFile('images')) {
-            $outfit->images = save_image_uploaded($request->file('images'), 'outfit', 400, $outfit->images);
+            $outfit->images = save_image_uploaded($request->file('images'), 'outfit', 400);
         } else if ($request->has('image_url') && !empty($request->image_url)) {
-            $outfit->images = save_image_url($request->image_url, 'outfit', 400, $outfit->images);
+            $outfit->images = save_image_url($request->image_url, 'outfit', 400);
         } else {
             $outfit->images = '||300x400.png';
         }

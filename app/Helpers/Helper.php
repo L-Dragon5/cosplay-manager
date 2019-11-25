@@ -84,7 +84,7 @@ if (!function_exists('save_image_uploaded')) {
   function save_image_uploaded($file, $location, $height, $old_image_path = null) {
     // Create directory if it doesn't exist
     if (!file_exists(storage_path("app/public/$location/"))) {
-      mkdir(storage_path("app/public/$location/"), 666, true);
+      mkdir(storage_path("app/public/$location/"), 775, true);
     }
 
     // Set return value
@@ -181,7 +181,7 @@ if (!function_exists('save_image_url')) {
   function save_image_url($url, $location, $height, $old_image_path = null) {
     // Create directory if it doesn't exist
     if (!file_exists(storage_path("app/public/$location/"))) {
-      mkdir(storage_path("app/public/$location/"), 666, true);
+      mkdir(storage_path("app/public/$location/"), 775, true);
     }
 
     // Set return value

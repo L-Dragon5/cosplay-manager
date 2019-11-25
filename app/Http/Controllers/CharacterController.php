@@ -81,9 +81,9 @@ class CharacterController extends Controller
         $character->name = trim($request->name);
 
         if ($request->hasFile('image')) {
-            $character->image = save_image_uploaded($request->file('image'), 400, 'character');
+            $character->image = save_image_uploaded($request->file('image'), 'character', 400);
         } else if ($request->has('image_url') && !empty($request->image_url)) {
-            $character->image = save_image_url($request->image_url, 400, 'character');
+            $character->image = save_image_url($request->image_url, 'character', 400);
         } else {
             $character->image = '200x400.png';
         }
