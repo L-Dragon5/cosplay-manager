@@ -8,7 +8,6 @@ use App\Outfit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Validator;
-use Intervention\Image\Facades\Image;
 
 class SeriesController extends Controller
 {
@@ -61,21 +60,9 @@ class SeriesController extends Controller
         $series->title = trim($request->title);
 
         if ($request->hasFile('image')) {
-            $filename_with_ext = $request->file('image')->getClientOriginalName();
-            $filename = pathinfo($filename_with_ext, PATHINFO_FILENAME);
-            $extension = $request->file('image')->getClientOriginalExtension();
-            $filename_to_store = $filename . '_' . time() . '.' . $extension;
-
-            if (!file_exists(storage_path('app/public/series/'))) {
-                mkdir(storage_path('app/public/series/'), 666, true);
-            }
-
-            $img = Image::make($request->file('image'))->resize(null, 200, function ($constraint) {
-                $constraint->aspectRatio();
-            });
-            $img->save(storage_path('app/public/series/' . $filename_to_store), 80);
-
-            $series->image = 'series/' . $filename_to_store;
+            $series->image = save_image_uploaded($request->file('image'), 200, 'series');
+        } else if ($request->has('image_url')) {
+            $series->image = save_image_url($request->image_url, 200, 'series');
         } else {
             $series->image = '300x200.png';
         }
@@ -148,35 +135,9 @@ class SeriesController extends Controller
 
                 // If they want to change image
                 if ($request->hasFile('image')) {
-                    $filename_with_ext = $request->file('image')->getClientOriginalName();
-                    $filename = pathinfo($filename_with_ext, PATHINFO_FILENAME);
-                    $extension = $request->file('image')->getClientOriginalExtension();
-                    $filename_to_store = $filename . '_' . time() . '.' . $extension;
-        
-                    if (!file_exists(storage_path('app/public/series/'))) {
-                        mkdir(storage_path('app/public/series/'), 666, true);
-                    }
-
-                    // Create new image
-                    $img = Image::make($request->file('image'))->resize(null, 200, function ($constraint) {
-                        $constraint->aspectRatio();
-                    });
-                    $img->save(storage_path('app/public/series/' . $filename_to_store), 80);
-
-                    // Remove old image
-                    $old_image = $series->image;
-                    
-                    // Check if using placeholder image
-                    if ($old_image !== '300x200.png') {
-                        $old_image_path = storage_path('app/public/' . $old_image);
-
-                        if (file_exists($old_image_path)) {
-                            unlink($old_image_path);
-                        }
-                    }
-
-                    // Store path of new image
-                    $series->image = 'series/' . $filename_to_store;
+                    $series->image = save_image_uploaded($request->file('image'), 'series', 200, $series->image);
+                } else if ($request->has('image_url')) {
+                    $series->image = save_image_url($request->image_url, 'series', 200, $series->image);
                 }
 
                 $success = $series->save();

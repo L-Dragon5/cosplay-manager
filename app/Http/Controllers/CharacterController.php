@@ -7,7 +7,6 @@ use App\Outfit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Validator;
-use Intervention\Image\Facades\Image;
 
 class CharacterController extends Controller
 {
@@ -63,6 +62,7 @@ class CharacterController extends Controller
             'name' => 'string|required',
             'series_id' => 'integer|required',
             'image' => 'file|image|nullable',
+            'image_url' => 'url|nullable'
         ]);
 
         if($validator->fails()) {
@@ -81,21 +81,9 @@ class CharacterController extends Controller
         $character->name = trim($request->name);
 
         if ($request->hasFile('image')) {
-            $filename_with_ext = $request->file('image')->getClientOriginalName();
-            $filename = pathinfo($filename_with_ext, PATHINFO_FILENAME);
-            $extension = $request->file('image')->getClientOriginalExtension();
-            $filename_to_store = $filename . '_' . time() . '.' . $extension;
-
-            if (!file_exists(storage_path('app/public/character/'))) {
-                mkdir(storage_path('app/public/character/'), 666, true);
-            }
-
-            $img = Image::make($request->file('image'))->resize(null, 400, function ($constraint) {
-                $constraint->aspectRatio();
-            });
-            $img->save(storage_path('app/public/character/' . $filename_to_store), 80);
-
-            $character->image = 'character/' . $filename_to_store;
+            $character->image = save_image_uploaded($request->file('image'), 400, 'character');
+        } else if ($request->has('image_url')) {
+            $character->image = save_image_url($request->image_url, 400, 'character');
         } else {
             $character->image = '200x400.png';
         }
@@ -139,7 +127,8 @@ class CharacterController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'string|required',
-            'image' => 'file|image|nullable'
+            'image' => 'file|image|nullable',
+            'image_url' => 'url|nullable'
         ]);
 
         if($validator->fails()) {
@@ -168,36 +157,9 @@ class CharacterController extends Controller
 
                 // If they want to change image
                 if ($request->hasFile('image')) {
-                    $filename_with_ext = $request->file('image')->getClientOriginalName();
-                    $filename = pathinfo($filename_with_ext, PATHINFO_FILENAME);
-                    $extension = $request->file('image')->getClientOriginalExtension();
-                    $filename_to_store = $filename . '_' . time() . '.' . $extension;
-        
-                    if (!file_exists(storage_path('app/public/character/'))) {
-                        mkdir(storage_path('app/public/character/'), 666, true);
-                    }
-
-                    // Create new image
-                    $img = Image::make($request->file('image'))->resize(null, 400, function ($constraint) {
-                        $constraint->aspectRatio();
-                    });
-                    $img->save(storage_path('app/public/character/' . $filename_to_store), 80);
-
-                    // Remove old image
-                    $old_image = $character->image;
-                    
-                    // Check if using placeholder image
-                    if ($old_image !== '200x400.png') {
-                        $old_image_path = storage_path('app/public/' . $old_image);
-
-                        if (file_exists($old_image_path)) {
-                            unlink($old_image_path);
-                        }
-                    }
-                    
-
-                    // Store path of new image
-                    $character->image = 'character/' . $filename_to_store;
+                    $character->image = save_image_uploaded($request->file('image'), 'character', 400, $character->image);
+                } else if ($request->has('image_url')) {
+                    $character->image = save_image_url($request->image_url, 'character', 400, $character->image);
                 }
 
                 $success = $character->save();

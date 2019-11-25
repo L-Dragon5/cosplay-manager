@@ -171,7 +171,81 @@ class OutfitController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'title' => 'string|required',
+            'character_id' => 'integer|required',
+            'images' => 'nullable',
+            'images.*' => 'file|image',
+            'status' => 'integer|required',
+            'bought_date' => 'date_format:Y-m-d|nullable',
+            'storage_location' => 'string|nullable',
+            'times_worn' => 'string|nullable'
+        ]);
+
+        if($validator->fails()) {
+            return return_json_message($validator->errors(), $this->errorStatus);
+        }
+
+        $user_id = Auth::user()->id;
+
+        if (check_for_duplicate($user_id, $request->title, 'outfits', 'title')) {
+            return return_json_message('Outfit already exists with this title', $this->errorStatus);
+        }
+
+        $outfit = new Outfit;
+        $outfit->user_id = $user_id;
+        $outfit->character_id = $request->character_id;
+        $outfit->title = trim($request->title);
+        $outfit->status = $request->status;
+        $outfit->bought_date = $request->bought_date;
+        $outfit->storage_location = $request->storage_location;
+        $outfit->times_worn = $request->times_worn;
+
+        if ($request->hasFile('images')) {
+            $images = $request->file('images');
+
+            if (!file_exists(storage_path('app/public/outfit/'))) {
+                mkdir(storage_path('app/public/outfit/'), 666, true);
+            }
+
+            if (is_array($images)) { // multiple images
+                foreach ($images as $img) {
+                    $filename_with_ext = $img->getClientOriginalName();
+                    $filename = pathinfo($filename_with_ext, PATHINFO_FILENAME);
+                    $extension = $img->getClientOriginalExtension();
+                    $filename_to_store = $filename . '_' . time() . '.' . $extension;
+
+                    $final_img = Image::make($img)->resize(null, 400, function ($constraint) {
+                        $constraint->aspectRatio();
+                    });
+                    $final_img->save(storage_path('app/public/outfit/' . $filename_to_store), 80);
+
+                    $outfit->images .= '||outfit/' . $filename_to_store;
+                }
+            } else { // single image
+                $filename_with_ext = $images->getClientOriginalName();
+                $filename = pathinfo($filename_with_ext, PATHINFO_FILENAME);
+                $extension = $images->getClientOriginalExtension();
+                $filename_to_store = $filename . '_' . time() . '.' . $extension;
+
+                $img = Image::make($images)->resize(null, 400, function ($constraint) {
+                    $constraint->aspectRatio();
+                });
+                $img->save(storage_path('app/public/outfit/' . $filename_to_store), 80);
+
+                $outfit->images .= '||outfit/' . $filename_to_store;
+            }
+        } else {
+            $outfit->image = '||300x400.png';
+        }
+
+        $success = $outfit->save();
+
+        if ($success) {
+            return return_json_message('Created new outfit succesfully', $this->successStatus);
+        } else {
+            return return_json_message('Something went wrong while trying to create a new outfit', 401);
+        }
     }
 
     /**
