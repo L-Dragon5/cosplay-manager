@@ -11,8 +11,8 @@ class Changelog extends Component {
           <div style={{ height: '400px', overflow: 'auto' }}>
 
             <div className='section'>
-              <h5>November 24th, 2019</h5>
-              <p>Setup main functionality for most things.</p>
+              <h5>November 25th, 2019</h5>
+              <p>Initial release.</p>
             </div>
 
           </div>

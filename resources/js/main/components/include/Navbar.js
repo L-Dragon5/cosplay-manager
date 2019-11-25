@@ -22,6 +22,7 @@ class Navbar extends Component {
 
   handleInit () {
     M.Sidenav.init($('.sidenav'))
+    M.Modal.init($('#changelog-modal'))
   }
 
   componentDidMount () {
@@ -54,6 +55,7 @@ class Navbar extends Component {
           <ul id='mobile-nav' className='sidenav'>
             <li className={this.getNavLinkClass('/')}><NavLink to='/' exact className='sidenav-close' activeClassName='active'>Cosplay Grid</NavLink></li>
             <li className={this.getNavLinkClass('/all-cosplays')}><NavLink to='/all-cosplays' className='sidenav-close' activeClassName='active'>All Cosplays</NavLink></li>
+            <li className='modal-trigger' data-target='changelog-modal'><a href='#!'>Changelog</a></li>
           </ul>
         </div>
 

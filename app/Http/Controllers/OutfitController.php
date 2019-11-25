@@ -77,6 +77,7 @@ class OutfitController extends Controller
             'character_id' => 'integer|required',
             'images' => 'nullable',
             'images.*' => 'file|image',
+            'image_url' => 'url|nullable',
             'status' => 'integer|required',
             'bought_date' => 'date_format:Y-m-d|nullable',
             'storage_location' => 'string|nullable',
@@ -99,45 +100,15 @@ class OutfitController extends Controller
         $outfit->title = trim($request->title);
         $outfit->status = $request->status;
         $outfit->bought_date = $request->bought_date;
-        $outfit->storage_location = $request->storage_location;
+        $outfit->storage_location = trim($request->storage_location);
         $outfit->times_worn = $request->times_worn;
 
         if ($request->hasFile('images')) {
-            $images = $request->file('images');
-
-            if (!file_exists(storage_path('app/public/outfit/'))) {
-                mkdir(storage_path('app/public/outfit/'), 666, true);
-            }
-
-            if (is_array($images)) { // multiple images
-                foreach ($images as $img) {
-                    $filename_with_ext = $img->getClientOriginalName();
-                    $filename = pathinfo($filename_with_ext, PATHINFO_FILENAME);
-                    $extension = $img->getClientOriginalExtension();
-                    $filename_to_store = $filename . '_' . time() . '.' . $extension;
-
-                    $final_img = Image::make($img)->resize(null, 400, function ($constraint) {
-                        $constraint->aspectRatio();
-                    });
-                    $final_img->save(storage_path('app/public/outfit/' . $filename_to_store), 80);
-
-                    $outfit->images .= '||outfit/' . $filename_to_store;
-                }
-            } else { // single image
-                $filename_with_ext = $images->getClientOriginalName();
-                $filename = pathinfo($filename_with_ext, PATHINFO_FILENAME);
-                $extension = $images->getClientOriginalExtension();
-                $filename_to_store = $filename . '_' . time() . '.' . $extension;
-
-                $img = Image::make($images)->resize(null, 400, function ($constraint) {
-                    $constraint->aspectRatio();
-                });
-                $img->save(storage_path('app/public/outfit/' . $filename_to_store), 80);
-
-                $outfit->images .= '||outfit/' . $filename_to_store;
-            }
+            $outfit->images = save_image_uploaded($request->file('images'), 'outfit', 400, $outfit->images);
+        } else if ($request->has('image_url') && !empty($request->image_url)) {
+            $outfit->images = save_image_url($request->image_url, 'outfit', 400, $outfit->images);
         } else {
-            $outfit->image = '||300x400.png';
+            $outfit->images = '||300x400.png';
         }
 
         $success = $outfit->save();
@@ -173,9 +144,9 @@ class OutfitController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'title' => 'string|required',
-            'character_id' => 'integer|required',
             'images' => 'nullable',
             'images.*' => 'file|image',
+            'image_url' => 'url|nullable',
             'status' => 'integer|required',
             'bought_date' => 'date_format:Y-m-d|nullable',
             'storage_location' => 'string|nullable',
@@ -188,63 +159,72 @@ class OutfitController extends Controller
 
         $user_id = Auth::user()->id;
 
-        if (check_for_duplicate($user_id, $request->title, 'outfits', 'title')) {
-            return return_json_message('Outfit already exists with this title', $this->errorStatus);
-        }
+        try {
+            $outfit = Outfit::findOrFail($id);
 
-        $outfit = new Outfit;
-        $outfit->user_id = $user_id;
-        $outfit->character_id = $request->character_id;
-        $outfit->title = trim($request->title);
-        $outfit->status = $request->status;
-        $outfit->bought_date = $request->bought_date;
-        $outfit->storage_location = $request->storage_location;
-        $outfit->times_worn = $request->times_worn;
+            if ($outfit->user_id === $user_id) {
+                // If they want to change title
+                if ($request->has('title')) {
+                    $trimmed_title = trim($request->title);
 
-        if ($request->hasFile('images')) {
-            $images = $request->file('images');
-
-            if (!file_exists(storage_path('app/public/outfit/'))) {
-                mkdir(storage_path('app/public/outfit/'), 666, true);
-            }
-
-            if (is_array($images)) { // multiple images
-                foreach ($images as $img) {
-                    $filename_with_ext = $img->getClientOriginalName();
-                    $filename = pathinfo($filename_with_ext, PATHINFO_FILENAME);
-                    $extension = $img->getClientOriginalExtension();
-                    $filename_to_store = $filename . '_' . time() . '.' . $extension;
-
-                    $final_img = Image::make($img)->resize(null, 400, function ($constraint) {
-                        $constraint->aspectRatio();
-                    });
-                    $final_img->save(storage_path('app/public/outfit/' . $filename_to_store), 80);
-
-                    $outfit->images .= '||outfit/' . $filename_to_store;
+                    // Check if new title is same as old title
+                    if ($trimmed_title === $outfit->title) {
+                        // Do nothing
+                    } else if(check_for_duplicate($user_id, $request->title, 'outfits', 'title')) {
+                        return return_json_message('Outfit already exists with this title.', $this->errorStatus);
+                    } else {
+                        $outfit->title = $trimmed_title;
+                    }
                 }
-            } else { // single image
-                $filename_with_ext = $images->getClientOriginalName();
-                $filename = pathinfo($filename_with_ext, PATHINFO_FILENAME);
-                $extension = $images->getClientOriginalExtension();
-                $filename_to_store = $filename . '_' . time() . '.' . $extension;
 
-                $img = Image::make($images)->resize(null, 400, function ($constraint) {
-                    $constraint->aspectRatio();
-                });
-                $img->save(storage_path('app/public/outfit/' . $filename_to_store), 80);
+                // If they want to change image
+                if ($request->hasFile('images')) {
+                    $outfit->images = save_image_uploaded($request->file('images'), 'outfit', 400, $outfit->images);
+                } else if ($request->has('image_url') && !empty($request->image_url)) {
+                    $outfit->images = save_image_url($request->image_url, 'outfit', 400, $outfit->images);
+                }
 
-                $outfit->images .= '||outfit/' . $filename_to_store;
+                // If they want to change status
+                if ($request->has('status')) {
+                    $outfit->status = $request->status;
+                }
+
+                // If they want to change bought_date
+                if ($request->has('bought_date')) {
+                    $outfit->bought_date = $request->bought_date;
+                }
+
+                // If they want to change storage location
+                if ($request->has('storage_location')) {
+                    $outfit->storage_location = trim($request->storage_location);
+                }
+
+                // If they want to change times worn
+                if ($request->has('times_worn')) {
+                    $outfit->times_worn = $request->times_worn;
+                }
+
+                $success = $outfit->save();
+
+                if ($success) {
+                    $images = explode('||', $outfit->images);
+                    array_shift($images);
+        
+                    foreach ($images as &$image) {
+                        $image = '/storage/' . $image;
+                    }
+                    unset($image);
+        
+                    $outfit->images = $images;
+                    return return_json_message('Updated character succesfully', $this->successStatus, ['outfit' => $outfit]);
+                } else {
+                    return return_json_message('Something went wrong while trying to update outfit', 401);
+                }
+            } else {
+                return return_json_message('You do not have permission to edit this outfit', $this->errorStatus);
             }
-        } else {
-            $outfit->image = '||300x400.png';
-        }
-
-        $success = $outfit->save();
-
-        if ($success) {
-            return return_json_message('Created new outfit succesfully', $this->successStatus);
-        } else {
-            return return_json_message('Something went wrong while trying to create a new outfit', 401);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return return_json_message('Invalid outfit id', 401);
         }
     }
 

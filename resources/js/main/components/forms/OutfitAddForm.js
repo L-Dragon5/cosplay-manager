@@ -79,15 +79,22 @@ class OutfitAddForm extends Component {
               <label>Outfit Status *</label>
             </div>
 
-            <div className='input-field col s12'>
-              <div className='file-field input-field'>
-                <div className='btn'>
-                  <span>Images</span>
-                  <input id='images' type='file' name='images[]' accept='image/*' multiple />
+            <div className='col s12'>
+              <div className='input-field col'>
+                <div className='file-field input-field'>
+                  <div className='btn'>
+                    <span>Images</span>
+                    <input id='images' type='file' name='images[]' accept='image/*' multiple />
+                  </div>
+                  <div className='file-path-wrapper'>
+                    <input className='file-path validate' type='text' name='image_text' placeholder='Upload one or more files' />
+                  </div>
                 </div>
-                <div className='file-path-wrapper'>
-                  <input className='file-path validate' type='text' name='image_text' placeholder='Upload one or more files' />
-                </div>
+              </div>
+
+              <div className='input-field col'>
+                <input id='image_url' type='url' name='image_url' />
+                <label htmlFor='image_url'>Image URL</label>
               </div>
             </div>
 

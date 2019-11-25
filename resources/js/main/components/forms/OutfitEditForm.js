@@ -3,13 +3,17 @@ import axios from 'axios'
 import $ from 'jquery'
 import M from 'materialize-css'
 
-class CharacterEditForm extends Component {
+class OutfitEditForm extends Component {
   constructor (props) {
     super(props)
 
     this.token = props.token
     this.id = props.id
-    this.name = props.name
+    this.title = props.title
+    this.status = props.status
+    this.bought_date = props.bought_date
+    this.storage_location = props.storage_location
+    this.times_worn = props.times_worn
 
     this.handleSubmit = this.handleSubmit.bind(this)
   }
@@ -22,7 +26,7 @@ class CharacterEditForm extends Component {
 
     const formData = new FormData(e.target)
 
-    axios.post('/api/character/update/' + this.id, formData, {
+    axios.post('/api/outfit/update/' + this.id, formData, {
       headers: {
         Accept: 'application/json',
         Authorization: 'Bearer ' + this.token,
@@ -32,7 +36,7 @@ class CharacterEditForm extends Component {
       if (response.status === 200) {
         M.toast({ html: response.data.message })
         $('#modal-close-' + this.id).trigger('click')
-        this.props.unmount(JSON.stringify(response.data.character))
+        this.props.unmount(JSON.stringify(response.data.outfit))
       }
     }).catch((error) => {
       if (error.response) {
@@ -56,6 +60,7 @@ class CharacterEditForm extends Component {
 
   componentDidMount () {
     M.updateTextFields()
+    M.FormSelect.init($('select'))
   }
 
   render () {
@@ -65,21 +70,29 @@ class CharacterEditForm extends Component {
           <div className='row'>
             <div id={'modal-errors-' + this.id} className='modal-errors col s12' />
 
-            <div className='input-field col s12'>
-              <input id={'name-' + this.id} type='text' name='name' className='validate' defaultValue={this.name} required />
-              <label htmlFor={'name-' + this.id}>Name *</label>
+            <div className='input-field col s12 m6'>
+              <input id={'title-' + this.id} type='text' name='title' className='validate' defaultValue={this.title} required />
+              <label htmlFor={'title-' + this.id}>Outfit Title *</label>
+            </div>
+
+            <div className='input-field col s12 m6'>
+              <select name='status' defaultValue={this.status}>
+                <option value='0'>Future Cosplay</option>
+                <option value='1'>Owned & Unworn</option>
+                <option value='2'>Worn</option>
+              </select>
+              <label>Outfit Status *</label>
             </div>
 
             <div className='col s12'>
               <div className='input-field col'>
                 <div className='file-field input-field'>
                   <div className='btn'>
-                    <span>Image</span>
-                    <input id={'image-' + this.id} type='file' name='image' accept='image/*' />
+                    <span>Images</span>
+                    <input id={'images-' + this.id} type='file' name='images[]' accept='image/*' multiple />
                   </div>
                   <div className='file-path-wrapper'>
-                    <input className='file-path validate' type='text' name='image_text' />
-                    <span className='helper-text'>Leave blank to keep image the same.</span>
+                    <input className='file-path validate' type='text' name='image_text' placeholder='Upload one or more files' />
                   </div>
                 </div>
               </div>
@@ -87,8 +100,22 @@ class CharacterEditForm extends Component {
               <div className='input-field col'>
                 <input id={'image-url-' + this.id} type='url' name='image_url' />
                 <label htmlFor={'image-url-' + this.id}>Image URL</label>
-                <span className='helper-text'>Leave blank to keep image the same.</span>
               </div>
+            </div>
+
+            <div className='input-field col s12 m4'>
+              <input id={'bought-date-' + this.id} type='date' name='bought_date' className='validate' defaultValue={this.bought_date} />
+              <label htmlFor={'bought-date-' + this.id}>Bought Date</label>
+            </div>
+
+            <div className='input-field col s12 m4'>
+              <input id={'storage-location-' + this.id} type='text' name='storage_location' className='validate' defaultValue={this.storage_location} />
+              <label htmlFor={'storage-location-' + this.id}>Storage Location</label>
+            </div>
+
+            <div className='input-field col s12 m4'>
+              <textarea id={'times-worn-' + this.id} className='materialize-textarea' name='times_worn' defaultValue={this.times_worn} />
+              <label htmlFor={'times-worn-' + this.id}>Times Worn</label>
             </div>
 
             <div className='right-align'>
@@ -103,4 +130,4 @@ class CharacterEditForm extends Component {
   }
 }
 
-export default CharacterEditForm
+export default OutfitEditForm
