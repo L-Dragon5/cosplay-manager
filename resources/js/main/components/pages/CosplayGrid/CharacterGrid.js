@@ -38,7 +38,7 @@ class CharacterGrid extends Component {
         })
 
         if (this.state.seriesTitle !== null) {
-          document.title = '[' + this.state.seriesTitle + '] Characters | Cosplay Manager'
+          document.title = '[' + this.state.seriesTitle + '] Characters | CosManage'
         }
       }
     }).catch(error => {

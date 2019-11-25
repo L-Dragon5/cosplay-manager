@@ -42,7 +42,7 @@ class Navbar extends Component {
         <div>
           <nav className='sticky-nav'>
             <div className='nav-wrapper'>
-              <NavLink to='/' exact className='brand-logo'>Cosplay Manager</NavLink>
+              <NavLink to='/' exact className='brand-logo'>CosManage</NavLink>
               <a href='#' data-target='mobile-nav' className='sidenav-trigger'><i className='material-icons'>menu</i></a>
               <ul className='right hide-on-med-and-down'>
                 <li className={this.getNavLinkClass('/')}><NavLink to='/' exact activeClassName='active'>Cosplay Grid</NavLink></li>

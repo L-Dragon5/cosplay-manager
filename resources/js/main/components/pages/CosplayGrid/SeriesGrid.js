@@ -69,7 +69,7 @@ class SeriesGrid extends Component {
   componentDidMount () {
     this.getSeries()
 
-    document.title = 'Series Grid | Cosplay Manager'
+    document.title = 'Series Grid | CosManage'
 
     window.addEventListener('DOMContentLoaded', this.handleInit)
     if (document.readyState !== 'loading') {

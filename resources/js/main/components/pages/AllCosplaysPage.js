@@ -159,7 +159,7 @@ class AllCosplaysPage extends Component {
   }
 
   componentDidMount () {
-    document.title = 'All Cosplays | Cosplay Manager'
+    document.title = 'All Cosplays | CosManage'
     this.getOutfits()
   }
 

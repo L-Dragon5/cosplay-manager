@@ -59,7 +59,7 @@ class RegisterPage extends Component {
           <div className='col s12'>
             <div className='row'>
               <div className='col s12'>
-                <h4>Cosplay Manager Registration</h4>
+                <h4>CosManage Registration</h4>
                 <p>Register an account to gain access.</p>
               </div>
             </div>

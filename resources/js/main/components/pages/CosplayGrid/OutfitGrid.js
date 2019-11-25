@@ -40,7 +40,7 @@ class OutfitGrid extends Component {
         })
 
         if (this.state.seriesTitle !== null) {
-          document.title = '[' + this.state.seriesTitle + '] Character Name | Cosplay Manager'
+          document.title = '[' + this.state.seriesTitle + '] Character Name | CosManage'
         }
       }
     }).catch(error => {
@@ -73,7 +73,7 @@ class OutfitGrid extends Component {
         })
 
         if (this.state.seriesTitle !== null) {
-          document.title = '[' + this.state.seriesTitle + '] ' + this.state.characterName + ' | Cosplay Manager'
+          document.title = '[' + this.state.seriesTitle + '] ' + this.state.characterName + ' | CosManage'
         }
       }
     }).catch(error => {
