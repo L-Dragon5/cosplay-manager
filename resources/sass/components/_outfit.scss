@@ -16,7 +16,7 @@
         margin: 0;
         width: 100%;
         font-size: 1.15rem;
-        padding: 16px 24px;
+        padding: 16px;
       }
     }
 
@@ -59,14 +59,18 @@
     user-select: none;
     
     & a {
-      height: 57px;
-      line-height: 57px;
+      height: 100%;
+      line-height: 60px;
       margin-right: 0 !important;
 
       & i {
         color: black;
       }
     }
+  }
+
+  &__character {
+    font-size: 0.75rem;
   }
 }
 

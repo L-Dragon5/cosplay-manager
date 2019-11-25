@@ -80609,9 +80609,9 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
@@ -80634,14 +80634,160 @@ function (_Component) {
     _classCallCheck(this, AllCosplaysPage);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(AllCosplaysPage).call(this, props));
+    /**
+     * Filter
+     * 0 = none
+     * 1 = future
+     * 2 = owned & unworn
+     * 4 = worn
+     */
+
     _this.state = {
-      outfits: null
+      allOutfits: null,
+      // All outfits available
+      outfits: null,
+      // Outfits being displayed
+      search: null,
+      // Search input
+      searchBlank: true,
+      // Is the search input blank
+      filter: 7 // Filter mask
+
     };
     _this.token = _Helper__WEBPACK_IMPORTED_MODULE_2__["default"].getToken();
+    _this.handleSearch = _this.handleSearch.bind(_assertThisInitialized(_this));
+    _this.handleStatusChange = _this.handleStatusChange.bind(_assertThisInitialized(_this));
     return _this;
   }
 
   _createClass(AllCosplaysPage, [{
+    key: "handleSearch",
+    value: function handleSearch(e) {
+      var searchVal = ''; // Is the function coming from input change or from handleFilterStateChange callback?
+
+      if (e === undefined || e.target === undefined || e.target.value === undefined) {
+        // If search is blank and coming from callback, return to prevent loop
+        if (this.state.searchBlank) {
+          return;
+        } // Set search value from state
+
+
+        searchVal = this.state.search;
+      } else {
+        // Set search value from input
+        searchVal = e.target.value; // Update search state
+
+        this.setState({
+          search: e.target.value
+        });
+      } // If the search value is blank
+
+
+      if (searchVal.length < 1) {
+        // Reset outfits to all and then reapply filters
+        this.setState({
+          outfits: this.state.allOutfits,
+          searchBlank: true
+        }, this.handleFilterStateChange);
+      } else {
+        // Lowercase search to make it uniform in searching
+        var lowerSearch = searchVal.toLowerCase(); // Set displaying outfits based on search text
+
+        this.setState({
+          outfits: this.state.outfits.filter(function (item) {
+            return String(item.title).toLowerCase().indexOf(lowerSearch) !== -1;
+          }),
+          searchBlank: false
+        });
+      }
+    }
+  }, {
+    key: "handleStatusChange",
+    value: function handleStatusChange(e) {
+      if (e.target.checked) {
+        this.setState({
+          filter: this.state.filter + parseInt(e.target.value)
+        }, this.handleFilterStateChange);
+      } else {
+        this.setState({
+          filter: this.state.filter - parseInt(e.target.value)
+        }, this.handleFilterStateChange);
+      }
+    }
+  }, {
+    key: "handleFilterStateChange",
+    value: function handleFilterStateChange() {
+      switch (this.state.filter) {
+        case 0:
+          // None
+          this.setState({
+            outfits: null
+          });
+          break;
+
+        case 1:
+          // Future Only
+          this.setState({
+            outfits: this.state.allOutfits.filter(function (item) {
+              return item.status === 0;
+            })
+          }, this.handleSearch);
+          break;
+
+        case 2:
+          // Unworn Only
+          this.setState({
+            outfits: this.state.allOutfits.filter(function (item) {
+              return item.status === 1;
+            })
+          }, this.handleSearch);
+          break;
+
+        case 3:
+          // Future + Unworn
+          this.setState({
+            outfits: this.state.allOutfits.filter(function (item) {
+              return item.status === 0 || item.status === 1;
+            })
+          }, this.handleSearch);
+          break;
+
+        case 4:
+          // Worn Only
+          this.setState({
+            outfits: this.state.allOutfits.filter(function (item) {
+              return item.status === 2;
+            })
+          }, this.handleSearch);
+          break;
+
+        case 5:
+          // Future + Worn
+          this.setState({
+            outfits: this.state.allOutfits.filter(function (item) {
+              return item.status === 0 || item.status === 2;
+            })
+          }, this.handleSearch);
+          break;
+
+        case 6:
+          // Unworn + Worn
+          this.setState({
+            outfits: this.state.allOutfits.filter(function (item) {
+              return item.status === 1 || item.status === 2;
+            })
+          }, this.handleSearch);
+          break;
+
+        case 7:
+          // Future + Unworn + Worn
+          this.setState({
+            outfits: this.state.allOutfits
+          }, this.handleSearch);
+          break;
+      }
+    }
+  }, {
     key: "getOutfits",
     value: function getOutfits() {
       var _this2 = this;
@@ -80654,8 +80800,8 @@ function (_Component) {
       }).then(function (response) {
         if (response.data) {
           _this2.setState({
-            outfits: response.data,
-            renderForm: true
+            allOutfits: response.data,
+            outfits: response.data
           });
         }
       })["catch"](function (error) {
@@ -80693,12 +80839,47 @@ function (_Component) {
 
       var outfits = this.state.outfits;
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("main", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h5", null, "All Cosplays"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "filters row"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "input-field col s12 m6"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        id: "searchInput",
+        className: "filters__search",
+        type: "text",
+        onChange: this.handleSearch
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+        htmlFor: "searchInput"
+      }, "Search")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "col s12 m6"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+        className: "filters__checkbox"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "checkbox",
+        value: "1",
+        onChange: this.handleStatusChange,
+        defaultChecked: true
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, "Future"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+        className: "filters__checkbox"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "checkbox",
+        value: "2",
+        onChange: this.handleStatusChange,
+        defaultChecked: true
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, "Owned & Unworn"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+        className: "filters__checkbox"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "checkbox",
+        value: "4",
+        onChange: this.handleStatusChange,
+        defaultChecked: true
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, "Worn"))))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "outfit-grid"
       }, outfits && outfits.map(function (item, key) {
         return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_OutfitCard__WEBPACK_IMPORTED_MODULE_3__["default"], {
           key: 'o-' + item.id,
           token: _this3.token,
           id: item.id,
+          character_name: item.character_name,
           title: item.title,
           images: item.images,
           status: item.status,
@@ -81956,6 +82137,7 @@ function (_Component) {
     };
     _this.token = props.token;
     _this.id = props.id !== undefined ? props.id : null;
+    _this.character_name = props.character_name !== undefined ? props.character_name : null;
     _this.handleDelete = _this.handleDelete.bind(_assertThisInitialized(_this));
     _this.handleFormUnmount = _this.handleFormUnmount.bind(_assertThisInitialized(_this));
     return _this;
@@ -82128,8 +82310,18 @@ function (_Component) {
             className: "btn-flat teal lighten-2"
           }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
             className: "material-icons"
-          }, "edit"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
-            className: "activator"
+          }, "edit"))), this.character_name ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+            className: "activator",
+            style: {
+              padding: '8px'
+            }
+          }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+            className: "outfit__character"
+          }, this.character_name), this.state.title) : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+            className: "activator",
+            style: {
+              padding: '16px'
+            }
           }, this.state.title), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
             className: "outfit__icon",
             onClick: this.handleDelete

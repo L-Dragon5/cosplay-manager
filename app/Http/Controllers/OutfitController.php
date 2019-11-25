@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Outfit;
+use App\Character;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Validator;
-use Intervention\Image\Facades\Image;
 
 class OutfitController extends Controller
 {
@@ -33,6 +33,8 @@ class OutfitController extends Controller
             unset($image);
 
             $outfit->images = $images;
+
+            $outfit->character_name = Character::find($outfit->character_id)->name;
         }
 
         return $outfits;

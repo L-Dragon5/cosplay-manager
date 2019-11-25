@@ -582,7 +582,7 @@ nav .brand-logo {
   margin: 0;
   width: 100%;
   font-size: 1.15rem;
-  padding: 16px 24px;
+  padding: 16px;
 }
 
 .outfit .card-reveal ul {
@@ -625,13 +625,17 @@ nav .brand-logo {
 }
 
 .outfit__icon a {
-  height: 57px;
-  line-height: 57px;
+  height: 100%;
+  line-height: 60px;
   margin-right: 0 !important;
 }
 
 .outfit__icon a i {
   color: black;
+}
+
+.outfit__character {
+  font-size: 0.75rem;
 }
 
 .carousel {
@@ -649,5 +653,9 @@ nav .brand-logo {
      object-fit: contain;
   -o-object-position: center center;
      object-position: center center;
+}
+
+.filters__checkbox {
+  margin-right: 2rem;
 }
 

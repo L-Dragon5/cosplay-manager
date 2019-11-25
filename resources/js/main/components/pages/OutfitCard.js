@@ -23,6 +23,7 @@ class OutfitCard extends Component {
 
     this.token = props.token
     this.id = (props.id !== undefined) ? props.id : null
+    this.character_name = (props.character_name !== undefined) ? props.character_name : null
 
     this.handleDelete = this.handleDelete.bind(this)
     this.handleFormUnmount = this.handleFormUnmount.bind(this)
@@ -147,7 +148,17 @@ class OutfitCard extends Component {
                   <a className='btn-flat teal lighten-2'><i className='material-icons'>edit</i></a>
                 </div>
 
-                <span className='activator'>{this.state.title}</span>
+                { this.character_name ?
+                  <span className='activator' style={{ padding: '8px' }}>
+                    <div className='outfit__character'>
+                      {this.character_name}
+                    </div>
+                    {this.state.title}
+                  </span>
+                  : <span className='activator' style={{ padding: '16px' }}>
+                    {this.state.title}
+                  </span>
+                }
 
                 <div className='outfit__icon' onClick={this.handleDelete}>
                   <a className='btn-flat red lighten-2'><i className='material-icons'>delete</i></a>
