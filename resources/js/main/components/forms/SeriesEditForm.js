@@ -70,15 +70,23 @@ class SeriesEditForm extends Component {
               <label htmlFor={'title-' + this.id}>Title *</label>
             </div>
 
-            <div className='input-field col s12'>
-              <div className='file-field input-field'>
-                <div className='btn'>
-                  <span>Image</span>
-                  <input id={'image-' + this.id} type='file' name='image' accept='image/*' />
+            <div className='col s12'>
+              <div className='input-field col'>
+                <div className='file-field input-field'>
+                  <div className='btn'>
+                    <span>Image</span>
+                    <input id={'image-' + this.id} type='file' name='image' accept='image/*' />
+                  </div>
+                  <div className='file-path-wrapper'>
+                    <input className='file-path validate' type='text' name='image_text' />
+                    <span className='helper-text'>Leave blank to keep image the same.</span>
+                  </div>
                 </div>
-                <div className='file-path-wrapper'>
-                  <input className='file-path validate' type='text' name='image_text' />
-                </div>
+              </div>
+
+              <div className='input-field col'>
+                <input id={'image-url-' + this.id} type='url' name='image_url' />
+                <label htmlFor={'image-url-' + this.id}>Image URL</label>
                 <span className='helper-text'>Leave blank to keep image the same.</span>
               </div>
             </div>

@@ -82,7 +82,7 @@ class CharacterController extends Controller
 
         if ($request->hasFile('image')) {
             $character->image = save_image_uploaded($request->file('image'), 400, 'character');
-        } else if ($request->has('image_url')) {
+        } else if ($request->has('image_url') && !empty($request->image_url)) {
             $character->image = save_image_url($request->image_url, 400, 'character');
         } else {
             $character->image = '200x400.png';
@@ -158,7 +158,7 @@ class CharacterController extends Controller
                 // If they want to change image
                 if ($request->hasFile('image')) {
                     $character->image = save_image_uploaded($request->file('image'), 'character', 400, $character->image);
-                } else if ($request->has('image_url')) {
+                } else if ($request->has('image_url') && !empty($request->image_url)) {
                     $character->image = save_image_url($request->image_url, 'character', 400, $character->image);
                 }
 

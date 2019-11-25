@@ -80082,7 +80082,9 @@ function (_Component) {
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
         htmlFor: "title"
       }, "Title *")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "input-field col s12"
+        className: "col s12"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "input-field col"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "file-field input-field"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -80099,6 +80101,14 @@ function (_Component) {
         type: "text",
         name: "image_text"
       })))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "input-field col"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        id: "image_url",
+        type: "url",
+        name: "image_url"
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+        htmlFor: "image_url"
+      }, "Image URL"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "right-align"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
         id: "modal-submit",
@@ -80286,7 +80296,9 @@ function (_Component) {
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
         htmlFor: 'title-' + this.id
       }, "Title *")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "input-field col s12"
+        className: "col s12"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "input-field col"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "file-field input-field"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -80302,7 +80314,17 @@ function (_Component) {
         className: "file-path validate",
         type: "text",
         name: "image_text"
-      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+        className: "helper-text"
+      }, "Leave blank to keep image the same.")))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "input-field col"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        id: 'image-url-' + this.id,
+        type: "url",
+        name: "image_url"
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+        htmlFor: 'image-url-' + this.id
+      }, "Image URL"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
         className: "helper-text"
       }, "Leave blank to keep image the same."))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "right-align"
