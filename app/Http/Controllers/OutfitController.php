@@ -81,7 +81,8 @@ class OutfitController extends Controller
             'images.*' => 'file|image',
             'image_url' => 'url|nullable',
             'status' => 'integer|required',
-            'bought_date' => 'date_format:Y-m-d|nullable',
+            'obtained_on' => 'date_format:Y-m-d|nullable',
+            'creator' => 'string|nullable',
             'storage_location' => 'string|nullable',
             'times_worn' => 'string|nullable'
         ]);
@@ -101,7 +102,8 @@ class OutfitController extends Controller
         $outfit->character_id = $request->character_id;
         $outfit->title = trim($request->title);
         $outfit->status = $request->status;
-        $outfit->bought_date = $request->bought_date;
+        $outfit->obtained_on = $request->obtained_on;
+        $outfit->creator = trim($request->creator);
         $outfit->storage_location = trim($request->storage_location);
         $outfit->times_worn = $request->times_worn;
 
@@ -131,7 +133,7 @@ class OutfitController extends Controller
     public function show($id)
     {
         /*
-        id, user_id, character_id, title, images, status, bought_date, storage_location, times_worn
+        id, user_id, character_id, title, images, status, obtained_on, storage_location, times_worn
         */
     }
 
@@ -150,7 +152,8 @@ class OutfitController extends Controller
             'images.*' => 'file|image',
             'image_url' => 'url|nullable',
             'status' => 'integer|required',
-            'bought_date' => 'date_format:Y-m-d|nullable',
+            'obtained_on' => 'date_format:Y-m-d|nullable',
+            'creator' => 'string|nullable',
             'storage_location' => 'string|nullable',
             'times_worn' => 'string|nullable'
         ]);
@@ -191,9 +194,14 @@ class OutfitController extends Controller
                     $outfit->status = $request->status;
                 }
 
-                // If they want to change bought_date
-                if ($request->has('bought_date')) {
-                    $outfit->bought_date = $request->bought_date;
+                // If they want to change obtained_on
+                if ($request->has('obtained_on')) {
+                    $outfit->obtained_on = $request->obtained_on;
+                }
+
+                // If they want to change creator
+                if ($request->has('creator')) {
+                    $outfit->creator = trim($request->creator);
                 }
 
                 // If they want to change storage location

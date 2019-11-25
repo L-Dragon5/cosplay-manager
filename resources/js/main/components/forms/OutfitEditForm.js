@@ -11,7 +11,8 @@ class OutfitEditForm extends Component {
     this.id = props.id
     this.title = props.title
     this.status = props.status
-    this.bought_date = props.bought_date
+    this.obtained_on = props.obtained_on
+    this.creator = props.creator
     this.storage_location = props.storage_location
     this.times_worn = props.times_worn
 
@@ -106,17 +107,22 @@ class OutfitEditForm extends Component {
               </div>
             </div>
 
-            <div className='input-field col s12 m4'>
-              <input id={'bought-date-' + this.id} type='text' name='bought_date' className='datepicker validate' defaultValue={this.bought_date} />
-              <label htmlFor={'bought-date-' + this.id}>Bought Date</label>
+            <div className='input-field col s12 m6'>
+              <input id={'bought-date-' + this.id} type='text' name='obtained_on' className='datepicker validate' defaultValue={this.obtained_on} />
+              <label htmlFor={'bought-date-' + this.id}>Obtained On</label>
             </div>
 
-            <div className='input-field col s12 m4'>
+            <div className='input-field col s12 m6'>
+              <input id={'creator-' + this.id} type='text' name='creator' className='validate' defaultValue={this.creator} />
+              <label htmlFor={'creator-' + this.id}>Creator</label>
+            </div>
+
+            <div className='input-field col s12 m6'>
               <input id={'storage-location-' + this.id} type='text' name='storage_location' className='validate' defaultValue={this.storage_location} />
               <label htmlFor={'storage-location-' + this.id}>Storage Location</label>
             </div>
 
-            <div className='input-field col s12 m4'>
+            <div className='input-field col s12 m6'>
               <textarea id={'times-worn-' + this.id} className='materialize-textarea' name='times_worn' defaultValue={this.times_worn} />
               <label htmlFor={'times-worn-' + this.id}>Times Worn</label>
             </div>

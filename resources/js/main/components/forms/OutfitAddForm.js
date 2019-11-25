@@ -101,17 +101,22 @@ class OutfitAddForm extends Component {
               </div>
             </div>
 
-            <div className='input-field col s12 m4'>
-              <input id='bought_date' type='text' name='bought_date' className='datepicker validate' />
-              <label htmlFor='bought_date'>Bought Date</label>
+            <div className='input-field col s12 m6'>
+              <input id='obtained_on' type='text' name='obtained_on' className='datepicker validate' />
+              <label htmlFor='obtained_on'>Obtained On</label>
             </div>
 
-            <div className='input-field col s12 m4'>
+            <div className='input-field col s12 m6'>
+              <input id='creator' type='text' name='creator' className='validate' />
+              <label htmlFor='creator'>Creator</label>
+            </div>
+
+            <div className='input-field col s12 m6'>
               <input id='storage_location' type='text' name='storage_location' className='validate' />
               <label htmlFor='storage_location'>Storage Location</label>
             </div>
 
-            <div className='input-field col s12 m4'>
+            <div className='input-field col s12 m6'>
               <textarea id='times_worn' className='materialize-textarea' name='times_worn' />
               <label htmlFor='times_worn'>Times Worn</label>
             </div>

@@ -16,7 +16,8 @@ class OutfitCard extends Component {
       title: (props.title !== undefined) ? props.title : 'ERROR',
       images: props.images,
       status: (props.status !== undefined) ? parseInt(props.status) : -1,
-      bought_date: (props.bought_date !== undefined && props.bought_date !== null) ? props.bought_date : 'N/A',
+      obtained_on: (props.obtained_on !== undefined && props.obtained_on !== null) ? props.obtained_on : 'N/A',
+      creator: (props.creator !== undefined && props.creator !== null) ? props.creator : 'N/A',
       storage_location: (props.storage_location !== undefined && props.storage_location !== null && props.storage_location.length) ? props.storage_location : 'N/A',
       times_worn: (props.times_worn !== undefined && props.times_worn !== null) ? props.times_worn : 'N/A'
     }
@@ -83,7 +84,8 @@ class OutfitCard extends Component {
         title: obj.title,
         images: obj.images,
         status: (obj.status !== undefined && obj.status.length) ? parseInt(obj.status) : -1,
-        bought_date: (obj.bought_date !== undefined && obj.bought_date !== null) ? obj.bought_date : 'N/A',
+        obtained_on: (obj.obtained_on !== undefined && obj.obtained_on !== null) ? obj.obtained_on : 'N/A',
+        creator: (obj.creator !== undefined && obj.creator !== null) ? obj.creator : 'N/A',
         storage_location: (obj.storage_location !== undefined && obj.storage_location !== null && obj.storage_location.length) ? obj.storage_location : 'N/A',
         times_worn: (obj.times_worn !== undefined && obj.times_worn !== null) ? obj.times_worn : 'N/A'
       }, () => {
@@ -125,8 +127,8 @@ class OutfitCard extends Component {
 
         let boughtDate = 'N/A'
 
-        if (this.state.bought_date !== 'N/A') {
-          const d = new Date(this.state.bought_date)
+        if (this.state.obtained_on !== 'N/A') {
+          const d = new Date(this.state.obtained_on)
           const month = d.toLocaleString('default', { month: 'long' })
           boughtDate = month + ' ' + d.getDate() + ', ' + d.getFullYear()
         }
@@ -168,7 +170,8 @@ class OutfitCard extends Component {
               <div className='card-reveal'>
                 <span className='card-title grey-text text-darken-4'>{this.state.title}<i className='material-icons right'>close</i></span>
                 <ul>
-                  <li><strong>Bought Date:</strong> {boughtDate}</li>
+                  <li><strong>Obtained On:</strong> {boughtDate}</li>
+                  <li><strong>Creator:</strong> {this.state.creator}</li>
                   <li><strong>Storage Location:</strong> {this.state.storage_location}</li>
                   <li><strong>Times Worn:</strong> {this.state.times_worn}</li>
                 </ul>
@@ -182,7 +185,8 @@ class OutfitCard extends Component {
                   id={this.id}
                   title={this.state.title}
                   status={this.state.status}
-                  bought_date={this.state.bought_date}
+                  obtained_on={this.state.obtained_on}
+                  creator={this.state.creator}
                   storage_location={this.state.storage_location}
                   times_worn={this.state.times_worn}
                   unmount={this.handleFormUnmount} />

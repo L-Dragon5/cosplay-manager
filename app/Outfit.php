@@ -12,7 +12,8 @@ class Outfit extends Model
         'title',
         'images',
         'status',
-        'bought_date',
+        'obtained_on',
+        'creator',
         'storage_location',
         'times_worn'
     ];

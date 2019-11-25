@@ -78477,7 +78477,7 @@ function (_Component) {
         className: "row"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "col s12"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h4", null, "Welcome to Cosplay Manager"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "An easy to use manager for planning cosplays."))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h4", null, "Welcome to CosManage"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "An easy to use manager for planning cosplays."))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "row"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "col s8 offset-s2",
@@ -78705,7 +78705,7 @@ function (_Component) {
         className: "row"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "col s12"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h4", null, "Cosplay Manager Registration"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "Register an account to gain access."))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h4", null, "CosManage Registration"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "Register an account to gain access."))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "row"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "col s8 offset-s2",
@@ -79614,16 +79614,25 @@ function (_Component) {
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
         htmlFor: "image_url"
       }, "Image URL"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "input-field col s12 m4"
+        className: "input-field col s12 m6"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-        id: "bought_date",
+        id: "obtained_on",
         type: "text",
-        name: "bought_date",
+        name: "obtained_on",
         className: "datepicker validate"
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
-        htmlFor: "bought_date"
-      }, "Bought Date")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "input-field col s12 m4"
+        htmlFor: "obtained_on"
+      }, "Obtained On")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "input-field col s12 m6"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        id: "creator",
+        type: "text",
+        name: "creator",
+        className: "validate"
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+        htmlFor: "creator"
+      }, "Creator")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "input-field col s12 m6"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
         id: "storage_location",
         type: "text",
@@ -79632,7 +79641,7 @@ function (_Component) {
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
         htmlFor: "storage_location"
       }, "Storage Location")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "input-field col s12 m4"
+        className: "input-field col s12 m6"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("textarea", {
         id: "times_worn",
         className: "materialize-textarea",
@@ -79746,7 +79755,8 @@ function (_Component) {
     _this.id = props.id;
     _this.title = props.title;
     _this.status = props.status;
-    _this.bought_date = props.bought_date;
+    _this.obtained_on = props.obtained_on;
+    _this.creator = props.creator;
     _this.storage_location = props.storage_location;
     _this.times_worn = props.times_worn;
     _this.handleSubmit = _this.handleSubmit.bind(_assertThisInitialized(_this));
@@ -79875,17 +79885,27 @@ function (_Component) {
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
         htmlFor: 'image-url-' + this.id
       }, "Image URL"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "input-field col s12 m4"
+        className: "input-field col s12 m6"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
         id: 'bought-date-' + this.id,
         type: "text",
-        name: "bought_date",
+        name: "obtained_on",
         className: "datepicker validate",
-        defaultValue: this.bought_date
+        defaultValue: this.obtained_on
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
         htmlFor: 'bought-date-' + this.id
-      }, "Bought Date")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "input-field col s12 m4"
+      }, "Obtained On")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "input-field col s12 m6"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        id: 'creator-' + this.id,
+        type: "text",
+        name: "creator",
+        className: "validate",
+        defaultValue: this.creator
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+        htmlFor: 'creator-' + this.id
+      }, "Creator")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "input-field col s12 m6"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
         id: 'storage-location-' + this.id,
         type: "text",
@@ -79895,7 +79915,7 @@ function (_Component) {
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
         htmlFor: 'storage-location-' + this.id
       }, "Storage Location")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "input-field col s12 m4"
+        className: "input-field col s12 m6"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("textarea", {
         id: 'times-worn-' + this.id,
         className: "materialize-textarea",
@@ -80534,7 +80554,7 @@ function (_Component) {
         to: "/",
         exact: true,
         className: "brand-logo"
-      }, "Cosplay Manager"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+      }, "CosManage"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
         href: "#",
         "data-target": "mobile-nav",
         className: "sidenav-trigger"
@@ -80851,7 +80871,7 @@ function (_Component) {
   }, {
     key: "componentDidMount",
     value: function componentDidMount() {
-      document.title = 'All Cosplays | Cosplay Manager';
+      document.title = 'All Cosplays | CosManage';
       this.getOutfits();
     }
   }, {
@@ -80905,7 +80925,8 @@ function (_Component) {
           title: item.title,
           images: item.images,
           status: item.status,
-          bought_date: item.bought_date,
+          obtained_on: item.obtained_on,
+          creator: item.creator,
           storage_location: item.storage_location,
           times_worn: item.times_worn
         });
@@ -81244,7 +81265,7 @@ function (_Component) {
           });
 
           if (_this2.state.seriesTitle !== null) {
-            document.title = '[' + _this2.state.seriesTitle + '] Characters | Cosplay Manager';
+            document.title = '[' + _this2.state.seriesTitle + '] Characters | CosManage';
           }
         }
       })["catch"](function (error) {
@@ -81482,7 +81503,7 @@ function (_Component) {
           });
 
           if (_this2.state.seriesTitle !== null) {
-            document.title = '[' + _this2.state.seriesTitle + '] Character Name | Cosplay Manager';
+            document.title = '[' + _this2.state.seriesTitle + '] Character Name | CosManage';
           }
         }
       })["catch"](function (error) {
@@ -81524,7 +81545,7 @@ function (_Component) {
           });
 
           if (_this3.state.seriesTitle !== null) {
-            document.title = '[' + _this3.state.seriesTitle + '] ' + _this3.state.characterName + ' | Cosplay Manager';
+            document.title = '[' + _this3.state.seriesTitle + '] ' + _this3.state.characterName + ' | CosManage';
           }
         }
       })["catch"](function (error) {
@@ -81637,7 +81658,8 @@ function (_Component) {
           title: item.title,
           images: item.images,
           status: item.status,
-          bought_date: item.bought_date,
+          obtained_on: item.obtained_on,
+          creator: item.creator,
           storage_location: item.storage_location,
           times_worn: item.times_worn
         });
@@ -82029,7 +82051,7 @@ function (_Component) {
     key: "componentDidMount",
     value: function componentDidMount() {
       this.getSeries();
-      document.title = 'Series Grid | Cosplay Manager';
+      document.title = 'Series Grid | CosManage';
       window.addEventListener('DOMContentLoaded', this.handleInit);
 
       if (document.readyState !== 'loading') {
@@ -82153,7 +82175,8 @@ function (_Component) {
       title: props.title !== undefined ? props.title : 'ERROR',
       images: props.images,
       status: props.status !== undefined ? parseInt(props.status) : -1,
-      bought_date: props.bought_date !== undefined && props.bought_date !== null ? props.bought_date : 'N/A',
+      obtained_on: props.obtained_on !== undefined && props.obtained_on !== null ? props.obtained_on : 'N/A',
+      creator: props.creator !== undefined && props.creator !== null ? props.creator : 'N/A',
       storage_location: props.storage_location !== undefined && props.storage_location !== null && props.storage_location.length ? props.storage_location : 'N/A',
       times_worn: props.times_worn !== undefined && props.times_worn !== null ? props.times_worn : 'N/A'
     };
@@ -82243,7 +82266,8 @@ function (_Component) {
           title: obj.title,
           images: obj.images,
           status: obj.status !== undefined && obj.status.length ? parseInt(obj.status) : -1,
-          bought_date: obj.bought_date !== undefined && obj.bought_date !== null ? obj.bought_date : 'N/A',
+          obtained_on: obj.obtained_on !== undefined && obj.obtained_on !== null ? obj.obtained_on : 'N/A',
+          creator: obj.creator !== undefined && obj.creator !== null ? obj.creator : 'N/A',
           storage_location: obj.storage_location !== undefined && obj.storage_location !== null && obj.storage_location.length ? obj.storage_location : 'N/A',
           times_worn: obj.times_worn !== undefined && obj.times_worn !== null ? obj.times_worn : 'N/A'
         }, function () {
@@ -82296,8 +82320,8 @@ function (_Component) {
 
           var boughtDate = 'N/A';
 
-          if (this.state.bought_date !== 'N/A') {
-            var d = new Date(this.state.bought_date);
+          if (this.state.obtained_on !== 'N/A') {
+            var d = new Date(this.state.obtained_on);
             var month = d.toLocaleString('default', {
               month: 'long'
             });
@@ -82357,14 +82381,15 @@ function (_Component) {
             className: "card-title grey-text text-darken-4"
           }, this.state.title, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
             className: "material-icons right"
-          }, "close")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("ul", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("strong", null, "Bought Date:"), " ", boughtDate), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("strong", null, "Storage Location:"), " ", this.state.storage_location), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("strong", null, "Times Worn:"), " ", this.state.times_worn)))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Modal__WEBPACK_IMPORTED_MODULE_4__["default"], {
+          }, "close")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("ul", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("strong", null, "Obtained On:"), " ", boughtDate), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("strong", null, "Creator:"), " ", this.state.creator), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("strong", null, "Storage Location:"), " ", this.state.storage_location), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("strong", null, "Times Worn:"), " ", this.state.times_worn)))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Modal__WEBPACK_IMPORTED_MODULE_4__["default"], {
             id: modalName
           }, this.state.renderForm && react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_forms_OutfitEditForm__WEBPACK_IMPORTED_MODULE_5__["default"], {
             token: this.token,
             id: this.id,
             title: this.state.title,
             status: this.state.status,
-            bought_date: this.state.bought_date,
+            obtained_on: this.state.obtained_on,
+            creator: this.state.creator,
             storage_location: this.state.storage_location,
             times_worn: this.state.times_worn,
             unmount: this.handleFormUnmount
