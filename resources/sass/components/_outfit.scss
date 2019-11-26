@@ -1,4 +1,6 @@
 .outfit {
+  height: 430px !important;
+
   & .card {
     width: 100%;
     margin: 0;
@@ -71,6 +73,18 @@
 
   &__character {
     font-size: 0.75rem;
+  }
+
+  &__tags {
+    overflow-x: scroll;
+    overflow-y: hidden;
+
+    height: 25px;
+
+    -ms-overflow-style: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 }
 

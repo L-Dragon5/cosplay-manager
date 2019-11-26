@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import axios from 'axios'
+import M from 'materialize-css'
 
 // Components
 import Helper from '../Helper'
@@ -21,7 +22,8 @@ class AllCosplaysPage extends Component {
       outfits: null, // Outfits being displayed
       search: null, // Search input
       searchBlank: true, // Is the search input blank
-      filter: 7 // Filter mask
+      filter: 7, // Filter mask,
+      allTags: [] // All tag options
     }
 
     this.token = Helper.getToken()
@@ -128,6 +130,41 @@ class AllCosplaysPage extends Component {
     }
   }
 
+  getTags () {
+    axios.get('/api/tags', {
+      headers: {
+        Accept: 'application/json',
+        Authorization: 'Bearer ' + this.token
+      }
+    }).then(response => {
+      if (response.data) {
+        const tagArray = []
+
+        for (const tag of response.data) {
+          tagArray.push({ value: tag.id, label: tag.title })
+        }
+
+        this.setState({
+          allTags: tagArray
+        })
+      }
+    }).catch(error => {
+      if (error.response) {
+        let html = ''
+
+        if (Array.isArray(error.response)) {
+          for (const [key, value] of Object.entries(error.response.data.message)) {
+            html += key + ': ' + value + '<br>'
+          }
+        } else {
+          html += error.response.data.message
+        }
+
+        M.toast({ html: html })
+      }
+    })
+  }
+
   getOutfits () {
     axios.get('/api/outfits/', {
       headers: {
@@ -160,6 +197,7 @@ class AllCosplaysPage extends Component {
 
   componentDidMount () {
     document.title = 'All Cosplays | CosManage'
+    this.getTags()
     this.getOutfits()
   }
 
@@ -212,6 +250,8 @@ class AllCosplaysPage extends Component {
                 status={item.status}
                 obtained_on={item.obtained_on}
                 creator={item.creator}
+                tags={item.tags}
+                allTags={this.state.allTags}
                 storage_location={item.storage_location}
                 times_worn={item.times_worn} />
             })

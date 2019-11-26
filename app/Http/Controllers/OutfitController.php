@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Outfit;
 use App\Character;
+use App\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Validator;
 
 class OutfitController extends Controller
@@ -15,6 +17,7 @@ class OutfitController extends Controller
 
     /**
      * Display a listing of the resource.
+     * Used for All Cosplays Page.
      *
      * @return \Illuminate\Http\Response
      */
@@ -33,8 +36,25 @@ class OutfitController extends Controller
             unset($image);
 
             $outfit->images = $images;
-
             $outfit->character_name = Character::find($outfit->character_id)->name;
+
+            // Setup format of tags
+            $tags = DB::table('outfits_tags')->where('outfit_id', $outfit->id)->pluck('tag_id');
+            if(!empty($tags)) {
+                $final_tags = [];
+                foreach($tags as $tag_id) {
+                    $tag = Tag::find($tag_id);
+                    if (!empty($tag)) {
+                        $final_tags[] = ['value' => $tag_id, 'label' => $tag->title];
+                    }
+                }
+
+                usort($final_tags, function ($item1, $item2) {
+                    return $item1['label'] <=> $item2['label'];
+                });
+
+                $outfit->tags = $final_tags;
+            }
         }
 
         return $outfits;
@@ -42,6 +62,7 @@ class OutfitController extends Controller
 
     /**
      * Display a listing of the resource by character.
+     * Used for Cosplay Grid.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -61,6 +82,24 @@ class OutfitController extends Controller
             unset($image);
 
             $outfit->images = $images;
+
+            // Setup format of tags
+            $tags = DB::table('outfits_tags')->where('outfit_id', $outfit->id)->pluck('tag_id');
+            if(!empty($tags)) {
+                $final_tags = [];
+                foreach($tags as $tag_id) {
+                    $tag = Tag::find($tag_id);
+                    if (!empty($tag)) {
+                        $final_tags[] = ['value' => $tag_id, 'label' => $tag->title];
+                    }
+                }
+
+                usort($final_tags, function ($item1, $item2) {
+                    return $item1['label'] <=> $item2['label'];
+                });
+
+                $outfit->tags = $final_tags;
+            }
         }
 
         return $outfits;
@@ -84,7 +123,9 @@ class OutfitController extends Controller
             'obtained_on' => 'date_format:Y-m-d|nullable',
             'creator' => 'string|nullable',
             'storage_location' => 'string|nullable',
-            'times_worn' => 'string|nullable'
+            'times_worn' => 'string|nullable',
+            'tags' => 'nullable',
+            'tags.*' => 'string|nullable'
         ]);
 
         if($validator->fails()) {
@@ -107,6 +148,7 @@ class OutfitController extends Controller
         $outfit->storage_location = trim($request->storage_location);
         $outfit->times_worn = $request->times_worn;
 
+        // Store images
         if ($request->hasFile('images')) {
             $outfit->images = save_image_uploaded($request->file('images'), 'outfit', 400);
         } else if ($request->has('image_url') && !empty($request->image_url)) {
@@ -117,24 +159,40 @@ class OutfitController extends Controller
 
         $success = $outfit->save();
 
+        // Store tags
+        if ($request->has('tags') && !empty($request->tags)) {
+            $incoming_tags = (!is_array($request->tags)) ? [$request->tags] : $request->tags;
+
+            foreach ($incoming_tags as $tag_id) {
+                if(!empty($tag_id)) {
+                    $tag = Tag::find($tag_id);
+
+                    // Tag doesn't exist
+                    if (empty($tag)) {
+                        $new_tag = new Tag;
+                        $new_tag->user_id = $user_id;
+                        $new_tag->title = $tag_id;
+                        $new_tag->save();
+
+                        DB::table('outfits_tags')->insertOrIgnore(
+                            ['outfit_id' => $outfit->id, 'tag_id' => $new_tag->id]
+                        );
+                    } else {
+                        DB::table('outfits_tags')->insertOrIgnore(
+                            ['outfit_id' => $outfit->id, 'tag_id' => $tag->id]
+                        );
+                    }
+                }
+            }
+        }
+
+        $success = $outfit->save();
+
         if ($success) {
             return return_json_message('Created new outfit succesfully', $this->successStatus);
         } else {
             return return_json_message('Something went wrong while trying to create a new outfit', 401);
         }
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        /*
-        id, user_id, character_id, title, images, status, obtained_on, storage_location, times_worn
-        */
     }
 
     /**
@@ -155,7 +213,9 @@ class OutfitController extends Controller
             'obtained_on' => 'date_format:Y-m-d|nullable',
             'creator' => 'string|nullable',
             'storage_location' => 'string|nullable',
-            'times_worn' => 'string|nullable'
+            'times_worn' => 'string|nullable',
+            'tags' => 'nullable',
+            'tags.*' => 'string|nullable'
         ]);
 
         if($validator->fails()) {
@@ -214,6 +274,46 @@ class OutfitController extends Controller
                     $outfit->times_worn = $request->times_worn;
                 }
 
+                // If they want to change tags
+                if ($request->has('tags') && !empty($request->tags)) {
+                    $old_tags = DB::table('outfits_tags')->where('outfit_id', $outfit->id)->pluck('tag_id')->toArray();
+                    $old_tags = (!is_array($old_tags)) ? [$old_tags] : $old_tags;
+                    $incoming_tags = (!is_array($request->tags)) ? [$request->tags] : $request->tags;
+
+                    $tags_to_remove = array_diff($old_tags, $incoming_tags);
+                    $tags_to_insert = array_diff($incoming_tags, $old_tags);
+
+                    if (!empty($tags_to_insert)) {
+                        foreach ($tags_to_insert as $tag_id) {
+                            if(!empty($tag_id)) {
+                                $tag = Tag::find($tag_id);
+            
+                                // Tag doesn't exist
+                                if (empty($tag)) {
+                                    $new_tag = new Tag;
+                                    $new_tag->user_id = $user_id;
+                                    $new_tag->title = $tag_id;
+                                    $new_tag->save();
+                
+                                    DB::table('outfits_tags')->insertOrIgnore(
+                                        ['outfit_id' => $outfit->id, 'tag_id' => $new_tag->id]
+                                    );
+                                } else {
+                                    DB::table('outfits_tags')->insertOrIgnore(
+                                        ['outfit_id' => $outfit->id, 'tag_id' => $tag->id]
+                                    );
+                                }
+                            }
+                        }
+                    }
+
+                    if (!empty($tags_to_remove)) {
+                        foreach ($tags_to_remove as $tag_id) {
+                            DB::table('outfits_tags')->where(['outfit_id' => $outfit->id, 'tag_id' => $tag_id])->delete();
+                        }
+                    }
+                }
+
                 $success = $outfit->save();
 
                 if ($success) {
@@ -226,6 +326,19 @@ class OutfitController extends Controller
                     unset($image);
         
                     $outfit->images = $images;
+
+                    $tags = DB::table('outfits_tags')->where('outfit_id', $outfit->id)->pluck('tag_id');
+                    if(!empty($tags)) {
+                        $final_tags = [];
+                        foreach($tags as $tag_id) {
+                            $tag = Tag::find($tag_id);
+                            if (!empty($tag)) {
+                                $final_tags[] = ['value' => $tag_id, 'label' => $tag->title];
+                            }
+                        }
+                        $outfit->tags = $final_tags;
+                    }
+
                     return return_json_message('Updated character succesfully', $this->successStatus, ['outfit' => $outfit]);
                 } else {
                     return return_json_message('Something went wrong while trying to update outfit', 401);

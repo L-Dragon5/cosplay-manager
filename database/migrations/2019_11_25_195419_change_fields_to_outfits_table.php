@@ -19,7 +19,6 @@ class ChangeFieldsToOutfitsTable extends Migration
                 $table->text('creator')->nullable();
             });
         }
-        
     }
 
     /**

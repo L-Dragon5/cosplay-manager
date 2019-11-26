@@ -3,6 +3,8 @@ import axios from 'axios'
 import $ from 'jquery'
 import M from 'materialize-css'
 
+import CreatableSelect from 'react-select/creatable'
+
 class OutfitEditForm extends Component {
   constructor (props) {
     super(props)
@@ -15,6 +17,8 @@ class OutfitEditForm extends Component {
     this.creator = props.creator
     this.storage_location = props.storage_location
     this.times_worn = props.times_worn
+    this.options = props.options
+    this.tags = props.tags
 
     this.handleSubmit = this.handleSubmit.bind(this)
   }
@@ -107,19 +111,32 @@ class OutfitEditForm extends Component {
               </div>
             </div>
 
-            <div className='input-field col s12 m6'>
-              <input id={'bought-date-' + this.id} type='text' name='obtained_on' className='datepicker validate' defaultValue={this.obtained_on} />
-              <label htmlFor={'bought-date-' + this.id}>Obtained On</label>
+            <div className='input-field col s12 m4'>
+              <input id={'obtained-on-' + this.id} type='text' name='obtained_on' className='datepicker validate' defaultValue={this.obtained_on} />
+              <label htmlFor={'obtained-on-' + this.id}>Obtained On</label>
             </div>
 
-            <div className='input-field col s12 m6'>
+            <div className='input-field col s12 m4'>
               <input id={'creator-' + this.id} type='text' name='creator' className='validate' defaultValue={this.creator} />
               <label htmlFor={'creator-' + this.id}>Creator</label>
             </div>
 
-            <div className='input-field col s12 m6'>
+            <div className='input-field col s12 m4'>
               <input id={'storage-location-' + this.id} type='text' name='storage_location' className='validate' defaultValue={this.storage_location} />
               <label htmlFor={'storage-location-' + this.id}>Storage Location</label>
+            </div>
+
+            <div className='input-field col s12 m6'>
+              <CreatableSelect
+                id={'tag-select-' + this.id}
+                isMulti
+                isClearable={false}
+                name='tags[]'
+                closeMenuOnSelect={false}
+                placeholder='Select tags'
+                options={this.options}
+                defaultValue={this.tags}
+              />
             </div>
 
             <div className='input-field col s12 m6'>

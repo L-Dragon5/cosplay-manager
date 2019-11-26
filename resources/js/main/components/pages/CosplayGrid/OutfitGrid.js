@@ -17,6 +17,7 @@ class OutfitGrid extends Component {
       seriesTitle: null,
       characterName: null,
       outfits: null,
+      allTags: null,
       renderForm: false
     }
 
@@ -25,6 +26,41 @@ class OutfitGrid extends Component {
     this.token = Helper.getToken()
 
     this.handleFormUnmount = this.handleFormUnmount.bind(this)
+  }
+
+  getTags () {
+    axios.get('/api/tags', {
+      headers: {
+        Accept: 'application/json',
+        Authorization: 'Bearer ' + this.token
+      }
+    }).then(response => {
+      if (response.data) {
+        const tagArray = []
+
+        for (const tag of response.data) {
+          tagArray.push({ value: tag.id, label: tag.title })
+        }
+
+        this.setState({
+          allTags: tagArray
+        })
+      }
+    }).catch(error => {
+      if (error.response) {
+        let html = ''
+
+        if (Array.isArray(error.response)) {
+          for (const [key, value] of Object.entries(error.response.data.message)) {
+            html += key + ': ' + value + '<br>'
+          }
+        } else {
+          html += error.response.data.message
+        }
+
+        M.toast({ html: html })
+      }
+    })
   }
 
   getSeriesTitle () {
@@ -137,6 +173,7 @@ class OutfitGrid extends Component {
   }
 
   componentDidMount () {
+    this.getTags()
     this.getSeriesTitle()
     this.getCharacterName()
     this.getOutfits()
@@ -172,7 +209,9 @@ class OutfitGrid extends Component {
                 obtained_on={item.obtained_on}
                 creator={item.creator}
                 storage_location={item.storage_location}
-                times_worn={item.times_worn} />
+                times_worn={item.times_worn}
+                tags={item.tags}
+                allTags={this.state.allTags} />
             })
           }
         </div>
@@ -185,7 +224,13 @@ class OutfitGrid extends Component {
         </div>
 
         <Modal id='outfit-grid-modal'>
-          { this.state.renderForm ? <OutfitAddForm token={this.token} characterID={this.characterID} unmount={this.handleFormUnmount} /> : null }
+          { this.state.renderForm
+            ? <OutfitAddForm
+              token={this.token}
+              characterID={this.characterID}
+              options={this.state.allTags}
+              unmount={this.handleFormUnmount}
+            /> : null }
         </Modal>
       </main>
     )

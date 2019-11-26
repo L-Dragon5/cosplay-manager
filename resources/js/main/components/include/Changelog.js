@@ -15,6 +15,12 @@ class Changelog extends Component {
               <p>Initial release.</p>
             </div>
 
+            <div className='divider' />
+            <div className='section'>
+              <h5>November 25th, 2019</h5>
+              <p>Added a tagging system for outfits. Search functionality for tags might come later as it's very difficult to implement.</p>
+            </div>
+
           </div>
         </div>
       </div>

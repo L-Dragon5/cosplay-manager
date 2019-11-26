@@ -37,8 +37,14 @@ Route::middleware('auth:api')->group(function () {
     // Outfit Routes
     Route::get('outfits', 'OutfitController@index');
     Route::get('outfits/{id}', 'OutfitController@indexByCharacter');
-    Route::get('outfit/{id}', 'OutfitController@show');
     Route::post('outfit/create', 'OutfitController@store');
     Route::post('outfit/update/{id}', 'OutfitController@update');
     Route::get('outfit/destroy/{id}', 'OutfitController@destroy');
+
+    // Tag Routes
+    Route::get('tags', 'TagController@index');
+    Route::get('tag/{id}', 'TagController@show');
+    Route::post('tag/create', 'TagController@store');
+    Route::post('tag/update/{id}', 'TagController@update');
+    Route::get('tag/destroy/{id}', 'TagController@destroy');
 });

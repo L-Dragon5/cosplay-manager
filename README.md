@@ -75,6 +75,3 @@ Most of the information is laid out into a grid view.
    * `php artisan passport:install`
 9. Setup public symbolic link to storage folder
    * `php artisan storage:link`
-
-## To-Do
-- Add tagging functionality

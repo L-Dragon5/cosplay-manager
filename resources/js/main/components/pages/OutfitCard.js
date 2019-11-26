@@ -4,6 +4,7 @@ import axios from 'axios'
 import $ from 'jquery'
 
 import Modal from '../Modal'
+import Tag from '../Tag'
 import OutfitEditForm from '../forms/OutfitEditForm'
 
 class OutfitCard extends Component {
@@ -16,10 +17,12 @@ class OutfitCard extends Component {
       title: (props.title !== undefined) ? props.title : 'ERROR',
       images: props.images,
       status: (props.status !== undefined) ? parseInt(props.status) : -1,
-      obtained_on: (props.obtained_on !== undefined && props.obtained_on !== null) ? props.obtained_on : 'N/A',
-      creator: (props.creator !== undefined && props.creator !== null) ? props.creator : 'N/A',
-      storage_location: (props.storage_location !== undefined && props.storage_location !== null && props.storage_location.length) ? props.storage_location : 'N/A',
-      times_worn: (props.times_worn !== undefined && props.times_worn !== null) ? props.times_worn : 'N/A'
+      obtained_on: (props.obtained_on !== undefined && props.obtained_on !== null) ? props.obtained_on : null,
+      creator: (props.creator !== undefined && props.creator !== null) ? props.creator : null,
+      storage_location: (props.storage_location !== undefined && props.storage_location !== null && props.storage_location.length) ? props.storage_location : null,
+      times_worn: (props.times_worn !== undefined && props.times_worn !== null) ? props.times_worn : null,
+      tags: (props.tags !== undefined && props.tags !== null) ? props.tags : [],
+      allTags: (props.allTags !== undefined && props.allTags !== null) ? props.allTags : []
     }
 
     this.token = props.token
@@ -84,10 +87,11 @@ class OutfitCard extends Component {
         title: obj.title,
         images: obj.images,
         status: (obj.status !== undefined && obj.status.length) ? parseInt(obj.status) : -1,
-        obtained_on: (obj.obtained_on !== undefined && obj.obtained_on !== null) ? obj.obtained_on : 'N/A',
-        creator: (obj.creator !== undefined && obj.creator !== null) ? obj.creator : 'N/A',
-        storage_location: (obj.storage_location !== undefined && obj.storage_location !== null && obj.storage_location.length) ? obj.storage_location : 'N/A',
-        times_worn: (obj.times_worn !== undefined && obj.times_worn !== null) ? obj.times_worn : 'N/A'
+        obtained_on: (obj.obtained_on !== undefined && obj.obtained_on !== null) ? obj.obtained_on : null,
+        creator: (obj.creator !== undefined && obj.creator !== null) ? obj.creator : null,
+        storage_location: (obj.storage_location !== undefined && obj.storage_location !== null && obj.storage_location.length) ? obj.storage_location : null,
+        times_worn: (obj.times_worn !== undefined && obj.times_worn !== null) ? obj.times_worn : null,
+        tags: (obj.tags !== undefined) ? obj.tags : []
       }, () => {
         M.Carousel.init($('.carousel'), { fullWidth: true, indicators: true, noWrap: true })
         this.setState({
@@ -125,12 +129,12 @@ class OutfitCard extends Component {
           statusClass = 'outfit--worn'
         }
 
-        let boughtDate = 'N/A'
+        let obtainedOn = ''
 
-        if (this.state.obtained_on !== 'N/A') {
+        if (this.state.obtained_on !== '') {
           const d = new Date(this.state.obtained_on)
           const month = d.toLocaleString('default', { month: 'long' })
-          boughtDate = month + ' ' + d.getDate() + ', ' + d.getFullYear()
+          obtainedOn = month + ' ' + d.getDate() + ', ' + d.getFullYear()
         }
 
         return (
@@ -150,15 +154,25 @@ class OutfitCard extends Component {
                   <a className='btn-flat teal lighten-2'><i className='material-icons'>edit</i></a>
                 </div>
 
-                { this.character_name ?
-                  <span className='activator' style={{ padding: '8px' }}>
+                { this.character_name
+                  ? <span className='activator' style={{ padding: '8px', overflow: 'hidden' }}>
                     <div className='outfit__character'>
                       {this.character_name}
                     </div>
-                    {this.state.title}
+                    <div className='outfit__title'>{this.state.title}</div>
+                    <div className='outfit__tags'>
+                      { this.state.tags.map((item, i) => {
+                        return (<Tag key={i}>{item.label}</Tag>)
+                      })}
+                    </div>
                   </span>
-                  : <span className='activator' style={{ padding: '16px' }}>
-                    {this.state.title}
+                  : <span className='activator' style={{ padding: '16px', overflow: 'hidden' }}>
+                    <div className='outfit__title'>{this.state.title}</div>
+                    <div className='outfit__tags'>
+                      { this.state.tags.map((item, i) => {
+                        return (<Tag key={i}>{item.label}</Tag>)
+                      })}
+                    </div>
                   </span>
                 }
 
@@ -170,7 +184,7 @@ class OutfitCard extends Component {
               <div className='card-reveal'>
                 <span className='card-title grey-text text-darken-4'>{this.state.title}<i className='material-icons right'>close</i></span>
                 <ul>
-                  <li><strong>Obtained On:</strong> {boughtDate}</li>
+                  <li><strong>Obtained On:</strong> {obtainedOn}</li>
                   <li><strong>Creator:</strong> {this.state.creator}</li>
                   <li><strong>Storage Location:</strong> {this.state.storage_location}</li>
                   <li><strong>Times Worn:</strong> {this.state.times_worn}</li>
@@ -189,6 +203,8 @@ class OutfitCard extends Component {
                   creator={this.state.creator}
                   storage_location={this.state.storage_location}
                   times_worn={this.state.times_worn}
+                  tags={this.state.tags}
+                  options={this.state.allTags}
                   unmount={this.handleFormUnmount} />
               }
             </Modal>

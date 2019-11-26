@@ -3,12 +3,17 @@ import axios from 'axios'
 import $ from 'jquery'
 import M from 'materialize-css'
 
+import CreatableSelect from 'react-select/creatable'
+import makeAnimated from 'react-select/animated'
+const animatedComponents = makeAnimated()
+
 class OutfitAddForm extends Component {
   constructor (props) {
     super(props)
 
     this.token = props.token
     this.characterID = props.characterID
+    this.options = props.options
 
     this.handleSubmit = this.handleSubmit.bind(this)
   }
@@ -101,19 +106,31 @@ class OutfitAddForm extends Component {
               </div>
             </div>
 
-            <div className='input-field col s12 m6'>
+            <div className='input-field col s12 m4'>
               <input id='obtained_on' type='text' name='obtained_on' className='datepicker validate' />
               <label htmlFor='obtained_on'>Obtained On</label>
             </div>
 
-            <div className='input-field col s12 m6'>
+            <div className='input-field col s12 m4'>
               <input id='creator' type='text' name='creator' className='validate' />
               <label htmlFor='creator'>Creator</label>
             </div>
 
-            <div className='input-field col s12 m6'>
+            <div className='input-field col s12 m4'>
               <input id='storage_location' type='text' name='storage_location' className='validate' />
               <label htmlFor='storage_location'>Storage Location</label>
+            </div>
+
+            <div className='input-field col s12 m6'>
+              <CreatableSelect
+                isMulti
+                isClearable={false}
+                name='tags[]'
+                closeMenuOnSelect={false}
+                components={animatedComponents}
+                placeholder='Select tags'
+                options={this.options}
+              />
             </div>
 
             <div className='input-field col s12 m6'>
