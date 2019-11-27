@@ -1,10 +1,13 @@
 .series-grid {
   display: grid;
   grid-gap: 20px 10px;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  grid-template-columns: 1;
+
+  @include respond-above(sm) {
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  }
 
   .series {
-    flex: 1 0 auto;
     width: 100%;
     cursor: pointer;
     user-select: none;
@@ -53,7 +56,11 @@
 .character-grid {
   display: grid;
   grid-gap: 20px 10px;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: 1;
+
+  @include respond-above(sm) {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
 
   .character {
     width: 100%;
@@ -104,5 +111,9 @@
 .outfit-grid {
   display: grid;
   grid-gap: 20px 10px;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: 1;
+
+  @include respond-above(sm) {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
 }
