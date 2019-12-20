@@ -116,9 +116,7 @@ class OutfitController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'string|required',
             'character_id' => 'integer|required',
-            'images' => 'nullable',
-            'images.*' => 'file|image',
-            'image_url' => 'url|nullable',
+            'image' => 'string|nullable',
             'status' => 'integer|required',
             'obtained_on' => 'date_format:Y-m-d|nullable',
             'creator' => 'string|nullable',
@@ -149,10 +147,8 @@ class OutfitController extends Controller
         $outfit->times_worn = $request->times_worn;
 
         // Store images
-        if ($request->hasFile('images')) {
-            $outfit->images = save_image_uploaded($request->file('images'), 'outfit', 400);
-        } else if ($request->has('image_url') && !empty($request->image_url)) {
-            $outfit->images = save_image_url($request->image_url, 'outfit', 400);
+        if ($request->has('image')) {
+            $outfit->images = save_image_uploaded($request->image, 'outfit', 400);
         } else {
             $outfit->images = '||300x400.png';
         }
@@ -206,9 +202,7 @@ class OutfitController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'title' => 'string|required',
-            'images' => 'nullable',
-            'images.*' => 'file|image',
-            'image_url' => 'url|nullable',
+            'images' => 'string|nullable',
             'status' => 'integer|required',
             'obtained_on' => 'date_format:Y-m-d|nullable',
             'creator' => 'string|nullable',
@@ -243,10 +237,8 @@ class OutfitController extends Controller
                 }
 
                 // If they want to change image
-                if ($request->hasFile('images')) {
-                    $outfit->images = save_image_uploaded($request->file('images'), 'outfit', 400, $outfit->images);
-                } else if ($request->has('image_url') && !empty($request->image_url)) {
-                    $outfit->images = save_image_url($request->image_url, 'outfit', 400, $outfit->images);
+                if ($request->has('image')) {
+                    $outfit->images = save_image_uploaded($request->image, 'outfit', 400, $outfit->images);
                 }
 
                 // If they want to change status

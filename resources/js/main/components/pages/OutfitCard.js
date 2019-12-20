@@ -131,7 +131,7 @@ class OutfitCard extends Component {
 
         let obtainedOn = ''
 
-        if (this.state.obtained_on !== '') {
+        if (this.state.obtained_on !== null) {
           const d = new Date(this.state.obtained_on)
           const month = d.toLocaleString('default', { month: 'long' })
           obtainedOn = month + ' ' + d.getDate() + ', ' + d.getFullYear()

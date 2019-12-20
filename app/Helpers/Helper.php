@@ -145,7 +145,7 @@ if (!function_exists('save_image_uploaded')) {
 
       // Add delimiter for outfit images
       if ($location === 'outfit') {
-        $return_path = "||$location/$filename_to_store";
+        $return_path .= "||$location/$filename_to_store";
       } else {
         $return_path = "$location/$filename_to_store";
       }

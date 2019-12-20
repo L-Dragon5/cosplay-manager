@@ -61,7 +61,7 @@ class CharacterController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'string|required',
             'series_id' => 'integer|required',
-            'image' => 'nullable'
+            'image' => 'string|nullable'
         ]);
 
         if($validator->fails()) {
@@ -124,7 +124,7 @@ class CharacterController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'string|required',
-            'image' => 'nullable'
+            'image' => 'string|nullable'
         ]);
 
         if($validator->fails()) {

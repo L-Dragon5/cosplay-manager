@@ -42,7 +42,7 @@ class SeriesController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'title' => 'string|required',
-            'image' => 'nullable'
+            'image' => 'string|nullable'
         ]);
 
         if($validator->fails()) {
@@ -104,7 +104,7 @@ class SeriesController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'title' => 'string|required',
-            'image' => 'nullable'
+            'image' => 'string|nullable'
         ]);
 
         if($validator->fails()) {

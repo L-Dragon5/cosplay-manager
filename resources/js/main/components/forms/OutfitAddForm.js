@@ -2,20 +2,30 @@ import React, { Component } from 'react'
 import axios from 'axios'
 import $ from 'jquery'
 import M from 'materialize-css'
+import Cropper from 'react-cropper'
 
 import CreatableSelect from 'react-select/creatable'
 import makeAnimated from 'react-select/animated'
 const animatedComponents = makeAnimated()
 
+const cropper = React.createRef(null)
+
 class OutfitAddForm extends Component {
   constructor (props) {
     super(props)
+
+    this.state = {
+      image: null,
+      saveImage: null
+    }
 
     this.token = props.token
     this.characterID = props.characterID
     this.options = props.options
 
     this.handleSubmit = this.handleSubmit.bind(this)
+    this._cropImage = this._cropImage.bind(this)
+    this._getBase64 = this._getBase64.bind(this)
   }
 
   handleSubmit (e) {
@@ -26,6 +36,10 @@ class OutfitAddForm extends Component {
 
     const formData = new FormData(e.target)
     formData.set('character_id', this.characterID)
+
+    if (this.state.saveImage !== null) {
+      formData.set('image', this.state.saveImage)
+    }
 
     axios.post('/api/outfit/create', formData, {
       headers: {
@@ -59,6 +73,31 @@ class OutfitAddForm extends Component {
     })
   }
 
+  _cropImage () {
+    this.setState({
+      saveImage: cropper.current.getCroppedCanvas().toDataURL()
+    })
+  }
+
+  _getBase64 (e) {
+    const node = e.currentTarget
+
+    if (node.files !== null && node.files.length > 0) {
+      const image = node.files[0]
+      const reader = new FileReader()
+
+      reader.addEventListener('load', (e) => {
+        this.setState({
+          image: e.target.result
+        })
+      }, false)
+
+      if (image) {
+        reader.readAsDataURL(image)
+      }
+    }
+  }
+
   componentDidMount () {
     M.FormSelect.init($('select'))
     M.Datepicker.init($('.datepicker'), {
@@ -85,25 +124,6 @@ class OutfitAddForm extends Component {
                 <option value='2'>Worn</option>
               </select>
               <label>Outfit Status *</label>
-            </div>
-
-            <div className='col s12'>
-              <div className='input-field col'>
-                <div className='file-field input-field'>
-                  <div className='btn'>
-                    <span>Images</span>
-                    <input id='images' type='file' name='images[]' accept='image/*' multiple />
-                  </div>
-                  <div className='file-path-wrapper'>
-                    <input className='file-path validate' type='text' name='image_text' placeholder='Upload one or more files' />
-                  </div>
-                </div>
-              </div>
-
-              <div className='input-field col'>
-                <input id='image_url' type='url' name='image_url' />
-                <label htmlFor='image_url'>Image URL</label>
-              </div>
             </div>
 
             <div className='input-field col s12 m4'>
@@ -137,6 +157,31 @@ class OutfitAddForm extends Component {
               <textarea id='times_worn' className='materialize-textarea' name='times_worn' />
               <label htmlFor='times_worn'>Times Worn</label>
             </div>
+
+            <div className='col s12'>
+              <div className='file-field input-field'>
+                <div className='btn'>
+                  <span>Image</span>
+                  <input id='image' type='file' name='image' accept='image/*' onChange={(e) => this._getBase64(e)} />
+                </div>
+                <div className='file-path-wrapper'>
+                  <input className='file-path validate' type='text' name='image_text' />
+                </div>
+              </div>
+            </div>
+
+            { this.state.image &&
+            <div className='col s12' style={{ marginBottom: '1rem' }}>
+              <Cropper
+                ref={cropper}
+                viewMode={1}
+                src={this.state.image}
+                style={{ maxHeight: 350 }}
+                guides={false}
+                crop={this._cropImage}
+              />
+            </div>
+            }
 
             <div className='right-align'>
               <button id='modal-submit' type='submit' className='waves-effect waves-green btn'>Add</button>
