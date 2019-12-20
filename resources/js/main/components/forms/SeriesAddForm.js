@@ -123,6 +123,11 @@ class SeriesAddForm extends Component {
                 src={this.state.image}
                 style={{ maxHeight: 350 }}
                 guides={false}
+                autoCropArea={1}
+                movable={false}
+                zoomable={false}
+                scalable={false}
+                rotatable={false}
                 crop={this._cropImage}
               />
             </div>

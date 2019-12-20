@@ -7,6 +7,12 @@ import Modal from '../Modal'
 import Tag from '../Tag'
 import OutfitEditForm from '../forms/OutfitEditForm'
 
+const carouselOptions = {
+  fullWidth: true,
+  indicator: true,
+  noWrap: true
+}
+
 class OutfitCard extends Component {
   constructor (props) {
     super(props)
@@ -31,10 +37,11 @@ class OutfitCard extends Component {
 
     this.handleDelete = this.handleDelete.bind(this)
     this.handleFormUnmount = this.handleFormUnmount.bind(this)
+    this.handleRemovePhoto = this.handleRemovePhoto.bind(this)
   }
 
   handleInit () {
-    M.Carousel.init($('.carousel'), { fullWidth: true, indicators: true, noWrap: true })
+    M.Carousel.init($('.carousel'), carouselOptions)
     M.Modal.init($('.modal'))
   }
 
@@ -93,7 +100,7 @@ class OutfitCard extends Component {
         times_worn: (obj.times_worn !== undefined && obj.times_worn !== null) ? obj.times_worn : null,
         tags: (obj.tags !== undefined) ? obj.tags : []
       }, () => {
-        M.Carousel.init($('.carousel'), { fullWidth: true, indicators: true, noWrap: true })
+        M.Carousel.init($('.carousel'), carouselOptions)
         this.setState({
           renderForm: true
         })
@@ -101,8 +108,44 @@ class OutfitCard extends Component {
     }
   }
 
+  handleRemovePhoto (e, index) {
+    e.stopPropagation()
+
+    axios.get('/api/outfit/' + this.id + '/deleteImage/' + index, {
+      headers: {
+        Accept: 'application/json',
+        Authorization: 'Bearer ' + this.token,
+        'content-type': 'multipart/form-data'
+      }
+    }).then((response) => {
+      if (response.status === 200) {
+        M.toast({ html: response.data.message })
+        this.setState({
+          images: response.data.images
+        }, () => {
+          M.Carousel.init($('.carousel'), carouselOptions)
+        })
+      }
+    }).catch((error) => {
+      if (error.response) {
+        let html = ''
+
+        if (Array.isArray(error.response)) {
+          for (const [key, value] of Object.entries(error.response.data.message)) {
+            html += key + ': ' + value + '<br>'
+          }
+        } else {
+          html += error.response.data.message
+        }
+
+        M.toast({ html: html })
+      }
+    })
+  }
+
   componentDidMount () {
     window.addEventListener('DOMContentLoaded', this.handleInit)
+    window.addEventListener('resize', () => M.Carousel.init($('.carousel'), carouselOptions))
     if (document.readyState !== 'loading') {
       setTimeout(() => {
         this.handleInit()
@@ -144,7 +187,14 @@ class OutfitCard extends Component {
                 <div className='carousel carousel-slider'>
                   {this.state.images.map((item, i) => {
                     const url = '#' + i + '!'
-                    return (<a key={i} className='carousel-item' href={url}><img src={item} className='activator' /></a>)
+                    return (
+                      <a key={i} className='carousel-item' href={url}>
+                        <img src={item} className='activator' />
+                        <div className='outfit__image__delete' onClick={(e) => this.handleRemovePhoto(e, i)}>
+                          <i className='material-icons'>delete</i>
+                        </div>
+                      </a>
+                    )
                   })}
                 </div>
               </div>

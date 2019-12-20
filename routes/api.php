@@ -40,6 +40,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('outfit/create', 'OutfitController@store');
     Route::post('outfit/update/{id}', 'OutfitController@update');
     Route::get('outfit/destroy/{id}', 'OutfitController@destroy');
+    Route::get('outfit/{id}/deleteImage/{index}', 'OutfitController@deleteImage');
 
     // Tag Routes
     Route::get('tags', 'TagController@index');

@@ -105,7 +105,7 @@ class Series extends Component {
           <>
             <div className='series' onClick={this.handleClick}>
               <div className='series__image'>
-                <img src={this.state.image} />
+                <img src={this.state.image} draggable={false} />
               </div>
               <div className='series__title'>
                 <div className='series__icon modal-trigger' data-target={modalName} onClick={(e) => e.stopPropagation()}>

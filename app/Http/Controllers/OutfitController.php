@@ -386,4 +386,68 @@ class OutfitController extends Controller
             return return_json_message('Invalid outfit id', 401);
         }
     }
+
+    /**
+     * Remove image from outfit.
+     * 
+     * @param  int  $id
+     * @param  int  $path
+     * @return \Illuminate\Http\Response
+     */
+    public function deleteImage($id, $index) {
+        $user_id = Auth::user()->id;
+        $success = false;
+
+        try {
+            $outfit = Outfit::findOrFail($id);
+
+            if ($outfit->user_id === $user_id) {
+                // Get stored images as an array
+                $stored_images = explode('||', $outfit->images);
+                array_shift($stored_images);
+
+                // Get path of image
+                $path = $stored_images[$index];
+                if($path == '300x400.png') {
+                    return return_json_message('Cannot delete placeholder image.', $this->errorStatus);
+                }
+
+                // Remove image from stored images array
+                unset($stored_images[$index]);
+
+                // Get storage path for image
+                $image_stored_path = storage_path('app/public/' . $path);
+
+                // Remove image from storage
+                if (file_exists($image_stored_path)) {
+                    unlink($image_stored_path);
+                }
+
+                // If no more images exist, put placeholder
+                // If they do, put them back together and store
+                if (empty($stored_images)) {
+                    $stored_images = ['300x400.png'];
+                    $outfit->images = '||300x400.png';
+                } else {
+                    $outfit->images = '||' . implode('||', $stored_images);
+                }
+
+                $success = $outfit->save();
+            } else {
+                return return_json_message('You do not have permission to delete this outfit', $this->errorStatus);
+            }
+
+            if ($success) {
+                foreach ($stored_images as &$image) {
+                    $image = '/storage/' . $image;
+                }
+                unset($image);
+                return return_json_message('Deleted image from outfit succesfully', $this->successStatus, ['images' => $stored_images]);
+            } else {
+                return return_json_message('Did not find an image to remove', 404);
+            }
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return return_json_message('Invalid outfit id', 401);
+        }
+    }
 }

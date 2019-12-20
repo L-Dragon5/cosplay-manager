@@ -168,7 +168,7 @@ class OutfitEditForm extends Component {
               <div className='file-field input-field'>
                 <div className='btn'>
                   <span>Image</span>
-                  <input id='image' type='file' name='image' accept='image/*' onChange={(e) => this._getBase64(e)} />
+                  <input type='file' name='image' accept='image/*' onChange={(e) => this._getBase64(e)} />
                 </div>
                 <div className='file-path-wrapper'>
                   <input className='file-path validate' type='text' name='image_text' />
@@ -184,6 +184,11 @@ class OutfitEditForm extends Component {
                 src={this.state.image}
                 style={{ maxHeight: 350 }}
                 guides={false}
+                autoCropArea={1}
+                movable={false}
+                zoomable={false}
+                scalable={false}
+                rotatable={false}
                 crop={this._cropImage}
               />
             </div>

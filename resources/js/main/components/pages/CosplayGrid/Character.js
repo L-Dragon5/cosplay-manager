@@ -106,7 +106,7 @@ class Character extends Component {
           <>
             <div className='character' onClick={this.handleClick}>
               <div className='character__image'>
-                <img src={this.state.image} />
+                <img src={this.state.image} draggable={false} />
               </div>
               <div className='character__name'>
                 <div className='character__icon modal-trigger' data-target={modalName} onClick={(e) => e.stopPropagation()}>

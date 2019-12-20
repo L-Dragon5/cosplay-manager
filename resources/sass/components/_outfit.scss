@@ -29,8 +29,35 @@
     }
   }
 
+  &__title {
+    font-size: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    &:hover {
+      white-space: initial;
+      overflow: initial;
+      text-overflow: initial;
+    }
+  }
+
   &__images {
     max-height: 343px !important;
+  }
+
+  &__image {
+    &__delete {
+      background-color: rgb(105, 105, 105);
+      padding: 4px;
+      position: absolute;
+      top: 5px;
+      left: 5px;
+
+      & i {
+        color: #eee;
+      }
+    }
   }
 
   &--future {
