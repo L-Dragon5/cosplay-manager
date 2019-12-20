@@ -93,11 +93,20 @@ if (!function_exists('save_image_uploaded')) {
     // Check for multiple images
     if (is_array($file)) {
       foreach ($file as $img) {
-        // Get filenames
-        $filename_with_ext = $img->getClientOriginalName();
-        $filename = pathinfo($filename_with_ext, PATHINFO_FILENAME);
-        $extension = $img->getClientOriginalExtension();
-        $filename_to_store = $filename . '_' . time() . '.' . $extension;
+        // If Base64 String image
+        if (is_string($img)) {
+          list($extension, $img) = explode(';', $img);
+          list(, $img) = explode(',', $img);
+
+          $extension = substr($extension, 11);
+          $filename_to_store = bin2hex(random_bytes(5)) . '_' . time() . '.' . $extension;
+        } else {
+          // Get filenames
+          $filename_with_ext = $img->getClientOriginalName();
+          $filename = pathinfo($filename_with_ext, PATHINFO_FILENAME);
+          $extension = $img->getClientOriginalExtension();
+          $filename_to_store = $filename . '_' . time() . '.' . $extension;
+        }
 
         // Create image, resize, and save
         $final_img = Image::make($img)->resize(null, $height, function ($constraint) {
@@ -113,11 +122,20 @@ if (!function_exists('save_image_uploaded')) {
         }
       }
     } else {
-      // Get filenames
-      $filename_with_ext = $file->getClientOriginalName();
-      $filename = pathinfo($filename_with_ext, PATHINFO_FILENAME);
-      $extension = $file->getClientOriginalExtension();
-      $filename_to_store = $filename . '_' . time() . '.' . $extension;
+      // If Base64 String Image
+      if (is_string($file)) {
+        list($extension, $file) = explode(';', $file);
+        list(, $file) = explode(',', $file);
+
+        $extension = substr($extension, 11);
+        $filename_to_store = bin2hex(random_bytes(5)) . '_' . time() . '.' . $extension;
+      } else {
+        // Get filenames
+        $filename_with_ext = $file->getClientOriginalName();
+        $filename = pathinfo($filename_with_ext, PATHINFO_FILENAME);
+        $extension = $file->getClientOriginalExtension();
+        $filename_to_store = $filename . '_' . time() . '.' . $extension;
+      }
 
       // Create image, resize, and save
       $img = Image::make($file)->resize(null, $height, function ($constraint) {
@@ -131,32 +149,32 @@ if (!function_exists('save_image_uploaded')) {
       } else {
         $return_path = "$location/$filename_to_store";
       }
-    }
 
-    // Check if editing image path
-    if (!empty($old_image_path)) {
-      // Different actions for different locations
-      if ($location === 'series') {
-        // Remove if not using placeholder image
-        if ($old_image_path !== '300x200.png') {
-          $full_path = storage_path('app/public/' . $old_image_path);
+      // Check if editing image path
+      if (!empty($old_image_path)) {
+        // Different actions for different locations
+        if ($location === 'series') {
+          // Remove if not using placeholder image
+          if ($old_image_path !== '300x200.png') {
+            $full_path = storage_path('app/public/' . $old_image_path);
 
-          if (file_exists($full_path)) {
-            unlink($full_path);
+            if (file_exists($full_path)) {
+              unlink($full_path);
+            }
           }
-        }
-      } else if ($location === 'character') {
-        // Remove if not using placeholder image
-        if ($old_image_path !== '200x400.png') {
-          $full_path = storage_path('app/public/' . $old_image_path);
+        } else if ($location === 'character') {
+          // Remove if not using placeholder image
+          if ($old_image_path !== '200x400.png') {
+            $full_path = storage_path('app/public/' . $old_image_path);
 
-          if (file_exists($full_path)) {
-            unlink($full_path);
+            if (file_exists($full_path)) {
+              unlink($full_path);
+            }
           }
+        } else if ($location === 'outfit') {
+          // Remove placeholder path if it exists and add new image paths
+          $return_path = str_replace('||300x400.png', '', $old_image_path) . $return_path;
         }
-      } else if ($location === 'outfit') {
-        // Remove placeholder path if it exists and add new image paths
-        $return_path = str_replace('||300x400.png', '', $old_image_path) . $return_path;
       }
     }
 

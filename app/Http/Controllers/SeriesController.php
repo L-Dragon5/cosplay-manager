@@ -42,8 +42,7 @@ class SeriesController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'title' => 'string|required',
-            'image' => 'file|image|nullable',
-            'image_url' => 'url|nullable'
+            'image' => 'nullable'
         ]);
 
         if($validator->fails()) {
@@ -60,10 +59,8 @@ class SeriesController extends Controller
         $series->user_id = $user_id;
         $series->title = trim($request->title);
 
-        if ($request->hasFile('image')) {
-            $series->image = save_image_uploaded($request->file('image'), 'series', 200);
-        } else if ($request->has('image_url') && !empty($request->image_url)) {
-            $series->image = save_image_url($request->image_url, 'series', 200);
+        if ($request->has('image')) {
+            $series->image = save_image_uploaded($request->image, 'series', 200);
         } else {
             $series->image = '300x200.png';
         }
@@ -107,8 +104,7 @@ class SeriesController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'title' => 'string|required',
-            'image' => 'file|image|nullable',
-            'image_url' => 'url|nullable'
+            'image' => 'nullable'
         ]);
 
         if($validator->fails()) {
@@ -136,10 +132,8 @@ class SeriesController extends Controller
                 }
 
                 // If they want to change image
-                if ($request->hasFile('image')) {
-                    $series->image = save_image_uploaded($request->file('image'), 'series', 200, $series->image);
-                } else if ($request->has('image_url') && !empty($request->image_url)) {
-                    $series->image = save_image_url($request->image_url, 'series', 200, $series->image);
+                if ($request->has('image')) {
+                    $series->image = save_image_uploaded($request->image, 'series', 200, $series->image);
                 }
 
                 $success = $series->save();

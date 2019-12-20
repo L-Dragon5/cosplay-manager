@@ -61,8 +61,7 @@ class CharacterController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'string|required',
             'series_id' => 'integer|required',
-            'image' => 'file|image|nullable',
-            'image_url' => 'url|nullable'
+            'image' => 'nullable'
         ]);
 
         if($validator->fails()) {
@@ -80,10 +79,8 @@ class CharacterController extends Controller
         $character->series_id = $request->series_id;
         $character->name = trim($request->name);
 
-        if ($request->hasFile('image')) {
-            $character->image = save_image_uploaded($request->file('image'), 'character', 400);
-        } else if ($request->has('image_url') && !empty($request->image_url)) {
-            $character->image = save_image_url($request->image_url, 'character', 400);
+        if ($request->has('image')) {
+            $character->image = save_image_uploaded($request->image, 'character', 400);
         } else {
             $character->image = '200x400.png';
         }
@@ -127,8 +124,7 @@ class CharacterController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'string|required',
-            'image' => 'file|image|nullable',
-            'image_url' => 'url|nullable'
+            'image' => 'nullable'
         ]);
 
         if($validator->fails()) {
@@ -156,10 +152,8 @@ class CharacterController extends Controller
                 }
 
                 // If they want to change image
-                if ($request->hasFile('image')) {
-                    $character->image = save_image_uploaded($request->file('image'), 'character', 400, $character->image);
-                } else if ($request->has('image_url') && !empty($request->image_url)) {
-                    $character->image = save_image_url($request->image_url, 'character', 400, $character->image);
+                if ($request->has('image')) {
+                    $character->image = save_image_uploaded($request->image, 'character', 400, $character->image);
                 }
 
                 $success = $character->save();
