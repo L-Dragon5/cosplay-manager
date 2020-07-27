@@ -1,12 +1,23 @@
-import React, { useCallback } from 'react'
-import axios from 'axios'
+import React, { useCallback, useState } from 'react';
+import axios from 'axios';
 
-import { Avatar, Button, Container, CssBaseline, TextField, Link, Box, Grid, Typography } from '@material-ui/core';
+import {
+  Avatar,
+  Button,
+  Container,
+  CssBaseline,
+  TextField,
+  Link,
+  Box,
+  Grid,
+  Typography,
+} from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { makeStyles } from '@material-ui/core/styles';
+import { Alert } from '@material-ui/lab';
 
 // Components
-import Helper from './components/Helper'
+import Helper from './components/Helper';
 import Copyright from './components/Copyright';
 
 const useStyles = makeStyles((theme) => ({
@@ -32,36 +43,47 @@ const useStyles = makeStyles((theme) => ({
 const RegisterPage = () => {
   const classes = useStyles();
 
+  const [errorAlertMessage, setErrorAlertMessage] = useState('');
+
   const passToken = (data) => {
     if (Helper.setToken(data)) {
-      window.location.replace('/dashboard')
+      window.location.replace('/dashboard');
     } else {
-      alert('Your browser doesn\'t support the login storage option. Please use an updated browser.')
+      alert(
+        "Your browser doesn't support the login storage option. Please use an updated browser.",
+      );
     }
   };
 
-  const handleSubmit = useCallback(
-    (e) => {
-      e.preventDefault()
-  
-      const formData = new FormData(e.target)
-  
-      axios.post('/api/register', formData, {
+  const handleSubmit = useCallback((e) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+
+    axios
+      .post('/api/register', formData, {
         header: {
           Accept: 'application/json',
-          'content-type': 'multipart/form-data'
-        }
-      }).then((response) => {
+          'content-type': 'multipart/form-data',
+        },
+      })
+      .then((response) => {
         if (response.status === 200) {
-          passToken(response.data.message)
+          passToken(response.data.message);
         }
-      }).catch((error) => {
+      })
+      .catch((error) => {
         if (error.response) {
-          console.error(error.response.data.message);
+          let message = '';
+
+          Object.keys(error.response.data.message).forEach((key) => {
+            message += `[${key}] - ${error.response.data.message[key]}\r\n`;
+          });
+
+          setErrorAlertMessage(message);
         }
       });
-    }, [],
-  );
+  }, []);
 
   return (
     <Container component="main" maxWidth="xs">
@@ -73,6 +95,13 @@ const RegisterPage = () => {
         <Typography component="h1" variant="h5">
           Register
         </Typography>
+
+        {errorAlertMessage && (
+          <Alert severity="error" style={{ whiteSpace: 'pre' }}>
+            {errorAlertMessage}
+          </Alert>
+        )}
+
         <form className={classes.form} onSubmit={handleSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
@@ -109,8 +138,9 @@ const RegisterPage = () => {
               />
             </Grid>
             <Grid item xs={12}>
-              <div className='g-recaptcha'
-                name='g-recaptcha-response'
+              <div
+                className="g-recaptcha"
+                name="g-recaptcha-response"
                 data-sitekey={process.env.MIX_GOOGLE_RECAPTCHA_KEY}
               />
             </Grid>
@@ -126,7 +156,7 @@ const RegisterPage = () => {
           </Button>
           <Grid container justify="flex-end">
             <Grid item>
-              <Link href="/auth/login" variant="body2">
+              <Link href="/login" variant="body2">
                 Already have an account? Sign in
               </Link>
             </Grid>

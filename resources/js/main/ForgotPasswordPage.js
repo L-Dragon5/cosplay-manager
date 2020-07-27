@@ -1,9 +1,20 @@
-import React, { useCallback } from 'react'
-import axios from 'axios'
+import React, { useCallback, useState } from 'react';
+import axios from 'axios';
 
-import { Avatar, Button, Container, CssBaseline, TextField, Link, Box, Grid, Typography } from '@material-ui/core';
+import {
+  Avatar,
+  Button,
+  Container,
+  CssBaseline,
+  TextField,
+  Link,
+  Box,
+  Grid,
+  Typography,
+} from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { makeStyles } from '@material-ui/core/styles';
+import { Alert } from '@material-ui/lab';
 
 // Components
 import Copyright from './components/Copyright';
@@ -31,28 +42,38 @@ const useStyles = makeStyles((theme) => ({
 const ForgotPasswordPage = () => {
   const classes = useStyles();
 
-  const handleSubmit = useCallback(
-    (e) => {
-      e.preventDefault()
-  
-      const formData = new FormData(e.target)
-  
-      axios.post('/api/forgot-password', formData, {
+  const [successAlertMessage, setSuccessAlertMessage] = useState('');
+  const [errorAlertMessage, setErrorAlertMessage] = useState('');
+
+  const handleSubmit = useCallback((e) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+
+    axios
+      .post('/api/forgot-password', formData, {
         header: {
           Accept: 'application/json',
-          'content-type': 'multipart/form-data'
-        }
-      }).then((response) => {
+          'content-type': 'multipart/form-data',
+        },
+      })
+      .then((response) => {
         if (response.status === 200) {
-          console.log(response.data.message);
+          setSuccessAlertMessage(response.data.message);
         }
-      }).catch((error) => {
+      })
+      .catch((error) => {
         if (error.response) {
-          console.error(error.response.data.message);
+          let message = '';
+
+          Object.keys(error.response.data.message).forEach((key) => {
+            message += `[${key}] - ${error.response.data.message[key]}\r\n`;
+          });
+
+          setErrorAlertMessage(message);
         }
       });
-    }, [],
-  );
+  }, []);
 
   return (
     <Container component="main" maxWidth="xs">
@@ -64,6 +85,17 @@ const ForgotPasswordPage = () => {
         <Typography component="h1" variant="h5">
           Forgot Password
         </Typography>
+
+        {errorAlertMessage && (
+          <Alert severity="error" style={{ whiteSpace: 'pre' }}>
+            {errorAlertMessage}
+          </Alert>
+        )}
+
+        {successAlertMessage && (
+          <Alert severity="success">{successAlertMessage}</Alert>
+        )}
+
         <form className={classes.form} onSubmit={handleSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
@@ -87,9 +119,14 @@ const ForgotPasswordPage = () => {
           >
             Retrieve Password
           </Button>
-          <Grid container justify="flex-end">
+          <Grid container>
+            <Grid item xs>
+              <Link href="/login" variant="body2">
+                Back to login
+              </Link>
+            </Grid>
             <Grid item>
-              <Link href="/" variant="body2">
+              <Link href="/home" variant="body2">
                 Back to home
               </Link>
             </Grid>

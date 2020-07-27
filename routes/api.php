@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 // User Routes
 Route::post('login', 'UserController@login');
 Route::post('register', 'UserController@register');
+Route::post('forgot-password', 'UserController@forgotPassword');
 Route::post('checkUser', 'UserController@checkUser');
 
 Route::middleware('auth:api')->group(function () {

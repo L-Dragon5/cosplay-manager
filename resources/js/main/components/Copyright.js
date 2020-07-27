@@ -3,7 +3,7 @@ import { Typography } from '@material-ui/core';
 
 const Copyright = () => {
   return (
-    <Typography variant="body2" color="textSecondary" align="center">
+    <Typography variant="body2" align="center">
       Copyright © CosManage {new Date().getFullYear()}
     </Typography>
   );

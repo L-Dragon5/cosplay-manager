@@ -21,17 +21,17 @@ Route::get('/dashboard/{any}/{all?}', function () {
 });
 
 // Authentication Routes
-Route::get('/auth/login', function () {
+Route::get('/login', function () {
     return view('auth.login');
 })->name('login');
 
-Route::get('/auth/register', function () {
+Route::get('/register', function () {
     return view('auth.register');
 })->name('register');
 
-Route::get('/auth/forgot', function () {
-    return view('auth.forgot');
-})->name('forgot');
+Route::get('/forgot-password', function () {
+    return view('auth.forgot-password');
+})->name('forgot-password');
 
 // Go to Home Page
 Route::get('/', function () {

@@ -1,12 +1,23 @@
-import React, { useCallback } from 'react'
-import axios from 'axios'
+import React, { useCallback, useState } from 'react';
+import axios from 'axios';
 
-import { Avatar, Button, CssBaseline, TextField, Link, Paper, Box, Grid, Typography } from '@material-ui/core';
+import {
+  Avatar,
+  Button,
+  CssBaseline,
+  TextField,
+  Link,
+  Paper,
+  Box,
+  Grid,
+  Typography,
+} from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { makeStyles } from '@material-ui/core/styles';
+import { Alert } from '@material-ui/lab';
 
 // Components
-import Helper from './components/Helper'
+import Helper from './components/Helper';
 import Copyright from './components/Copyright';
 
 const useStyles = makeStyles((theme) => ({
@@ -17,7 +28,9 @@ const useStyles = makeStyles((theme) => ({
     backgroundImage: 'url(https://source.unsplash.com/random)',
     backgroundRepeat: 'no-repeat',
     backgroundColor:
-      theme.palette.type === 'light' ? theme.palette.grey[50] : theme.palette.grey[900],
+      theme.palette.type === 'light'
+        ? theme.palette.grey[50]
+        : theme.palette.grey[900],
     backgroundSize: 'cover',
     backgroundPosition: 'center',
   },
@@ -43,36 +56,41 @@ const useStyles = makeStyles((theme) => ({
 const LoginPage = () => {
   const classes = useStyles();
 
+  const [errorAlertMessage, setErrorAlertMessage] = useState('');
+
   const passToken = (data) => {
     if (Helper.setToken(data)) {
-      window.location.replace('/dashboard')
+      window.location.replace('/dashboard');
     } else {
-      alert('Your browser doesn\'t support the login storage option. Please use an updated browser.')
+      alert(
+        "Your browser doesn't support the login storage option. Please use an updated browser.",
+      );
     }
   };
 
-  const handleSubmit = useCallback(
-    (e) => {
-      e.preventDefault()
-  
-      const formData = new FormData(e.target)
-  
-      axios.post('/api/login', formData, {
+  const handleSubmit = useCallback((e) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+
+    axios
+      .post('/api/login', formData, {
         header: {
           Accept: 'application/json',
-          'content-type': 'multipart/form-data'
-        }
-      }).then((response) => {
+          'content-type': 'multipart/form-data',
+        },
+      })
+      .then((response) => {
         if (response.status === 200) {
-          passToken(response.data.message)
+          passToken(response.data.message);
         }
-      }).catch((error) => {
+      })
+      .catch((error) => {
         if (error.response) {
-          console.error(error.response.data.message);
+          setErrorAlertMessage(error.response.data.message);
         }
       });
-    }, [],
-  );
+  }, []);
 
   return (
     <Grid container component="main" className={classes.root}>
@@ -86,6 +104,11 @@ const LoginPage = () => {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
+
+          {errorAlertMessage && (
+            <Alert severity="error">{errorAlertMessage}</Alert>
+          )}
+
           <form className={classes.form} onSubmit={handleSubmit}>
             <TextField
               variant="outlined"
@@ -120,12 +143,12 @@ const LoginPage = () => {
             </Button>
             <Grid container>
               <Grid item xs>
-                <Link href="/auth/forgot" variant="body2">
+                <Link href="/forgot-password" variant="body2">
                   Forgot password?
                 </Link>
               </Grid>
               <Grid item>
-                <Link href="/auth/register" variant="body2">
+                <Link href="/register" variant="body2">
                   Don't have an account? Sign Up
                 </Link>
               </Grid>

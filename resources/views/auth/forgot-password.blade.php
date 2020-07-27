@@ -2,7 +2,7 @@
 
 @section('page_name', 'Forgot Password')
 @section('content')
-<div id="forgot-root">
+<div id="forgot-password-root">
 
 </div>
 @endsection
