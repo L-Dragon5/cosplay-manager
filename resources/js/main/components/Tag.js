@@ -1,11 +1,8 @@
-import React, { Component } from 'react'
+import React from 'react'
 
-class Tag extends Component {
-  render () {
-    return (
-      <span className='tag'>{this.props.children}</span>
-    )
-  }
-}
+const Tag = (props) => {
+  const { children } = props;
+  return <span className='tag'>{children}</span>
+};
 
-export default Tag
+export default Tag;

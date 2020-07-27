@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import axios from 'axios'
-import M from 'materialize-css'
 
 // Components
 import Helper from '../Helper'

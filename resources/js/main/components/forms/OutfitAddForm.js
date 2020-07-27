@@ -1,7 +1,5 @@
 import React, { Component } from 'react'
 import axios from 'axios'
-import $ from 'jquery'
-import M from 'materialize-css'
 import Cropper from 'react-cropper'
 
 import CreatableSelect from 'react-select/creatable'

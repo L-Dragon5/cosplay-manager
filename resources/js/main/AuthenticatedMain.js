@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import axios from 'axios'
-import $ from 'jquery'
 import { Route, BrowserRouter, Switch } from 'react-router-dom'
+import { CssBaseline } from '@material-ui/core';
 
 // Include
 import Navbar from './components/include/Navbar'
@@ -42,24 +42,23 @@ class AuthenticatedMain extends Component {
 
   render () {
     return (
-      <BrowserRouter>
-        <div>
-          <Navbar />
-          <Switch>
-            <Route exact path='/' component={SeriesGrid} />
-            <Route exact path='/s-:series' component={CharacterGrid} />
-            <Route exact path='/s-:series/c-:character' component={OutfitGrid} />
+      <>
+        <CssBaseline />
+        <BrowserRouter basename={process.env.PUBLIC_URL + '/organizer'}>
+          <div>
+            <Navbar />
+            <Switch>
+              <Route exact path='/' component={SeriesGrid} />
+              <Route exact path='/s-:series' component={CharacterGrid} />
+              <Route exact path='/s-:series/c-:character' component={OutfitGrid} />
 
-            <Route path='/all-cosplays' component={AllCosplaysPage} />
-          </Switch>
-        </div>
-      </BrowserRouter>
+              <Route path='/all-cosplays' component={AllCosplaysPage} />
+            </Switch>
+          </div>
+        </BrowserRouter>
+      </>
     )
   }
 }
 
-export default AuthenticatedMain
-
-if ($('#authenticated-root').length) {
-  ReactDOM.render(<AuthenticatedMain />, document.getElementById('authenticated-root'))
-}
+export default AuthenticatedMain;

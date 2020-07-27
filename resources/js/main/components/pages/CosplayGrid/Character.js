@@ -1,9 +1,7 @@
 import React, { Component } from 'react'
 import axios from 'axios'
-import M from 'materialize-css'
-import $ from 'jquery'
 
-import Modal from '../../Modal'
+import { Modal } from '@material-ui/core';
 import CharacterEditForm from '../../forms/CharacterEditForm'
 
 class Character extends Component {

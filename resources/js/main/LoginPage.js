@@ -1,109 +1,143 @@
-import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
+import React, { useCallback } from 'react'
 import axios from 'axios'
-import $ from 'jquery'
+
+import { Avatar, Button, CssBaseline, TextField, Link, Paper, Box, Grid, Typography } from '@material-ui/core';
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import { makeStyles } from '@material-ui/core/styles';
 
 // Components
 import Helper from './components/Helper'
+import Copyright from './components/Copyright';
 
-class LoginPage extends Component {
-  constructor (props) {
-    super(props)
+const useStyles = makeStyles((theme) => ({
+  root: {
+    height: '100vh',
+  },
+  image: {
+    backgroundImage: 'url(https://source.unsplash.com/random)',
+    backgroundRepeat: 'no-repeat',
+    backgroundColor:
+      theme.palette.type === 'light' ? theme.palette.grey[50] : theme.palette.grey[900],
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+  },
+  paper: {
+    margin: theme.spacing(8, 4),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  avatar: {
+    margin: theme.spacing(1),
+    backgroundColor: theme.palette.secondary.main,
+  },
+  form: {
+    width: '100%', // Fix IE 11 issue.
+    marginTop: theme.spacing(1),
+  },
+  submit: {
+    margin: theme.spacing(3, 0, 2),
+  },
+}));
 
-    this.handleSubmit = this.handleSubmit.bind(this)
-  }
+const LoginPage = () => {
+  const classes = useStyles();
 
-  passToken (data) {
+  const passToken = (data) => {
     if (Helper.setToken(data)) {
-      window.location.replace('/')
+      window.location.replace('/dashboard')
     } else {
       alert('Your browser doesn\'t support the login storage option. Please use an updated browser.')
     }
-  }
+  };
 
-  handleSubmit (e) {
-    e.preventDefault()
-    $('.form-errors').html('').hide()
-    $('#form-loader').show()
-    $('#form-submit').hide()
+  const handleSubmit = useCallback(
+    (e) => {
+      e.preventDefault()
+  
+      const formData = new FormData(e.target)
+  
+      axios.post('/api/login', formData, {
+        header: {
+          Accept: 'application/json',
+          'content-type': 'multipart/form-data'
+        }
+      }).then((response) => {
+        if (response.status === 200) {
+          passToken(response.data.message)
+        }
+      }).catch((error) => {
+        if (error.response) {
+          console.error(error.response.data.message);
+        }
+      });
+    }, [],
+  );
 
-    const formData = new FormData(e.target)
-
-    axios.post('/api/login', formData, {
-      header: {
-        Accept: 'application/json',
-        'content-type': 'multipart/form-data'
-      }
-    }).then((response) => {
-      if (response.status === 200) {
-        this.passToken(response.data.message)
-      }
-    }).catch((error) => {
-      if (error.response) {
-        $('.form-errors').html(error.response.data.message).show()
-      }
-    }).then(() => {
-      $('#form-loader').hide()
-      $('#form-submit').show()
-    })
-  }
-
-  render () {
-    return (
-      <div className='container center-align' style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
-        <div className='row'>
-          <div className='col s12'>
-            <div className='row'>
-              <div className='col s12'>
-                <h4>Welcome to CosManage</h4>
-                <p>An easy to use website for planning cosplays and managing cosplays you own.</p>
-              </div>
-            </div>
-
-            <div className='row'>
-              <div className='col s8 offset-s2' style={{ backgroundColor: '#fff', border: '1px solid rgba(0,0,0,0.125)', borderRadius: '0.25rem' }}>
-                <div className='row' style={{ marginTop: '20px', marginBottom: '0' }}>
-                  <div className='form-errors col s12' />
-
-                  <form className='col s12' onSubmit={this.handleSubmit}>
-                    <div className='row' style={{ marginBottom: '0' }}>
-                      <div className='input-field col s12'>
-                        <input id='email' name='email' type='email' required />
-                        <label htmlFor='email'>E-Mail</label>
-                      </div>
-                    </div>
-
-                    <div className='row'>
-                      <div className='input-field col s12'>
-                        <input id='password' name='password' type='password' required />
-                        <label htmlFor='password'>Password</label>
-                      </div>
-                    </div>
-
-                    <div className='row left-align'>
-                      <button id='form-submit' className='btn waves-effect waves-light' style={{ margin: '0 16px' }} type='submit' name='action'>Login</button>
-                      <div id='form-loader' style={{ display: 'none' }} className='preloader-wrapper small active'><div className='spinner-layer spinner-green-only'><div className='circle-clipper left'><div className='circle'></div></div><div className='gap-patch'><div className='circle'></div></div><div className='circle-clipper right'><div className='circle'></div></div></div></div>
-                    </div>
-                  </form>
-
-                </div>
-              </div>
-            </div>
-
-            <div className='row left-align'>
-              <div className='col s8 offset-s2'>
-                <a href='/auth/register'>Need an account? Register here.</a>
-              </div>
-            </div>
-          </div>
+  return (
+    <Grid container component="main" className={classes.root}>
+      <CssBaseline />
+      <Grid item xs={false} sm={4} md={7} className={classes.image} />
+      <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+        <div className={classes.paper}>
+          <Avatar className={classes.avatar}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Sign in
+          </Typography>
+          <form className={classes.form} onSubmit={handleSubmit}>
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              autoComplete="email"
+              autoFocus
+            />
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+            />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+            >
+              Sign In
+            </Button>
+            <Grid container>
+              <Grid item xs>
+                <Link href="/auth/forgot" variant="body2">
+                  Forgot password?
+                </Link>
+              </Grid>
+              <Grid item>
+                <Link href="/auth/register" variant="body2">
+                  Don't have an account? Sign Up
+                </Link>
+              </Grid>
+            </Grid>
+            <Box mt={5}>
+              <Copyright />
+            </Box>
+          </form>
         </div>
-      </div>
-    )
-  }
-}
+      </Grid>
+    </Grid>
+  );
+};
 
-export default LoginPage
-
-if ($('#login-root').length) {
-  ReactDOM.render(<LoginPage />, document.getElementById('login-root'))
-}
+export default LoginPage;

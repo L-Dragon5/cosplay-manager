@@ -6,7 +6,6 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { makeStyles } from '@material-ui/core/styles';
 
 // Components
-import Helper from './components/Helper'
 import Copyright from './components/Copyright';
 
 const useStyles = makeStyles((theme) => ({
@@ -29,16 +28,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const RegisterPage = () => {
+const ForgotPasswordPage = () => {
   const classes = useStyles();
-
-  const passToken = (data) => {
-    if (Helper.setToken(data)) {
-      window.location.replace('/dashboard')
-    } else {
-      alert('Your browser doesn\'t support the login storage option. Please use an updated browser.')
-    }
-  };
 
   const handleSubmit = useCallback(
     (e) => {
@@ -46,14 +37,14 @@ const RegisterPage = () => {
   
       const formData = new FormData(e.target)
   
-      axios.post('/api/register', formData, {
+      axios.post('/api/forgot-password', formData, {
         header: {
           Accept: 'application/json',
           'content-type': 'multipart/form-data'
         }
       }).then((response) => {
         if (response.status === 200) {
-          passToken(response.data.message)
+          console.log(response.data.message);
         }
       }).catch((error) => {
         if (error.response) {
@@ -71,7 +62,7 @@ const RegisterPage = () => {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Register
+          Forgot Password
         </Typography>
         <form className={classes.form} onSubmit={handleSubmit}>
           <Grid container spacing={2}>
@@ -86,34 +77,6 @@ const RegisterPage = () => {
                 autoComplete="email"
               />
             </Grid>
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                name="c_password"
-                label="Confirm Password"
-                type="c_password"
-                id="c_password"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <div className='g-recaptcha'
-                name='g-recaptcha-response'
-                data-sitekey={process.env.MIX_GOOGLE_RECAPTCHA_KEY}
-              />
-            </Grid>
           </Grid>
           <Button
             type="submit"
@@ -122,12 +85,12 @@ const RegisterPage = () => {
             color="primary"
             className={classes.submit}
           >
-            Sign Up
+            Retrieve Password
           </Button>
           <Grid container justify="flex-end">
             <Grid item>
-              <Link href="/auth/login" variant="body2">
-                Already have an account? Sign in
+              <Link href="/" variant="body2">
+                Back to home
               </Link>
             </Grid>
           </Grid>
@@ -140,4 +103,4 @@ const RegisterPage = () => {
   );
 };
 
-export default RegisterPage;
+export default ForgotPasswordPage;

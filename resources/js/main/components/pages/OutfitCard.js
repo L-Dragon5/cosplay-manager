@@ -1,9 +1,7 @@
 import React, { Component } from 'react'
-import M from 'materialize-css'
 import axios from 'axios'
-import $ from 'jquery'
 
-import Modal from '../Modal'
+import { Modal } from '@material-ui/core';
 import Tag from '../Tag'
 import OutfitEditForm from '../forms/OutfitEditForm'
 

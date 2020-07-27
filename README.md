@@ -1,8 +1,7 @@
 # Cosplay Manager
 Management web application useful for planning future cosplays and archiving past cosplays.
 
-Built on Laravel REST API backend with a ReactJS frontend.
-Styled using Google's Material Design via MaterializeCSS.
+Built on Laravel with a ReactJS + MaterialUI
 
 Breaks down organization by Series -> Characters -> Outfits.
 Most of the information is laid out into a grid view.

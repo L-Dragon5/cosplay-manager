@@ -1,10 +1,8 @@
 import React, { Component } from 'react'
 import { NavLink, withRouter } from 'react-router-dom'
 import PropTypes from 'prop-types'
-import M from 'materialize-css'
-import $ from 'jquery'
 
-import Modal from '../Modal'
+import { Modal } from '@material-ui/core';
 import Changelog from '../include/Changelog'
 
 class Navbar extends Component {

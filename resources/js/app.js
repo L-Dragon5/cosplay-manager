@@ -1,3 +1,6 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
+
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes React and other helpers. It's a great starting point while
@@ -12,6 +15,26 @@ require('./bootstrap')
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-require('./main/AuthenticatedMain')
-require('./main/LoginPage')
-require('./main/RegisterPage')
+import AuthenticatedMain from './main/AuthenticatedMain';
+import HomePage from './main/HomePage';
+import LoginPage from './main/LoginPage';
+import RegisterPage from './main/RegisterPage';
+import ForgotPasswordPage from './main/ForgotPasswordPage';
+
+const authenticatedRoot = document.getElementById('authenticated-root');
+const homeRoot = document.getElementById('home-root');
+const loginRoot = document.getElementById('login-root');
+const registerRoot = document.getElementById('register-root');
+const forgotRoot = document.getElementById('forgot-root');
+
+if (typeof authenticatedRoot !== 'undefined' && authenticatedRoot !== null) {
+    ReactDOM.render(<AuthenticatedMain />, authenticatedRoot);
+} else if (typeof homeRoot !== 'undefined' && homeRoot !== null) {
+    ReactDOM.render(<HomePage />, homeRoot);
+} else if (typeof loginRoot !== 'undefined' && loginRoot !== null) {
+    ReactDOM.render(<LoginPage />, loginRoot);
+} else if (typeof registerRoot !== 'undefined' && registerRoot !== null) {
+    ReactDOM.render(<RegisterPage />, registerRoot);
+} else if (typeof forgotRoot !== 'undefined' && forgotRoot !== null) {
+    ReactDOM.render(<ForgotPasswordPage />, forgotRoot);
+}
