@@ -38,7 +38,7 @@ class TagController extends Controller
         try {
             $tag = Tag::findOrFail($id);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return return_json_message('Invalid tag id', 401);
+            return return_json_message('Invalid tag id', self::STATUS_BAD_REQUEST);
         }
         
         return $tag;
@@ -57,13 +57,13 @@ class TagController extends Controller
         ]);
 
         if($validator->fails()) {
-            return return_json_message($validator->errors(), $this->errorStatus);
+            return return_json_message($validator->errors(), self::STATUS_BAD_REQUEST);
         }
 
         $user_id = Auth::user()->id;
 
         if (check_for_duplicate($user_id, $request->title, 'tags', 'title')) {
-            return return_json_message('Tag already exists with this title', $this->errorStatus);
+            return return_json_message('Tag already exists with this title', self::STATUS_BAD_REQUEST);
         }
 
         $tag = new Tag;
@@ -73,9 +73,9 @@ class TagController extends Controller
         $success = $tag->save();
 
         if ($success) {
-            return return_json_message('Created new tag succesfully', $this->successStatus);
+            return return_json_message('Created new tag succesfully', self::STATUS_SUCCESS);
         } else {
-            return return_json_message('Something went wrong while trying to create a new tag', 401);
+            return return_json_message('Something went wrong while trying to create a new tag', self::STATUS_UNPROCESSABLE);
         }
     }
 
@@ -93,7 +93,7 @@ class TagController extends Controller
         ]);
 
         if($validator->fails()) {
-            return return_json_message($validator->errors(), $this->errorStatus);
+            return return_json_message($validator->errors(), self::STATUS_BAD_REQUEST);
         }
 
         $user_id = Auth::user()->id;
@@ -110,7 +110,7 @@ class TagController extends Controller
                     if ($trimmed_title === $tag->title) {
                         // Do nothing
                     } else if(check_for_duplicate($user_id, $request->title, 'tags', 'title')) {
-                        return return_json_message('Tag title already exists.', $this->errorStatus);
+                        return return_json_message('Tag title already exists.', self::STATUS_BAD_REQUEST);
                     } else {
                         $tag->title = $trimmed_title;
                     }
@@ -119,15 +119,15 @@ class TagController extends Controller
                 $success = $tag->save();
 
                 if ($success) {
-                    return return_json_message('Updated tag succesfully', $this->successStatus, ['tag' => $tag]);
+                    return return_json_message('Updated tag succesfully', self::STATUS_SUCCESS, ['tag' => $tag]);
                 } else {
-                    return return_json_message('Something went wrong while trying to update tag', 401);
+                    return return_json_message('Something went wrong while trying to update tag', self::STATUS_UNPROCESSABLE);
                 }
             } else {
-                return return_json_message('You do not have permission to edit this tag', $this->errorStatus);
+                return return_json_message('You do not have permission to edit this tag', self::STATUS_UNAUTHORIZED);
             }
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return return_json_message('Invalid tag id', 401);
+            return return_json_message('Invalid tag id', self::STATUS_BAD_REQUEST);
         }
     }
 
@@ -148,16 +148,16 @@ class TagController extends Controller
             if ($tag->user_id === $user_id) {
                 $success = $tag->delete();
             } else {
-                return return_json_message('You do not have permission to delete this tag', $this->errorStatus);
+                return return_json_message('You do not have permission to delete this tag', self::STATUS_UNAUTHORIZED);
             }
     
             if ($success) {
-                return return_json_message('Deleted tag succesfully', $this->successStatus);
+                return return_json_message('Deleted tag succesfully', self::STATUS_SUCCESS);
             } else {
-                return return_json_message('Something went wrong while trying to remove tag', 401);
+                return return_json_message('Something went wrong while trying to remove tag', self::STATUS_UNPROCESSABLE);
             }
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return return_json_message('Invalid tag id', 401);
+            return return_json_message('Invalid tag id', self::STATUS_BAD_REQUEST);
         }
     }
 }

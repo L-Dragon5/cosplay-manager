@@ -1,68 +1,173 @@
-import React, { Component } from 'react'
-import { NavLink, withRouter } from 'react-router-dom'
-import PropTypes from 'prop-types'
+import React, { useState } from 'react';
+import { NavLink, withRouter } from 'react-router-dom';
 
-import { Modal } from '@material-ui/core';
-import Changelog from '../include/Changelog'
+import {
+  AppBar,
+  Hidden,
+  SwipeableDrawer,
+  List,
+  ListItem,
+  Toolbar,
+  Typography,
+  Menu,
+  MenuItem,
+  IconButton,
+} from '@material-ui/core';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import MenuIcon from '@material-ui/icons/Menu';
+import { makeStyles } from '@material-ui/core/styles';
 
-class Navbar extends Component {
-  static propTypes = {
-    match: PropTypes.object.isRequired,
-    location: PropTypes.object.isRequired,
-    history: PropTypes.object.isRequired
-  }
+const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+  },
+  menuButton: {
+    marginRight: theme.spacing(2),
+  },
+  title: {
+    flexGrow: 1,
+    '& > a': {
+      color: 'rgba(0, 0, 0, 0.87)',
+      textDecoration: 'none',
+    },
+  },
+  nav: {
+    '& > a': {
+      color: 'rgba(0, 0, 0, 0.87)',
+      textDecoration: 'none',
+      padding: '12px',
+      fontSize: '1rem',
+    },
+    '& > a.active-tool': {
+      borderBottom: '2px solid rgba(0, 0, 0, 0.87)',
+    },
+    '& > a:hover': {
+      borderBottom: '2px solid rgba(0, 0, 0, 0.87)',
+    },
+  },
+}));
 
-  getNavLinkClass (path) {
-    return this.props.location.pathname === path
-      ? 'active'
-      : ''
-  }
+const Navbar = () => {
+  const classes = useStyles();
 
-  handleInit () {
-    M.Sidenav.init($('.sidenav'))
-    M.Modal.init($('#changelog-modal'))
-  }
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [drawerStatus, setDrawerStatus] = useState(false);
+  const open = Boolean(anchorEl);
 
-  componentDidMount () {
-    window.addEventListener('DOMContentLoaded', this.handleInit)
-    if (document.readyState !== 'loading') {
-      this.handleInit()
-    }
-  }
+  const handleMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
 
-  componentWillUnmount () {
-    window.removeEventListener('DOMContentLoaded', this.handleInit)
-  }
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
-  render () {
-    return (
-      <>
-        <div>
-          <nav className='sticky-nav'>
-            <div className='nav-wrapper'>
-              <NavLink to='/' exact className='brand-logo'>CosManage</NavLink>
-              <a href='#' data-target='mobile-nav' className='sidenav-trigger'><i className='material-icons'>menu</i></a>
-              <ul className='right hide-on-med-and-down'>
-                <li className={this.getNavLinkClass('/')}><NavLink to='/' exact activeClassName='active'>Cosplay Grid</NavLink></li>
-                <li className={this.getNavLinkClass('/all-cosplays')}><NavLink to='/all-cosplays' activeClassName='active'>All Cosplays</NavLink></li>
-                <li className='modal-trigger' data-target='changelog-modal'><a href='#!'>Changelog</a></li>
-              </ul>
-            </div>
+  const drawerOpen = () => {
+    setDrawerStatus(true);
+  };
+
+  const drawerClose = () => {
+    setDrawerStatus(false);
+  };
+
+  return (
+    <div className={classes.root}>
+      <SwipeableDrawer
+        anchor="left"
+        open={drawerStatus}
+        onClose={drawerClose}
+        onOpen={drawerOpen}
+      >
+        <List>
+          <ListItem>
+            <NavLink to="/" onClick={drawerClose}>
+              Dashboard
+            </NavLink>
+          </ListItem>
+          <ListItem>
+            <NavLink
+              to="/cosplay-management"
+              activeClassName="active-tool"
+              onClick={drawerClose}
+            >
+              Cosplay Management
+            </NavLink>
+          </ListItem>
+          <ListItem>
+            <NavLink
+              to="/taobao-organizer"
+              activeClassName="active-tool"
+              onClick={drawerClose}
+            >
+              Taobao Organizer
+            </NavLink>
+          </ListItem>
+        </List>
+      </SwipeableDrawer>
+
+      <AppBar position="static">
+        <Toolbar>
+          <Hidden smUp>
+            <IconButton
+              edge="start"
+              className={classes.menuButton}
+              color="inherit"
+              aria-label="menu"
+              onClick={drawerOpen}
+            >
+              <MenuIcon />
+            </IconButton>
+          </Hidden>
+
+          <Typography variant="h6" className={classes.title}>
+            <NavLink to="/">CosManage</NavLink>
+          </Typography>
+          <nav className={classes.nav}>
+            <Hidden only="xs">
+              <NavLink to="/">Dashboard</NavLink>
+              <NavLink to="/cosplay-management" activeClassName="active-tool">
+                Cosplay Management
+              </NavLink>
+              <NavLink to="/taobao-organizer" activeClassName="active-tool">
+                Taobao Organizer
+              </NavLink>
+              <IconButton
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleMenu}
+                color="inherit"
+              >
+                <AccountCircleIcon />
+              </IconButton>
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                open={open}
+                onClose={handleClose}
+              >
+                <MenuItem onClick={handleClose}>
+                  My Account (In Progress)
+                </MenuItem>
+                <MenuItem onClick={handleClose}>
+                  Changelog (In Progress)
+                </MenuItem>
+              </Menu>
+            </Hidden>
           </nav>
+        </Toolbar>
+      </AppBar>
+    </div>
+  );
+};
 
-          <ul id='mobile-nav' className='sidenav'>
-            <li className={this.getNavLinkClass('/')}><NavLink to='/' exact className='sidenav-close' activeClassName='active'>Cosplay Grid</NavLink></li>
-            <li className={this.getNavLinkClass('/all-cosplays')}><NavLink to='/all-cosplays' className='sidenav-close' activeClassName='active'>All Cosplays</NavLink></li>
-            <li className='modal-trigger' data-target='changelog-modal'><a href='#!'>Changelog</a></li>
-          </ul>
-        </div>
-
-        <Modal id='changelog-modal'>
-          <Changelog />
-        </Modal>
-      </>
-    )
-  }
-}
-
-export default withRouter(Navbar)
+export default withRouter(Navbar);

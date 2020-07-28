@@ -12,9 +12,6 @@ use Validator;
 
 class OutfitController extends Controller
 {
-    private $successStatus = 200;
-    private $errorStatus = 422;
-
     /**
      * Display a listing of the resource.
      * Used for All Cosplays Page.
@@ -127,13 +124,13 @@ class OutfitController extends Controller
         ]);
 
         if($validator->fails()) {
-            return return_json_message($validator->errors(), $this->errorStatus);
+            return return_json_message($validator->errors(), self::STATUS_BAD_REQUEST);
         }
 
         $user_id = Auth::user()->id;
 
         if (check_for_duplicate($user_id, $request->title, 'outfits', 'title')) {
-            return return_json_message('Outfit already exists with this title', $this->errorStatus);
+            return return_json_message('Outfit already exists with this title', self::STATUS_BAD_REQUEST);
         }
 
         $outfit = new Outfit;
@@ -185,9 +182,9 @@ class OutfitController extends Controller
         $success = $outfit->save();
 
         if ($success) {
-            return return_json_message('Created new outfit succesfully', $this->successStatus);
+            return return_json_message('Created new outfit succesfully', self::STATUS_SUCCESS);
         } else {
-            return return_json_message('Something went wrong while trying to create a new outfit', 401);
+            return return_json_message('Something went wrong while trying to create a new outfit', self::STATUS_UNPROCESSABLE);
         }
     }
 
@@ -213,7 +210,7 @@ class OutfitController extends Controller
         ]);
 
         if($validator->fails()) {
-            return return_json_message($validator->errors(), $this->errorStatus);
+            return return_json_message($validator->errors(), self::STATUS_BAD_REQUEST);
         }
 
         $user_id = Auth::user()->id;
@@ -230,7 +227,7 @@ class OutfitController extends Controller
                     if ($trimmed_title === $outfit->title) {
                         // Do nothing
                     } else if(check_for_duplicate($user_id, $request->title, 'outfits', 'title')) {
-                        return return_json_message('Outfit already exists with this title.', $this->errorStatus);
+                        return return_json_message('Outfit already exists with this title.', self::STATUS_BAD_REQUEST);
                     } else {
                         $outfit->title = $trimmed_title;
                     }
@@ -331,15 +328,15 @@ class OutfitController extends Controller
                         $outfit->tags = $final_tags;
                     }
 
-                    return return_json_message('Updated character succesfully', $this->successStatus, ['outfit' => $outfit]);
+                    return return_json_message('Updated character succesfully', self::STATUS_SUCCESS, ['outfit' => $outfit]);
                 } else {
-                    return return_json_message('Something went wrong while trying to update outfit', 401);
+                    return return_json_message('Something went wrong while trying to update outfit', self::STATUS_BAD_REQUEST);
                 }
             } else {
-                return return_json_message('You do not have permission to edit this outfit', $this->errorStatus);
+                return return_json_message('You do not have permission to edit this outfit', self::STATUS_UNAUTHORIZED);
             }
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return return_json_message('Invalid outfit id', 401);
+            return return_json_message('Invalid outfit id', self::STATUS_BAD_REQUEST);
         }
     }
 
@@ -374,16 +371,16 @@ class OutfitController extends Controller
                 
                 $success = $outfit->delete();
             } else {
-                return return_json_message('You do not have permission to delete this outfit', $this->errorStatus);
+                return return_json_message('You do not have permission to delete this outfit', self::STATUS_UNAUTHORIZED);
             }
     
             if ($success) {
-                return return_json_message('Deleted outfit succesfully', $this->successStatus);
+                return return_json_message('Deleted outfit succesfully', self::STATUS_SUCCESS);
             } else {
-                return return_json_message('Did not find a outfit to remove', 401);
+                return return_json_message('Did not find a outfit to remove', self::STATUS_NOT_FOUND);
             }
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return return_json_message('Invalid outfit id', 401);
+            return return_json_message('Invalid outfit id', self::STATUS_BAD_REQUEST);
         }
     }
 
@@ -409,7 +406,7 @@ class OutfitController extends Controller
                 // Get path of image
                 $path = $stored_images[$index];
                 if($path == '300x400.png') {
-                    return return_json_message('Cannot delete placeholder image.', $this->errorStatus);
+                    return return_json_message('Cannot delete placeholder image.', self::STATUS_BAD_REQUEST);
                 }
 
                 // Remove image from stored images array
@@ -434,7 +431,7 @@ class OutfitController extends Controller
 
                 $success = $outfit->save();
             } else {
-                return return_json_message('You do not have permission to delete this outfit', $this->errorStatus);
+                return return_json_message('You do not have permission to delete this outfit', self::STATUS_UNAUTHORIZED);
             }
 
             if ($success) {
@@ -442,12 +439,12 @@ class OutfitController extends Controller
                     $image = '/storage/' . $image;
                 }
                 unset($image);
-                return return_json_message('Deleted image from outfit succesfully', $this->successStatus, ['images' => $stored_images]);
+                return return_json_message('Deleted image from outfit succesfully', self::STATUS_SUCCESS, ['images' => $stored_images]);
             } else {
-                return return_json_message('Did not find an image to remove', 404);
+                return return_json_message('Did not find an image to remove', self::STATUS_NOT_FOUND);
             }
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return return_json_message('Invalid outfit id', 401);
+            return return_json_message('Invalid outfit id', self::STATUS_BAD_REQUEST);
         }
     }
 }

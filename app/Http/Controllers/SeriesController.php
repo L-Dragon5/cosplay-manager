@@ -46,13 +46,13 @@ class SeriesController extends Controller
         ]);
 
         if($validator->fails()) {
-            return return_json_message($validator->errors(), $this->errorStatus);
+            return return_json_message($validator->errors(), self::STATUS_BAD_REQUEST);
         }
 
         $user_id = Auth::user()->id;
 
         if (check_for_duplicate($user_id, $request->title, 'series', 'title')) {
-            return return_json_message('Series already exists with this title', $this->errorStatus);
+            return return_json_message('Series already exists with this title', self::STATUS_BAD_REQUEST);
         }
 
         $series = new Series;
@@ -68,9 +68,9 @@ class SeriesController extends Controller
         $success = $series->save();
 
         if ($success) {
-            return return_json_message('Created new series succesfully', $this->successStatus);
+            return return_json_message('Created new series succesfully', self::STATUS_SUCCESS);
         } else {
-            return return_json_message('Something went wrong while trying to create a new series', 401);
+            return return_json_message('Something went wrong while trying to create a new series', self::STATUS_UNPROCESSABLE);
         }
     }
 
@@ -87,7 +87,7 @@ class SeriesController extends Controller
         try {
             $series = Series::findOrFail($id);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return return_json_message('Invalid series id', 401);
+            return return_json_message('Invalid series id', self::STATUS_BAD_REQUEST);
         }
         
         return $series;
@@ -108,7 +108,7 @@ class SeriesController extends Controller
         ]);
 
         if($validator->fails()) {
-            return return_json_message($validator->errors(), $this->errorStatus);
+            return return_json_message($validator->errors(), self::STATUS_BAD_REQUEST);
         }
 
         $user_id = Auth::user()->id;
@@ -125,7 +125,7 @@ class SeriesController extends Controller
                     if ($trimmed_title === $series->title) {
                         // Do nothing
                     } else if(check_for_duplicate($user_id, $request->title, 'series', 'title')) {
-                        return return_json_message('Series title already exists.', $this->errorStatus);
+                        return return_json_message('Series title already exists.', self::STATUS_BAD_REQUEST);
                     } else {
                         $series->title = $trimmed_title;
                     }
@@ -140,15 +140,15 @@ class SeriesController extends Controller
 
                 if ($success) {
                     $series->image = '/storage/' . $series->image;
-                    return return_json_message('Updated series succesfully', $this->successStatus, ['series' => $series]);
+                    return return_json_message('Updated series succesfully', self::STATUS_SUCCESS, ['series' => $series]);
                 } else {
-                    return return_json_message('Something went wrong while trying to update series', 401);
+                    return return_json_message('Something went wrong while trying to update series', self::STATUS_UNPROCESSABLE);
                 }
             } else {
-                return return_json_message('You do not have permission to edit this series', $this->errorStatus);
+                return return_json_message('You do not have permission to edit this series', self::STATUS_UNAUTHORIZED);
             }
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return return_json_message('Invalid series id', 401);
+            return return_json_message('Invalid series id', self::STATUS_BAD_REQUEST);
         }
     }
 
@@ -207,16 +207,16 @@ class SeriesController extends Controller
 
                 $success = $series->delete();
             } else {
-                return return_json_message('You do not have permission to delete this series', $this->errorStatus);
+                return return_json_message('You do not have permission to delete this series', self::STATUS_UNAUTHORIZED);
             }
     
             if ($success) {
-                return return_json_message('Deleted series succesfully', $this->successStatus);
+                return return_json_message('Deleted series succesfully', self::STATUS_SUCCESS);
             } else {
-                return return_json_message('Something went wrong while trying to remove series', 401);
+                return return_json_message('Something went wrong while trying to remove series', self::STATUS_UNPROCESSABLE);
             }
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return return_json_message('Invalid series id', 401);
+            return return_json_message('Invalid series id', self::STATUS_BAD_REQUEST);
         }
     }
 }

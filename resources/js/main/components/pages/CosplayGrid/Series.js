@@ -1,137 +1,182 @@
-import React, { Component } from 'react'
-import axios from 'axios'
+import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import axios from 'axios';
 
 import { Modal } from '@material-ui/core';
-import SeriesEditForm from '../../forms/SeriesEditForm'
+import { Alert } from '@material-ui/lab';
+import { makeStyles } from '@material-ui/core/styles';
 
-class Series extends Component {
-  constructor (props) {
-    super(props)
+import SeriesEditForm from '../../forms/SeriesEditForm';
 
-    this.state = {
-      visible: true,
-      title: (props.title !== undefined) ? props.title : 'ERROR',
-      image: props.image
-    }
+const useStyles = makeStyles((theme) => ({
+  paper: {
+    position: 'absolute',
+    width: '65%',
+    backgroundColor: theme.palette.background.paper,
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+  },
+}));
 
-    this.token = props.token
+const Series = (props) => {
+  const history = useHistory();
+  const classes = useStyles();
 
-    this.id = (props.id !== undefined) ? props.id : null
-    this.characterCount = (props.characterCount !== undefined) ? (props.characterCount + (props.characterCount === 1 ? ' Character' : ' Characters')) : '0 Characters'
+  const { token } = props;
+  let { id, characterCount } = props;
 
-    this.handleClick = this.handleClick.bind(this)
-    this.handleDelete = this.handleDelete.bind(this)
-    this.handleFormUnmount = this.handleFormUnmount.bind(this)
-  }
+  id = id !== undefined ? id : null;
+  characterCount =
+    characterCount !== undefined
+      ? characterCount + (characterCount === 1 ? ' Character' : ' Characters')
+      : '0 Characters';
 
-  handleClick () {
-    window.location.href = '/s-' + this.id
-  }
+  const [visible, setVisible] = useState(true);
+  const [title, setTitle] = useState(
+    props.title !== undefined ? props.title : 'ERROR',
+  );
+  const [image, setImage] = useState(props.image);
+  const [renderForm, setRenderForm] = useState(false);
+  const [modalStatus, setModalStatus] = useState(false);
+  const [successAlertMessage, setSuccessAlertMessage] = useState('');
+  const [errorAlertMessage, setErrorAlertMessage] = useState('');
 
-  handleDelete (e) {
-    e.stopPropagation()
+  const handleClick = () => {
+    history.push(`/cosplay-management/s-${id}`);
+  };
 
-    if (confirm('Are you sure you want to delete this series [' + this.state.title + ']? This will delete all characters and outfit in this series and is not reversible.')) {
-      const answer = prompt('Please enter DELETE to confirm.')
+  const handleDelete = (e) => {
+    e.stopPropagation();
+
+    if (
+      confirm(
+        `Are you sure you want to delete this series [${title}]? This will delete all characters and outfit in this series and is not reversible.`,
+      )
+    ) {
+      const answer = prompt('Please enter DELETE to confirm.');
 
       if (answer === 'DELETE') {
-        axios.get('/api/series/destroy/' + this.id, {
-          headers: {
-            Accept: 'application/json',
-            Authorization: 'Bearer ' + this.token,
-            'content-type': 'multipart/form-data'
-          }
-        }).then((response) => {
-          if (response.status === 200) {
-            M.toast({ html: response.data.message })
-            this.setState({
-              visible: false
-            })
-          }
-        }).catch((error) => {
-          if (error.response) {
-            let html = ''
-
-            if (Array.isArray(error.response)) {
-              for (const [key, value] of Object.entries(error.response.data.message)) {
-                html += key + ': ' + value + '<br>'
-              }
-            } else {
-              html += error.response.data.message
+        axios
+          .get(`/api/series/destroy/${id}`, {
+            headers: {
+              Accept: 'application/json',
+              Authorization: `Bearer ${token}`,
+              'content-type': 'multipart/form-data',
+            },
+          })
+          .then((response) => {
+            if (response.status === 200) {
+              setSuccessAlertMessage(response.data.message);
+              setVisible(false);
             }
+          })
+          .catch((error) => {
+            if (error.response) {
+              let message = '';
 
-            M.toast({ html: html })
-          }
-        })
+              Object.keys(error.response.data.message).forEach((key) => {
+                message += `[${key}] - ${error.response.data.message[key]}\r\n`;
+              });
+
+              setErrorAlertMessage(message);
+            }
+          });
       } else {
-        M.toast({ html: 'Deletion cancelled' })
+        setErrorAlertMessage('Deletion cancelled');
       }
     }
-  }
+  };
 
-  handleInit () {
-    M.Modal.init($('.modal'))
-  }
-
-  handleFormUnmount (data) {
-    const obj = JSON.parse(data)
+  const handleFormUnmount = (data) => {
+    const obj = JSON.parse(data);
     if (obj) {
-      this.setState({
-        title: obj.title,
-        image: obj.image
-      })
+      setTitle(obj.title);
+      setImage(obj.image);
     }
-  }
 
-  componentDidMount () {
-    window.addEventListener('DOMContentLoaded', this.handleInit)
-    if (document.readyState !== 'loading') {
-      this.handleInit()
-    }
-  }
+    setRenderForm(false);
+  };
 
-  componentWillUnmount () {
-    window.removeEventListener('DOMContentLoaded', this.handleInit)
-  }
+  const modalOpen = () => {
+    setRenderForm(true);
+    setModalStatus(true);
+  };
 
-  render () {
-    if (this.state.visible) {
-      const modalName = 'series-single-modal-' + this.id
+  const modalClose = () => {
+    setModalStatus(false);
+  };
 
-      if (this.state.title && this.state.image) {
-        return (
-          <>
-            <div className='series' onClick={this.handleClick}>
-              <div className='series__image'>
-                <img src={this.state.image} draggable={false} />
+  if (visible) {
+    const modalName = `series-single-modal-${id}`;
+
+    if (title && image) {
+      return (
+        <>
+          {errorAlertMessage && (
+            <Alert severity="error" style={{ whiteSpace: 'pre' }}>
+              {errorAlertMessage}
+            </Alert>
+          )}
+
+          {successAlertMessage && (
+            <Alert severity="success">{successAlertMessage}</Alert>
+          )}
+
+          <div className="series" onClick={handleClick}>
+            <div className="series__image">
+              <img src={image} draggable={false} />
+            </div>
+            <div className="series__title">
+              <div
+                className="series__icon modal-trigger"
+                data-target={modalName}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <a className="btn-flat teal lighten-2" onClick={modalOpen}>
+                  <i className="material-icons">edit</i>
+                </a>
               </div>
-              <div className='series__title'>
-                <div className='series__icon modal-trigger' data-target={modalName} onClick={(e) => e.stopPropagation()}>
-                  <a className='btn-flat teal lighten-2'><i className='material-icons'>edit</i></a>
-                </div>
 
-                <div className='series__title__text'>
-                  {this.state.title}<br />{this.characterCount}
-                </div>
+              <div className="series__title__text">
+                {title}
+                <br />
+                {characterCount}
+              </div>
 
-                <div className='series__icon' onClick={this.handleDelete}>
-                  <a className='btn-flat red lighten-2'><i className='material-icons'>delete</i></a>
-                </div>
+              <div className="series__icon" onClick={handleDelete}>
+                <a className="btn-flat red lighten-2">
+                  <i className="material-icons">delete</i>
+                </a>
               </div>
             </div>
+          </div>
 
-            <Modal id={modalName}>
-              <SeriesEditForm token={this.token} id={this.id} title={this.state.title} unmount={this.handleFormUnmount} />
+          {renderForm ? (
+            <Modal
+              open={modalStatus}
+              onClose={modalClose}
+              disableEnforceFocus
+              disableAutoFocus
+            >
+              <div className={classes.paper}>
+                <SeriesEditForm
+                  token={token}
+                  id={id}
+                  title={title}
+                  unmount={handleFormUnmount}
+                />
+              </div>
             </Modal>
-          </>
-        )
-      } else {
-        return null
-      }
-    } else {
-      return null
+          ) : null}
+        </>
+      );
     }
   }
-}
 
-export default Series
+  return null;
+};
+
+export default Series;

@@ -10,9 +10,6 @@ use Validator;
 
 class CharacterController extends Controller
 {
-    private $successStatus = 200;
-    private $errorStatus = 422;
-
     /**
      * Display a listing of the resource.
      *
@@ -65,13 +62,13 @@ class CharacterController extends Controller
         ]);
 
         if($validator->fails()) {
-            return return_json_message($validator->errors(), $this->errorStatus);
+            return return_json_message($validator->errors(), self::STATUS_BAD_REQUEST);
         }
 
         $user_id = Auth::user()->id;
 
         if (check_for_duplicate($user_id, $request->name, 'characters', 'name')) {
-            return return_json_message('Character already exists with this name', $this->errorStatus);
+            return return_json_message('Character already exists with this name', self::STATUS_BAD_REQUEST);
         }
 
         $character = new Character;
@@ -88,9 +85,9 @@ class CharacterController extends Controller
         $success = $character->save();
 
         if ($success) {
-            return return_json_message('Created new character succesfully', $this->successStatus);
+            return return_json_message('Created new character succesfully', self::STATUS_SUCCESS);
         } else {
-            return return_json_message('Something went wrong while trying to create a new character', 401);
+            return return_json_message('Something went wrong while trying to create a new character', self::STATUS_UNPROCESSABLE);
         }
     }
 
@@ -107,7 +104,7 @@ class CharacterController extends Controller
         try {
             $character = Character::findOrFail($id);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return return_json_message('Invalid character id', 401);
+            return return_json_message('Invalid character id', self::STATUS_BAD_REQUEST);
         }
         
         return $character;
@@ -128,7 +125,7 @@ class CharacterController extends Controller
         ]);
 
         if($validator->fails()) {
-            return return_json_message($validator->errors(), $this->errorStatus);
+            return return_json_message($validator->errors(), self::STATUS_BAD_REQUEST);
         }
 
         $user_id = Auth::user()->id;
@@ -145,7 +142,7 @@ class CharacterController extends Controller
                     if ($trimmed_name === $character->name) {
                         // Do nothing
                     } else if(check_for_duplicate($user_id, $request->name, 'characters', 'name')) {
-                        return return_json_message('Character name already exists.', $this->errorStatus);
+                        return return_json_message('Character name already exists.', self::STATUS_BAD_REQUEST);
                     } else {
                         $character->name = $trimmed_name;
                     }
@@ -160,15 +157,15 @@ class CharacterController extends Controller
 
                 if ($success) {
                     $character->image = '/storage/' . $character->image;
-                    return return_json_message('Updated character succesfully', $this->successStatus, ['character' => $character]);
+                    return return_json_message('Updated character succesfully', self::STATUS_SUCCESS, ['character' => $character]);
                 } else {
-                    return return_json_message('Something went wrong while trying to update character', 401);
+                    return return_json_message('Something went wrong while trying to update character', self::STATUS_UNPROCESSABLE);
                 }
             } else {
-                return return_json_message('You do not have permission to edit this character', $this->errorStatus);
+                return return_json_message('You do not have permission to edit this character', self::STATUS_UNAUTHORIZED);
             }
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return return_json_message('Invalid character id', 401);
+            return return_json_message('Invalid character id', self::STATUS_BAD_REQUEST);
         }
     }
 
@@ -216,16 +213,16 @@ class CharacterController extends Controller
 
                 $success = $character->delete();
             } else {
-                return return_json_message('You do not have permission to delete this character', $this->errorStatus);
+                return return_json_message('You do not have permission to delete this character', self::STATUS_UNAUTHORIZED);
             }
     
             if ($success) {
-                return return_json_message('Deleted character succesfully', $this->successStatus);
+                return return_json_message('Deleted character succesfully', self::STATUS_SUCCESS);
             } else {
-                return return_json_message('Something went wrong while trying to remove character', 401);
+                return return_json_message('Something went wrong while trying to remove character', self::STATUS_UNPROCESSABLE);
             }
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return return_json_message('Invalid character id', 401);
+            return return_json_message('Invalid character id', self::STATUS_BAD_REQUEST);
         }
     }
 }

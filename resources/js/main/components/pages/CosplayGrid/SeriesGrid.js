@@ -1,116 +1,143 @@
-import React, { Component } from 'react'
-import axios from 'axios'
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+
+import { Fab, Modal, Typography } from '@material-ui/core';
+import { Alert } from '@material-ui/lab';
+import AddIcon from '@material-ui/icons/Add';
+import { makeStyles } from '@material-ui/core/styles';
 
 // Components
-import Helper from '../../Helper'
-import { Modal } from '@material-ui/core';
-import Series from './Series'
-import SeriesAddForm from '../../forms/SeriesAddForm'
+import Helper from '../../Helper';
+import Series from './Series';
+import SeriesAddForm from '../../forms/SeriesAddForm';
 
-class SeriesGrid extends Component {
-  constructor (props) {
-    super(props)
+const useStyles = makeStyles((theme) => ({
+  root: {
+    padding: theme.spacing(2),
+  },
+  fab: {
+    position: 'absolute',
+    bottom: theme.spacing(2),
+    right: theme.spacing(2),
+  },
+  paper: {
+    position: 'absolute',
+    width: '65%',
+    backgroundColor: theme.palette.background.paper,
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+  },
+}));
 
-    this.state = {
-      series: null,
-      renderForm: false
-    }
+const SeriesGrid = () => {
+  const classes = useStyles();
 
-    this.token = Helper.getToken()
+  const [series, setSeries] = useState(null);
+  const [renderForm, setRenderForm] = useState(false);
+  const [modalStatus, setModalStatus] = useState(false);
+  const [token, setToken] = useState(Helper.getToken());
+  const [errorAlertMessage, setErrorAlertMessage] = useState('');
 
-    this.handleFormUnmount = this.handleFormUnmount.bind(this)
-  }
-
-  getSeries () {
-    axios.get('/api/series', {
-      headers: {
-        Accept: 'application/json',
-        Authorization: 'Bearer ' + this.token
-      }
-    }).then(response => {
-      if (response.data) {
-        this.setState({
-          series: response.data,
-          renderForm: true
-        })
-      }
-    }).catch(error => {
-      if (error.response) {
-        let html = ''
-
-        if (Array.isArray(error.response)) {
-          for (const [key, value] of Object.entries(error.response.data.message)) {
-            html += key + ': ' + value + '<br>'
-          }
-        } else {
-          html += error.response.data.message
+  const getSeries = () => {
+    axios
+      .get('/api/series', {
+        headers: {
+          Accept: 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        if (response.data) {
+          setSeries(response.data);
+          setRenderForm(true);
         }
+      })
+      .catch((error) => {
+        if (error.response) {
+          let message = '';
 
-        M.toast({ html: html })
-      }
-    })
-  }
+          Object.keys(error.response.data.message).forEach((key) => {
+            message += `[${key}] - ${error.response.data.message[key]}\r\n`;
+          });
 
-  handleInit () {
-    M.Modal.init($('.modal'))
-    M.FloatingActionButton.init($('.fixed-action-btn'))
-  }
+          setErrorAlertMessage(message);
+        }
+      });
+  };
 
-  handleFormUnmount () {
-    this.setState({
-      renderForm: false
-    })
+  const handleFormUnmount = () => {
+    setRenderForm(false);
+    getSeries();
+  };
 
-    this.getSeries()
-  }
+  const modalOpen = () => {
+    setRenderForm(true);
+    setModalStatus(true);
+  };
 
-  componentDidMount () {
-    this.getSeries()
+  const modalClose = () => {
+    setModalStatus(false);
+  };
 
-    document.title = 'Series Grid | CosManage'
+  useEffect(() => {
+    getSeries();
+    document.title = 'Series Grid | CosManage';
+  }, []);
 
-    window.addEventListener('DOMContentLoaded', this.handleInit)
-    if (document.readyState !== 'loading') {
-      this.handleInit()
-    }
-  }
+  return (
+    <div className={classes.root}>
+      <Typography variant="h4">Series</Typography>
 
-  componentWillUnmount () {
-    window.removeEventListener('DOMContentLoaded', this.handleInit)
-  }
+      {errorAlertMessage && (
+        <Alert severity="error" style={{ whiteSpace: 'pre' }}>
+          {errorAlertMessage}
+        </Alert>
+      )}
 
-  render () {
-    const series = this.state.series
-
-    return (
-      <main>
-        <h5>Series</h5>
-        <div className='series-grid'>
-          { series &&
-            series.map((item, key) => {
-              return <Series
-                key={'s-' + item.id}
-                token={this.token}
+      <div className="series-grid">
+        {series &&
+          series.map((item) => {
+            return (
+              <Series
+                key={`s-${item.id}`}
+                token={token}
                 id={item.id}
                 title={item.title}
                 image={item.image}
-                characterCount={item.character_count} />
-            })
-          }
-        </div>
+                characterCount={item.character_count}
+              />
+            );
+          })}
+      </div>
 
-        <div className='fixed-action-btn modal-trigger' data-target='series-grid-modal'>
-          <a className='btn-large red' style={{ display: 'flex' }}>
-            <i className='large material-icons'>add</i><span>Add Series</span>
-          </a>
-        </div>
+      <Fab
+        className={classes.fab}
+        color="secondary"
+        variant="extended"
+        aria-label="add"
+        onClick={modalOpen}
+      >
+        <AddIcon />
+        Add Series
+      </Fab>
 
-        <Modal id='series-grid-modal'>
-          { this.state.renderForm ? <SeriesAddForm token={this.token} unmount={this.handleFormUnmount} /> : null }
+      {renderForm ? (
+        <Modal
+          open={modalStatus}
+          onClose={modalClose}
+          disableEnforceFocus
+          disableAutoFocus
+        >
+          <div className={classes.paper}>
+            <SeriesAddForm token={token} unmount={handleFormUnmount} />
+          </div>
         </Modal>
-      </main>
-    )
-  }
-}
+      ) : null}
+    </div>
+  );
+};
 
-export default SeriesGrid
+export default SeriesGrid;
