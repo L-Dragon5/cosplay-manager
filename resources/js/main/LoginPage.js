@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import axios from 'axios';
 
 import {
@@ -90,6 +90,30 @@ const LoginPage = () => {
           setErrorAlertMessage(error.response.data.message);
         }
       });
+  }, []);
+
+  useEffect(() => {
+    if (Helper.checkLocalStorage()) {
+      const token = Helper.getToken();
+
+      const formData = new FormData();
+      formData.set('token', token);
+
+      // Check Logged in State
+      axios
+        .post('/api/checkUser', formData, {
+          headers: {
+            Accept: 'application/json',
+            Authorization: `Bearer ${token}`,
+            'content-type': 'multipart/form-data',
+          },
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            window.location.replace('/dashboard');
+          }
+        });
+    }
   }, []);
 
   return (

@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-import { Fab, Modal, Typography } from '@material-ui/core';
+import { Fab, Box, Modal, Typography } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import AddIcon from '@material-ui/icons/Add';
 import { makeStyles } from '@material-ui/core/styles';
 
 // Components
 import Helper from '../../Helper';
-import Series from './Series';
-import SeriesAddForm from '../../forms/SeriesAddForm';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -32,13 +30,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const SeriesGrid = () => {
+const TaobaoItems = () => {
   const classes = useStyles();
+  const token = Helper.getToken();
 
   const [series, setSeries] = useState(null);
   const [renderForm, setRenderForm] = useState(false);
   const [modalStatus, setModalStatus] = useState(false);
-  const [token, setToken] = useState(Helper.getToken());
   const [errorAlertMessage, setErrorAlertMessage] = useState('');
 
   const getSeries = () => {
@@ -68,27 +66,13 @@ const SeriesGrid = () => {
       });
   };
 
-  const handleFormUnmount = () => {
-    setRenderForm(false);
-    getSeries();
-  };
-
-  const modalOpen = () => {
-    setRenderForm(true);
-    setModalStatus(true);
-  };
-
-  const modalClose = () => {
-    setModalStatus(false);
-  };
-
   useEffect(() => {
     getSeries();
-    document.title = 'Series Grid | CosManage';
+    document.title = 'Taobao Organizer | CosManage';
   }, []);
 
   return (
-    <div className={classes.root}>
+    <Box className={classes.root}>
       <Typography variant="h4">Series</Typography>
 
       {errorAlertMessage && (
@@ -101,7 +85,7 @@ const SeriesGrid = () => {
         {series &&
           series.map((item) => {
             return (
-              <Series
+              <Box
                 key={`s-${item.id}`}
                 token={token}
                 id={item.id}
@@ -123,21 +107,8 @@ const SeriesGrid = () => {
         <AddIcon />
         Add Series
       </Fab>
-
-      {renderForm ? (
-        <Modal
-          open={modalStatus}
-          onClose={modalClose}
-          disableEnforceFocus
-          disableAutoFocus
-        >
-          <div className={classes.paper}>
-            <SeriesAddForm token={token} unmount={handleFormUnmount} />
-          </div>
-        </Modal>
-      ) : null}
-    </div>
+    </Box>
   );
 };
 
-export default SeriesGrid;
+export default TaobaoItems;

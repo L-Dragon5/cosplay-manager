@@ -17,7 +17,7 @@ class OutfitsTableSeeder extends Seeder
             'title' => 'White Day',
             'images' => '||300x400.png',
             'status' => 1,
-            'bought_date' => '2019-10-31',
+            'obtained_on' => '2019-10-31',
             'storage_location' => 'Box 1'
         ]);
 
@@ -27,7 +27,7 @@ class OutfitsTableSeeder extends Seeder
             'title' => 'Cheer',
             'images' => '||300x400.png',
             'status' => 2,
-            'bought_date' => '2018-01-01',
+            'obtained_on' => '2018-01-01',
             'storage_location' => 'Box 2'
         ]);
 

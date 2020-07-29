@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavLink, withRouter } from 'react-router-dom';
+import ReactMarkdown from 'react-markdown';
 
 import { Grid, Paper, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
@@ -21,13 +22,33 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2),
     color: theme.palette.text.primary,
   },
+  changelog: {
+    maxHeight: '600px',
+    overflowY: 'auto',
+    paddingTop: '0',
+  },
 }));
 
 const Dashboard = () => {
   const classes = useStyles();
 
+  const [changelog, setChangelog] = useState(null);
+
   useEffect(() => {
     document.title = 'Dashboard | CosManage';
+
+    fetch(
+      'https://raw.githubusercontent.com/L-Dragon5/cosplay-manager/v2/CHANGELOG.md',
+    )
+      .then((response) => {
+        if (response.ok) {
+          return response.text();
+        }
+        throw new Error('Error reading from github.');
+      })
+      .then((data) => {
+        setChangelog(data);
+      });
   }, []);
 
   return (
@@ -57,6 +78,11 @@ const Dashboard = () => {
               </Typography>
             </Paper>
           </NavLink>
+        </Grid>
+        <Grid item xs={12}>
+          <Paper className={[classes.paper, classes.changelog]}>
+            <ReactMarkdown source={changelog} />
+          </Paper>
         </Grid>
       </Grid>
     </div>

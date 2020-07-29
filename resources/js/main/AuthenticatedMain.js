@@ -9,13 +9,17 @@ import { orange, pink } from '@material-ui/core/colors';
 import Navbar from './components/include/Navbar';
 import Helper from './components/Helper';
 
-// Pages
-// import AllCosplaysPage from './components/pages/AllCosplaysPage';
-
+// Root Page
 import Dashboard from './components/pages/Dashboard';
-import SeriesGrid from './components/pages/CosplayGrid/SeriesGrid';
-// import CharacterGrid from './components/pages/CosplayGrid/CharacterGrid';
+
+// Cosplay Management Pages
+import AllCosplaysPage from './components/pages/CosplayManagement/AllCosplaysPage';
+import SeriesGrid from './components/pages/CosplayManagement/SeriesGrid';
+import CharacterGrid from './components/pages/CosplayManagement/CharacterGrid';
 // import OutfitGrid from './components/pages/CosplayGrid/OutfitGrid';
+
+// Taobao Organizer Pages
+import TaobaoItems from './components/pages/TaobaoOrganizer/TaobaoItems';
 
 const theme = createMuiTheme({
   palette: {
@@ -25,6 +29,33 @@ const theme = createMuiTheme({
 });
 
 const AuthenticatedMain = () => {
+  const routes = [
+    {
+      path: '/',
+      component: Dashboard,
+    },
+    {
+      path: '/cosplay-management',
+      component: SeriesGrid,
+    },
+    {
+      path: '/cosplay-management/all-cosplays',
+      component: AllCosplaysPage,
+    },
+    {
+      path: '/cosplay-management/s-:series',
+      component: CharacterGrid,
+    },
+    {
+      path: '/taobao-organizer',
+      component: TaobaoItems,
+    },
+  ];
+
+  const routeComponents = routes.map(({ path, component }, key) => (
+    <Route exact path={path} component={component} key={key} />
+  ));
+
   useEffect(() => {
     if (Helper.checkLocalStorage()) {
       const token = Helper.getToken();
@@ -55,10 +86,7 @@ const AuthenticatedMain = () => {
       <BrowserRouter basename="dashboard">
         <Navbar />
         <div>
-          <Switch>
-            <Route exact path="/" component={Dashboard} />
-            <Route exact path="/cosplay-management" component={SeriesGrid} />
-          </Switch>
+          <Switch>{routeComponents}</Switch>
         </div>
       </BrowserRouter>
     </ThemeProvider>
@@ -66,7 +94,7 @@ const AuthenticatedMain = () => {
 };
 
 /**
- * <Route exact path="/s-:series" component={CharacterGrid} />
+ * 
               <Route
                 exact
                 path="/s-:series/c-:character"

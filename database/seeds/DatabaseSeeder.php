@@ -15,7 +15,10 @@ class DatabaseSeeder extends Seeder
             UsersTableSeeder::class,
             SeriesTableSeeder::class,
             CharactersTableSeeder::class,
-            OutfitsTableSeeder::class
+            OutfitsTableSeeder::class,
+            ItemsTableSeeder::class,
+            TagsTableSeeder::class,
+            ItemsTagTableSeeder::class,
         ]);
     }
 }

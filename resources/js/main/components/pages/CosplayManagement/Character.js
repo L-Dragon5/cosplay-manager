@@ -2,11 +2,14 @@ import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 
-import { Modal } from '@material-ui/core';
+import { Modal, Box, Typography } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import { makeStyles } from '@material-ui/core/styles';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
+import { teal, red } from '@material-ui/core/colors';
 
-import SeriesEditForm from '../../forms/SeriesEditForm';
+import CharacterEditForm from './forms/CharacterEditForm';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -21,22 +24,23 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Series = (props) => {
+const Character = (props) => {
   const history = useHistory();
   const classes = useStyles();
 
   const { token } = props;
-  let { id, characterCount } = props;
+  let { id, seriesID, outfitCount } = props;
 
   id = id !== undefined ? id : null;
-  characterCount =
-    characterCount !== undefined
-      ? characterCount + (characterCount === 1 ? ' Character' : ' Characters')
-      : '0 Characters';
+  seriesID = seriesID !== undefined ? seriesID : null;
+  outfitCount =
+    outfitCount !== undefined
+      ? outfitCount + (outfitCount === 1 ? ' Outfit' : ' Outfits')
+      : '0 Outfits';
 
   const [visible, setVisible] = useState(true);
-  const [title, setTitle] = useState(
-    props.title !== undefined ? props.title : 'ERROR',
+  const [name, setName] = useState(
+    props.name !== undefined ? props.name : 'ERROR',
   );
   const [image, setImage] = useState(props.image);
   const [renderForm, setRenderForm] = useState(false);
@@ -45,7 +49,7 @@ const Series = (props) => {
   const [errorAlertMessage, setErrorAlertMessage] = useState('');
 
   const handleClick = () => {
-    history.push(`/cosplay-management/s-${id}`);
+    history.push(`/cosplay-management/s-${seriesID}/c-${id}`);
   };
 
   const handleDelete = (e) => {
@@ -53,14 +57,14 @@ const Series = (props) => {
 
     if (
       confirm(
-        `Are you sure you want to delete this series [${title}]? This will delete all characters and outfit in this series and is not reversible.`,
+        `Are you sure you want to delete this character [${this.state.name}]? This will delete all outfits in this character and is not reversible.`,
       )
     ) {
       const answer = prompt('Please enter DELETE to confirm.');
 
       if (answer === 'DELETE') {
         axios
-          .get(`/api/series/destroy/${id}`, {
+          .get(`/api/character/destroy/${this.id}`, {
             headers: {
               Accept: 'application/json',
               Authorization: `Bearer ${token}`,
@@ -93,14 +97,16 @@ const Series = (props) => {
   const handleFormUnmount = (data) => {
     const obj = JSON.parse(data);
     if (obj) {
-      setTitle(obj.title);
+      setName(obj.name);
       setImage(obj.image);
     }
 
     setRenderForm(false);
   };
 
-  const modalOpen = () => {
+  const modalOpen = (e) => {
+    e.stopPropagation();
+
     setRenderForm(true);
     setModalStatus(true);
   };
@@ -110,9 +116,7 @@ const Series = (props) => {
   };
 
   if (visible) {
-    const modalName = `series-single-modal-${id}`;
-
-    if (title && image) {
+    if (name && image) {
       return (
         <>
           {errorAlertMessage && (
@@ -125,34 +129,33 @@ const Series = (props) => {
             <Alert severity="success">{successAlertMessage}</Alert>
           )}
 
-          <div className="series" onClick={handleClick}>
-            <div className="series__image">
-              <img src={image} draggable={false} />
-            </div>
-            <div className="series__title">
-              <div
-                className="series__icon modal-trigger"
-                data-target={modalName}
-                onClick={(e) => e.stopPropagation()}
+          <Box className="character" onClick={handleClick}>
+            <Box className="character__image">
+              <img src={image} draggable={false} alt="" />
+            </Box>
+            <Box className="character__name">
+              <Box
+                onClick={modalOpen}
+                className="character__icon"
+                style={{ backgroundColor: teal[300] }}
               >
-                <a className="btn-flat teal lighten-2" onClick={modalOpen}>
-                  <i className="material-icons">edit</i>
-                </a>
-              </div>
+                <EditIcon />
+              </Box>
 
-              <div className="series__title__text">
-                {title}
-                <br />
-                {characterCount}
-              </div>
+              <Box className="character__name__text">
+                <Typography>{name}</Typography>
+                <Typography>{outfitCount}</Typography>
+              </Box>
 
-              <div className="series__icon" onClick={handleDelete}>
-                <a className="btn-flat red lighten-2">
-                  <i className="material-icons">delete</i>
-                </a>
-              </div>
-            </div>
-          </div>
+              <Box
+                onClick={handleDelete}
+                className="character__icon"
+                style={{ backgroundColor: red[300] }}
+              >
+                <DeleteIcon />
+              </Box>
+            </Box>
+          </Box>
 
           {renderForm ? (
             <Modal
@@ -162,10 +165,10 @@ const Series = (props) => {
               disableAutoFocus
             >
               <div className={classes.paper}>
-                <SeriesEditForm
+                <CharacterEditForm
                   token={token}
                   id={id}
-                  title={title}
+                  name={name}
                   unmount={handleFormUnmount}
                 />
               </div>
@@ -179,4 +182,4 @@ const Series = (props) => {
   return null;
 };
 
-export default Series;
+export default Character;

@@ -3,6 +3,7 @@ import { NavLink, withRouter } from 'react-router-dom';
 
 import {
   AppBar,
+  Box,
   Hidden,
   SwipeableDrawer,
   List,
@@ -37,6 +38,7 @@ const useStyles = makeStyles((theme) => ({
       textDecoration: 'none',
       padding: '12px',
       fontSize: '1rem',
+      cursor: 'pointer',
     },
     '& > a.active-tool': {
       borderBottom: '2px solid rgba(0, 0, 0, 0.87)',
@@ -51,15 +53,32 @@ const Navbar = () => {
   const classes = useStyles();
 
   const [anchorEl, setAnchorEl] = useState(null);
-  const [drawerStatus, setDrawerStatus] = useState(false);
-  const open = Boolean(anchorEl);
+  const [
+    cosplayManagementMenuStatus,
+    setCosplayManagementMenuStatus,
+  ] = useState(false);
+  const [accountSettingsMenuStatus, setAccountSettingsMenuStatus] = useState(
+    false,
+  );
 
-  const handleMenu = (event) => {
-    setAnchorEl(event.currentTarget);
+  const [drawerStatus, setDrawerStatus] = useState(false);
+
+  const openCosplayManagementMenu = (e) => {
+    setAnchorEl(e.currentTarget);
+    setCosplayManagementMenuStatus(true);
   };
 
-  const handleClose = () => {
-    setAnchorEl(null);
+  const closeCosplayManagementMenu = () => {
+    setCosplayManagementMenuStatus(false);
+  };
+
+  const openAccountSettingsMenu = (e) => {
+    setAnchorEl(e.currentTarget);
+    setAccountSettingsMenuStatus(true);
+  };
+
+  const closeAccountSettingsMenu = () => {
+    setAccountSettingsMenuStatus(false);
   };
 
   const drawerOpen = () => {
@@ -72,42 +91,44 @@ const Navbar = () => {
 
   return (
     <div className={classes.root}>
-      <SwipeableDrawer
-        anchor="left"
-        open={drawerStatus}
-        onClose={drawerClose}
-        onOpen={drawerOpen}
-      >
-        <List>
-          <ListItem>
-            <NavLink to="/" onClick={drawerClose}>
-              Dashboard
-            </NavLink>
-          </ListItem>
-          <ListItem>
-            <NavLink
-              to="/cosplay-management"
-              activeClassName="active-tool"
-              onClick={drawerClose}
-            >
-              Cosplay Management
-            </NavLink>
-          </ListItem>
-          <ListItem>
-            <NavLink
-              to="/taobao-organizer"
-              activeClassName="active-tool"
-              onClick={drawerClose}
-            >
-              Taobao Organizer
-            </NavLink>
-          </ListItem>
-        </List>
-      </SwipeableDrawer>
+      <Hidden mdUp>
+        <SwipeableDrawer
+          anchor="left"
+          open={drawerStatus}
+          onClose={drawerClose}
+          onOpen={drawerOpen}
+        >
+          <List>
+            <ListItem>
+              <NavLink to="/" onClick={drawerClose}>
+                Dashboard
+              </NavLink>
+            </ListItem>
+            <ListItem>
+              <NavLink
+                to="/cosplay-management"
+                activeClassName="active-tool"
+                onClick={drawerClose}
+              >
+                Cosplay Management
+              </NavLink>
+            </ListItem>
+            <ListItem>
+              <NavLink
+                to="/taobao-organizer"
+                activeClassName="active-tool"
+                onClick={drawerClose}
+              >
+                Taobao Organizer
+              </NavLink>
+            </ListItem>
+          </List>
+        </SwipeableDrawer>
+      </Hidden>
 
       <AppBar position="static">
         <Toolbar>
-          <Hidden smUp>
+          <Hidden mdUp>
             <IconButton
               edge="start"
               className={classes.menuButton}
@@ -123,25 +144,18 @@ const Navbar = () => {
             <NavLink to="/">CosManage</NavLink>
           </Typography>
           <nav className={classes.nav}>
-            <Hidden only="xs">
+            <Hidden smDown>
               <NavLink to="/">Dashboard</NavLink>
-              <NavLink to="/cosplay-management" activeClassName="active-tool">
-                Cosplay Management
-              </NavLink>
-              <NavLink to="/taobao-organizer" activeClassName="active-tool">
-                Taobao Organizer
-              </NavLink>
-              <IconButton
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleMenu}
-                color="inherit"
+
+              <Box
+                component="a"
+                aria-controls="menu-cosplay-management"
+                onClick={openCosplayManagementMenu}
               >
-                <AccountCircleIcon />
-              </IconButton>
+                Cosplay Management
+              </Box>
               <Menu
-                id="menu-appbar"
+                id="menu-cosplay-management"
                 anchorEl={anchorEl}
                 anchorOrigin={{
                   vertical: 'top',
@@ -152,13 +166,61 @@ const Navbar = () => {
                   vertical: 'top',
                   horizontal: 'right',
                 }}
-                open={open}
-                onClose={handleClose}
+                open={cosplayManagementMenuStatus}
+                onClose={closeCosplayManagementMenu}
               >
-                <MenuItem onClick={handleClose}>
+                <MenuItem
+                  component={NavLink}
+                  to="/cosplay-management"
+                  activeClassName="active-tool"
+                  onClick={closeCosplayManagementMenu}
+                >
+                  Series Grid
+                </MenuItem>
+                <MenuItem
+                  component={NavLink}
+                  to="/cosplay-management/all-cosplays"
+                  activeClassName="active-tool"
+                  onClick={closeCosplayManagementMenu}
+                >
+                  All Cosplays
+                </MenuItem>
+              </Menu>
+
+              <NavLink to="/taobao-organizer" activeClassName="active-tool">
+                Taobao Organizer
+              </NavLink>
+
+              <Box component="a">Tag Manager</Box>
+
+              <IconButton
+                aria-label="account of current user"
+                aria-controls="menu-account-settings"
+                aria-haspopup="true"
+                onClick={openAccountSettingsMenu}
+                color="inherit"
+              >
+                <AccountCircleIcon />
+              </IconButton>
+              <Menu
+                id="menu-account-settings"
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                open={accountSettingsMenuStatus}
+                onClose={closeAccountSettingsMenu}
+              >
+                <MenuItem onClick={closeAccountSettingsMenu}>
                   My Account (In Progress)
                 </MenuItem>
-                <MenuItem onClick={handleClose}>
+                <MenuItem onClick={closeAccountSettingsMenu}>
                   Changelog (In Progress)
                 </MenuItem>
               </Menu>
