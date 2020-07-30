@@ -1,8 +1,10 @@
 .outfit {
   &__image {
-    width: 100%;
-    max-height: 30vh;
-    object-fit: cover;
+    height: 100%;
+    width: auto;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
 
     &__delete {
       color: rgba(0, 0, 0, 0.5);
@@ -10,6 +12,7 @@
       position: absolute;
       top: 5px;
       left: 5px;
+      z-index: 5;
       cursor: pointer;
     }
   }
@@ -43,9 +46,17 @@
 }
 
 .carousel {
+  max-height: 500px;
+  overflow: hidden;
+
   ul {
+    display: flex;
     list-style-type: none;
     margin: 0;
     padding: 0;
+  }
+
+  .carousel__inner-slide {
+    position: relative;
   }
 }

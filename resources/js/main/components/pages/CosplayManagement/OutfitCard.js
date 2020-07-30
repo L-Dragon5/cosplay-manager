@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
 import axios from 'axios';
-import { CarouselProvider, Slider, Slide, Image } from 'pure-react-carousel';
+import Carousel from 'react-material-ui-carousel';
 
 import {
   Card,
@@ -56,6 +56,7 @@ const OutfitCard = (props) => {
   const [expanded, setExpanded] = useState(false);
   const [visible, setVisible] = useState(true);
   const [renderForm, setRenderForm] = useState(true);
+  const [renderCarousel, setRenderCarousel] = useState(true);
   const [modalStatus, setModalStatus] = useState(false);
   const [snackbarStatus, setSnackbarStatus] = useState(false);
   const [successAlertMessage, setSuccessAlertMessage] = useState('');
@@ -205,6 +206,7 @@ const OutfitCard = (props) => {
           setSuccessAlertMessage(response.data.message);
           setSnackbarStatus(true);
           setImages(response.data.images);
+          setRenderCarousel(true);
         }
       })
       .catch((error) => {
@@ -289,23 +291,33 @@ const OutfitCard = (props) => {
           <CardHeader title={title} subheader={characterName} />
 
           <CardMedia className="carousel">
-            <CarouselProvider totalSlides={images.length}>
-              <Slider>
+            {renderCarousel ? (
+              <Carousel autoPlay={false} indicators={false} timeout={150}>
                 {images.map((item, i) => {
                   return (
-                    <Slide key={`${title}-image-${i}`} index={i}>
-                      <Image src={item} className="outfit__image" />
+                    <Box key={`${title}-image-${i}`}>
+                      <img
+                        src={item}
+                        className="outfit__image"
+                        alt=""
+                        draggable={false}
+                      />
                       <Box
                         className="outfit__image__delete"
-                        onClick={(e) => handleRemovePhoto(e, i)}
+                        onClick={(e) => {
+                          setRenderCarousel(false);
+                          handleRemovePhoto(e, i);
+                        }}
                       >
                         <DeleteIcon />
                       </Box>
-                    </Slide>
+                    </Box>
                   );
                 })}
-              </Slider>
-            </CarouselProvider>
+              </Carousel>
+            ) : (
+              <></>
+            )}
           </CardMedia>
 
           {tags.length > 0 ? (
@@ -360,7 +372,7 @@ const OutfitCard = (props) => {
             open={modalStatus}
             onClose={modalClose}
             disableEnforceFocus
-            disableAutoFocusl
+            disableAutoFocus
           >
             <Box className={classes.paper}>
               <OutfitEditForm
