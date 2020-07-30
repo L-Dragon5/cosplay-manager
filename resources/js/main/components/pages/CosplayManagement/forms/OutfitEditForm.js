@@ -1,185 +1,261 @@
-import React, { Component } from 'react'
-import axios from 'axios'
-import Cropper from 'react-cropper'
+import React, { useState, useRef } from 'react';
+import axios from 'axios';
+import Cropper from 'react-cropper';
 
-import CreatableSelect from 'react-select/creatable'
+import {
+  Box,
+  Button,
+  Grid,
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Snackbar,
+} from '@material-ui/core';
+import { Alert } from '@material-ui/lab';
 
-const cropper = React.createRef(null)
+import CreatableSelect from 'react-select/creatable';
+import makeAnimated from 'react-select/animated';
 
-class OutfitEditForm extends Component {
-  constructor (props) {
-    super(props)
+const OutfitEditForm = (props) => {
+  const [image, setImage] = useState(null);
+  const [saveImage, setSaveImage] = useState(null);
+  const [status, setStatus] = useState(props.status);
 
-    this.state = {
-      image: null,
-      saveImage: null
+  const [snackbarStatus, setSnackbarStatus] = useState(false);
+  const [successAlertMessage, setSuccessAlertMessage] = useState('');
+  const [errorAlertMessage, setErrorAlertMessage] = useState('');
+
+  const cropper = useRef();
+  const animatedComponents = makeAnimated();
+
+  const {
+    token,
+    id,
+    title,
+    obtained_on,
+    creator,
+    storage_location,
+    times_worn,
+    options,
+    tags,
+    unmount,
+  } = props;
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+    formData.set('status', status);
+
+    if (saveImage !== null) {
+      formData.set('image', saveImage);
     }
 
-    this.token = props.token
-    this.id = props.id
-    this.title = props.title
-    this.status = props.status
-    this.obtained_on = props.obtained_on
-    this.creator = props.creator
-    this.storage_location = props.storage_location
-    this.times_worn = props.times_worn
-    this.options = props.options
-    this.tags = props.tags
-
-    this.handleSubmit = this.handleSubmit.bind(this)
-    this._cropImage = this._cropImage.bind(this)
-    this._getBase64 = this._getBase64.bind(this)
-  }
-
-  handleSubmit (e) {
-    e.preventDefault()
-    $('#modal-errors-' + this.id).html('').hide()
-    $('#modal-loader-' + this.id).show()
-    $('#modal-submit-' + this.id).hide()
-
-    const formData = new FormData(e.target)
-
-    if (this.state.saveImage !== null) {
-      formData.set('image', this.state.saveImage)
-    }
-
-    axios.post('/api/outfit/update/' + this.id, formData, {
-      headers: {
-        Accept: 'application/json',
-        Authorization: 'Bearer ' + this.token,
-        'content-type': 'multipart/form-data'
-      }
-    }).then((response) => {
-      if (response.status === 200) {
-        M.toast({ html: response.data.message })
-        $('#modal-close-' + this.id).trigger('click')
-        this.props.unmount(JSON.stringify(response.data.outfit))
-      }
-    }).catch((error) => {
-      if (error.response) {
-        let html = ''
-
-        if (Array.isArray(error.response)) {
-          for (const [key, value] of Object.entries(error.response.data.message)) {
-            html += key + ': ' + value + '<br>'
-          }
-        } else {
-          html += error.response.data.message
+    axios
+      .post(`/api/outfit/update/${id}`, formData, {
+        headers: {
+          Accept: 'application/json',
+          Authorization: `Bearer ${token}`,
+          'content-type': 'multipart/form-data',
+        },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          setSuccessAlertMessage(response.data.message);
+          setSnackbarStatus(true);
+          unmount(JSON.stringify(response.data.outfit));
         }
+      })
+      .catch((error) => {
+        if (error.response) {
+          let message = '';
 
-        $('#modal-errors-' + this.id).html(html).show()
-      }
-    }).then(() => {
-      $('#modal-loader-' + this.id).hide()
-      $('#modal-submit-' + this.id).show()
-    })
-  }
+          if (Array.isArray(error.response)) {
+            Object.keys(error.response.data.message).forEach((key) => {
+              message += `[${key}] - ${error.response.data.message[key]}\r\n`;
+            });
+          } else {
+            message += error.response.data.message;
+          }
 
-  _cropImage () {
-    this.setState({
-      saveImage: cropper.current.getCroppedCanvas().toDataURL()
-    })
-  }
+          setErrorAlertMessage(message);
+          setSnackbarStatus(true);
+        }
+      });
+  };
 
-  _getBase64 (e) {
-    const node = e.currentTarget
+  const cropImage = () => {
+    setSaveImage(cropper.current.getCroppedCanvas().toDataURL());
+  };
+
+  const getBase64 = (e) => {
+    const node = e.currentTarget;
 
     if (node.files !== null && node.files.length > 0) {
-      const image = node.files[0]
-      const reader = new FileReader()
+      const tempImage = node.files[0];
+      const reader = new FileReader();
 
-      reader.addEventListener('load', (e) => {
-        this.setState({
-          image: e.target.result
-        })
-      }, false)
+      reader.addEventListener(
+        'load',
+        (evt) => {
+          setImage(evt.target.result);
+        },
+        false,
+      );
 
-      if (image) {
-        reader.readAsDataURL(image)
+      if (tempImage) {
+        reader.readAsDataURL(tempImage);
       }
     }
-  }
+  };
 
-  componentDidMount () {
-    M.updateTextFields()
-    M.FormSelect.init($('select'))
-    M.Datepicker.init($('.datepicker'), {
-      format: 'yyyy-mm-dd'
-    })
-  }
+  const snackbarClose = () => {
+    setSnackbarStatus(false);
+  };
 
-  render () {
-    return (
-      <div className='row'>
-        <form className='col s12' onSubmit={this.handleSubmit}>
-          <div className='row'>
-            <div id={'modal-errors-' + this.id} className='modal-errors col s12' />
+  const handleStatusChange = (e) => {
+    setStatus(e.target.value);
+  };
 
-            <div className='input-field col s12 m6'>
-              <input id={'title-' + this.id} type='text' name='title' className='validate' defaultValue={this.title} required />
-              <label htmlFor={'title-' + this.id}>Outfit Title *</label>
-            </div>
+  return (
+    <Box>
+      {errorAlertMessage && (
+        <Snackbar
+          anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+          open={snackbarStatus}
+          onClose={snackbarClose}
+          autoHideDuration={2000}
+        >
+          <Alert severity="error" style={{ whiteSpace: 'pre' }}>
+            {errorAlertMessage}
+          </Alert>
+        </Snackbar>
+      )}
 
-            <div className='input-field col s12 m6'>
-              <select name='status' defaultValue={this.status}>
-                <option value='0'>Future Cosplay</option>
-                <option value='1'>Owned & Unworn</option>
-                <option value='2'>Worn</option>
-              </select>
-              <label>Outfit Status *</label>
-            </div>
+      {successAlertMessage && (
+        <Snackbar
+          anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+          open={snackbarStatus}
+          onClose={snackbarClose}
+          autoHideDuration={2000}
+        >
+          <Alert severity="success">{successAlertMessage}</Alert>
+        </Snackbar>
+      )}
 
-            <div className='input-field col s12 m4'>
-              <input id={'obtained-on-' + this.id} type='text' name='obtained_on' className='datepicker validate' defaultValue={this.obtained_on} />
-              <label htmlFor={'obtained-on-' + this.id}>Obtained On</label>
-            </div>
+      <form onSubmit={handleSubmit}>
+        <Grid container spacing={3} alignItems="center">
+          <Grid item xs={12} md={6}>
+            <TextField
+              required
+              fullWidth
+              name="title"
+              variant="outlined"
+              label="Outfit Title"
+              defaultValue={title}
+              InputLabelProps={{ shrink: true }}
+            />
+          </Grid>
 
-            <div className='input-field col s12 m4'>
-              <input id={'creator-' + this.id} type='text' name='creator' className='validate' defaultValue={this.creator} />
-              <label htmlFor={'creator-' + this.id}>Creator</label>
-            </div>
+          <Grid item xs={12} md={6}>
+            <FormControl variant="outlined">
+              <InputLabel id="outfit-status">Outfit Status</InputLabel>
+              <Select
+                labelId="outfit-status"
+                defaultValue={status}
+                value={status}
+                onChange={handleStatusChange}
+                label="Outfit Status"
+                required
+              >
+                <MenuItem value={0}>Future Cosplay</MenuItem>
+                <MenuItem value={1}>Owned & Unworn</MenuItem>
+                <MenuItem value={2}>Worn</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
 
-            <div className='input-field col s12 m4'>
-              <input id={'storage-location-' + this.id} type='text' name='storage_location' className='validate' defaultValue={this.storage_location} />
-              <label htmlFor={'storage-location-' + this.id}>Storage Location</label>
-            </div>
+          <Grid item xs={12} md={4}>
+            <TextField
+              fullWidth
+              name="obtained_on"
+              type="date"
+              defaultValue={obtained_on}
+              InputLabelProps={{ shrink: true }}
+            />
+          </Grid>
 
-            <div className='input-field col s12 m6'>
-              <CreatableSelect
-                id={'tag-select-' + this.id}
-                isMulti
-                isClearable={false}
-                name='tags[]'
-                closeMenuOnSelect={false}
-                placeholder='Select tags'
-                options={this.options}
-                defaultValue={this.tags}
+          <Grid item xs={12} md={4}>
+            <TextField
+              fullWidth
+              name="creator"
+              variant="outlined"
+              label="Creator"
+              defaultValue={creator}
+              InputLabelProps={{ shrink: true }}
+            />
+          </Grid>
+
+          <Grid item xs={12} md={4}>
+            <TextField
+              fullWidth
+              name="storage_location"
+              variant="outlined"
+              label="Storage Location"
+              defaultValue={storage_location}
+              InputLabelProps={{ shrink: true }}
+            />
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <CreatableSelect
+              isMulti
+              isClearable={false}
+              name="tags[]"
+              closeMenuOnSelect={false}
+              components={animatedComponents}
+              placeholder="Select tags"
+              options={options}
+              defaultValue={tags}
+            />
+          </Grid>
+
+          <Grid item xs={12} md={4}>
+            <TextField
+              fullWidth
+              multiline
+              name="times_worn"
+              variant="outlined"
+              label="Times Worn"
+              defaultValue={times_worn}
+              InputLabelProps={{ shrink: true }}
+            />
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <label htmlFor={`image-${id}`}>
+              <input
+                id={`image-${id}`}
+                type="file"
+                name="image"
+                accept="image/*"
+                onChange={getBase64}
+                style={{ display: 'none' }}
               />
-            </div>
+              <Button variant="contained" color="primary" component="span">
+                Add Image
+              </Button>
+            </label>
+          </Grid>
 
-            <div className='input-field col s12 m6'>
-              <textarea id={'times-worn-' + this.id} className='materialize-textarea' name='times_worn' defaultValue={this.times_worn} />
-              <label htmlFor={'times-worn-' + this.id}>Times Worn</label>
-            </div>
-
-            <div className='col s12'>
-              <div className='file-field input-field'>
-                <div className='btn'>
-                  <span>Image</span>
-                  <input type='file' name='image' accept='image/*' onChange={(e) => this._getBase64(e)} />
-                </div>
-                <div className='file-path-wrapper'>
-                  <input className='file-path validate' type='text' name='image_text' />
-                </div>
-              </div>
-            </div>
-
-            { this.state.image &&
-            <div className='col s12' style={{ marginBottom: '1rem' }}>
+          {image && (
+            <Grid item xs={12} style={{ marginBottom: '1rem' }}>
               <Cropper
                 ref={cropper}
                 viewMode={1}
-                src={this.state.image}
+                src={image}
                 style={{ maxHeight: 350 }}
                 guides={false}
                 autoCropArea={1}
@@ -187,21 +263,20 @@ class OutfitEditForm extends Component {
                 zoomable={false}
                 scalable={false}
                 rotatable={false}
-                crop={this._cropImage}
+                crop={cropImage}
               />
-            </div>
-            }
+            </Grid>
+          )}
 
-            <div className='right-align'>
-              <button id={'modal-submit-' + this.id} type='submit' className='waves-effect waves-green btn'>Save</button>
-              <div id={'modal-loader-' + this.id} style={{ display: 'none' }} className='preloader-wrapper small active'><div className='spinner-layer spinner-green-only'><div className='circle-clipper left'><div className='circle' /></div><div className='gap-patch'><div className='circle' /></div><div className='circle-clipper right'><div className='circle' /></div></div></div>
-              <button id={'modal-close-' + this.id} type='button' className='modal-close' style={{ display: 'none' }} />
-            </div>
-          </div>
-        </form>
-      </div>
-    )
-  }
-}
+          <Grid item xs={12}>
+            <Button type="submit" variant="contained" color="secondary">
+              Save
+            </Button>
+          </Grid>
+        </Grid>
+      </form>
+    </Box>
+  );
+};
 
-export default OutfitEditForm
+export default OutfitEditForm;

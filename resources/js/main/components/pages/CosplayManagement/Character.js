@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 
-import { Modal, Box, Typography } from '@material-ui/core';
+import { Modal, Box, Typography, Snackbar } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import { makeStyles } from '@material-ui/core/styles';
 import EditIcon from '@material-ui/icons/Edit';
@@ -45,6 +45,7 @@ const Character = (props) => {
   const [image, setImage] = useState(props.image);
   const [renderForm, setRenderForm] = useState(false);
   const [modalStatus, setModalStatus] = useState(false);
+  const [snackbarStatus, setSnackbarStatus] = useState(false);
   const [successAlertMessage, setSuccessAlertMessage] = useState('');
   const [errorAlertMessage, setErrorAlertMessage] = useState('');
 
@@ -74,6 +75,7 @@ const Character = (props) => {
           .then((response) => {
             if (response.status === 200) {
               setSuccessAlertMessage(response.data.message);
+              setSnackbarStatus(true);
               setVisible(false);
             }
           })
@@ -81,15 +83,21 @@ const Character = (props) => {
             if (error.response) {
               let message = '';
 
-              Object.keys(error.response.data.message).forEach((key) => {
-                message += `[${key}] - ${error.response.data.message[key]}\r\n`;
-              });
+              if (Array.isArray(error.response)) {
+                Object.keys(error.response.data.message).forEach((key) => {
+                  message += `[${key}] - ${error.response.data.message[key]}\r\n`;
+                });
+              } else {
+                message += error.response.data.message;
+              }
 
               setErrorAlertMessage(message);
+              setSnackbarStatus(true);
             }
           });
       } else {
         setErrorAlertMessage('Deletion cancelled');
+        setSnackbarStatus(true);
       }
     }
   };
@@ -115,18 +123,36 @@ const Character = (props) => {
     setModalStatus(false);
   };
 
+  const snackbarClose = () => {
+    setSnackbarStatus(false);
+  };
+
   if (visible) {
     if (name && image) {
       return (
         <>
           {errorAlertMessage && (
-            <Alert severity="error" style={{ whiteSpace: 'pre' }}>
-              {errorAlertMessage}
-            </Alert>
+            <Snackbar
+              anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+              open={snackbarStatus}
+              onClose={snackbarClose}
+              autoHideDuration={2000}
+            >
+              <Alert severity="error" style={{ whiteSpace: 'pre' }}>
+                {errorAlertMessage}
+              </Alert>
+            </Snackbar>
           )}
 
           {successAlertMessage && (
-            <Alert severity="success">{successAlertMessage}</Alert>
+            <Snackbar
+              anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+              open={snackbarStatus}
+              onClose={snackbarClose}
+              autoHideDuration={2000}
+            >
+              <Alert severity="success">{successAlertMessage}</Alert>
+            </Snackbar>
           )}
 
           <Box className="character" onClick={handleClick}>

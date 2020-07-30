@@ -1,105 +1,32 @@
 .outfit {
-  height: 430px !important;
-
-  & .card {
-    width: 100%;
-    margin: 0;
-
-    &-image {
-      max-height: 86%;
-    }
-
-    &-action {
-      display: flex;
-      flex-direction: row;
-      padding: 0;
-
-      & span {
-        margin: 0;
-        width: 100%;
-        font-size: 1.15rem;
-        padding: 16px;
-      }
-    }
-
-    &-reveal {
-      ul {
-        font-size: 1.15rem;
-      }
-    }
-  }
-
-  &__title {
-    font-size: 1rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-
-    &:hover {
-      white-space: initial;
-      overflow: initial;
-      text-overflow: initial;
-    }
-  }
-
-  &__images {
-    max-height: 343px !important;
-  }
-
   &__image {
+    width: 100%;
+    max-height: 30vh;
+    object-fit: cover;
+
     &__delete {
-      background-color: rgb(105, 105, 105);
+      color: rgba(0, 0, 0, 0.5);
       padding: 4px;
       position: absolute;
       top: 5px;
       left: 5px;
-
-      & i {
-        color: #eee;
-      }
+      cursor: pointer;
     }
   }
 
   &--future {
     border: 2px solid #a8efc2;
-
-    & .card-action {
-      background-color: #a8efc2;
-    }
+    background-color: #a8efc2 !important;
   }
 
   &--unworn {
     border: 2px solid #b8e6ff;
-
-    & .card-action {
-      background-color: #b8e6ff;
-    }
+    background-color: #b8e6ff !important;
   }
 
   &--worn {
     border: 2px solid #ffd0e7;
-
-    & .card-action {
-      background-color: #ffd0e7;
-    }
-  }
-
-  &__icon {
-    user-select: none;
-    
-    & a {
-      height: 100%;
-      line-height: 60px;
-      margin-right: 0 !important;
-
-      & i {
-        color: black;
-      }
-    }
-  }
-
-  &__character {
-    font-size: 0.75rem;
+    background-color: #ffd0e7 !important;
   }
 
   &__tags {
@@ -116,18 +43,9 @@
 }
 
 .carousel {
-  max-height: 343px;
-
-  & .carousel-item {
-    min-height: initial !important;
-  }
-
-  &-item {
-    & > img {
-      height: 100%;
-      width: 100%;
-      object-fit: contain;
-      object-position: center center;
-    }
+  ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
   }
 }

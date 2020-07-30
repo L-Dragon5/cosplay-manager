@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-import { Box, Fab, Modal, Typography } from '@material-ui/core';
+import { Box, Fab, Modal, Typography, Snackbar } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import AddIcon from '@material-ui/icons/Add';
 import { makeStyles } from '@material-ui/core/styles';
@@ -39,6 +39,7 @@ const SeriesGrid = () => {
   const [series, setSeries] = useState(null);
   const [renderForm, setRenderForm] = useState(false);
   const [modalStatus, setModalStatus] = useState(false);
+  const [snackbarStatus, setSnackbarStatus] = useState(false);
   const [errorAlertMessage, setErrorAlertMessage] = useState('');
 
   const getSeries = () => {
@@ -52,18 +53,22 @@ const SeriesGrid = () => {
       .then((response) => {
         if (response.data) {
           setSeries(response.data);
-          setRenderForm(true);
         }
       })
       .catch((error) => {
         if (error.response) {
           let message = '';
 
-          Object.keys(error.response.data.message).forEach((key) => {
-            message += `[${key}] - ${error.response.data.message[key]}\r\n`;
-          });
+          if (Array.isArray(error.response)) {
+            Object.keys(error.response.data.message).forEach((key) => {
+              message += `[${key}] - ${error.response.data.message[key]}\r\n`;
+            });
+          } else {
+            message += error.response.data.message;
+          }
 
           setErrorAlertMessage(message);
+          setSnackbarStatus(true);
         }
       });
   };
@@ -82,6 +87,10 @@ const SeriesGrid = () => {
     setModalStatus(false);
   };
 
+  const snackbarClose = () => {
+    setSnackbarStatus(false);
+  };
+
   useEffect(() => {
     getSeries();
     document.title = 'Series Grid | CosManage';
@@ -92,9 +101,16 @@ const SeriesGrid = () => {
       <Typography variant="h4">Series</Typography>
 
       {errorAlertMessage && (
-        <Alert severity="error" style={{ whiteSpace: 'pre' }}>
-          {errorAlertMessage}
-        </Alert>
+        <Snackbar
+          anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+          open={snackbarStatus}
+          onClose={snackbarClose}
+          autoHideDuration={2000}
+        >
+          <Alert severity="error" style={{ whiteSpace: 'pre' }}>
+            {errorAlertMessage}
+          </Alert>
+        </Snackbar>
       )}
 
       <Box className="series-grid">

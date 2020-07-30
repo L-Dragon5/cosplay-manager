@@ -64,6 +64,8 @@ const Navbar = () => {
   const [drawerStatus, setDrawerStatus] = useState(false);
 
   const openCosplayManagementMenu = (e) => {
+    e.preventDefault();
+
     setAnchorEl(e.currentTarget);
     setCosplayManagementMenuStatus(true);
   };
@@ -147,13 +149,14 @@ const Navbar = () => {
             <Hidden smDown>
               <NavLink to="/">Dashboard</NavLink>
 
-              <Box
-                component="a"
+              <NavLink
                 aria-controls="menu-cosplay-management"
+                to="/cosplay-management"
+                activeClassName="active-tool"
                 onClick={openCosplayManagementMenu}
               >
                 Cosplay Management
-              </Box>
+              </NavLink>
               <Menu
                 id="menu-cosplay-management"
                 anchorEl={anchorEl}

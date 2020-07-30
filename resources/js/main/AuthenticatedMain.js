@@ -16,7 +16,7 @@ import Dashboard from './components/pages/Dashboard';
 import AllCosplaysPage from './components/pages/CosplayManagement/AllCosplaysPage';
 import SeriesGrid from './components/pages/CosplayManagement/SeriesGrid';
 import CharacterGrid from './components/pages/CosplayManagement/CharacterGrid';
-// import OutfitGrid from './components/pages/CosplayGrid/OutfitGrid';
+import OutfitGrid from './components/pages/CosplayManagement/OutfitGrid';
 
 // Taobao Organizer Pages
 import TaobaoItems from './components/pages/TaobaoOrganizer/TaobaoItems';
@@ -45,6 +45,10 @@ const AuthenticatedMain = () => {
     {
       path: '/cosplay-management/s-:series',
       component: CharacterGrid,
+    },
+    {
+      path: '/cosplay-management/s-:series/c-:character',
+      component: OutfitGrid,
     },
     {
       path: '/taobao-organizer',
@@ -92,15 +96,5 @@ const AuthenticatedMain = () => {
     </ThemeProvider>
   );
 };
-
-/**
- * 
-              <Route
-                exact
-                path="/s-:series/c-:character"
-                component={OutfitGrid}
-              />
-              <Route path="/all-cosplays" component={AllCosplaysPage} />
- */
 
 export default AuthenticatedMain;

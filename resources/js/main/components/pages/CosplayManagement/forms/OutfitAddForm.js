@@ -1,179 +1,236 @@
-import React, { Component } from 'react'
-import axios from 'axios'
-import Cropper from 'react-cropper'
+import React, { useState, useRef } from 'react';
+import axios from 'axios';
+import Cropper from 'react-cropper';
 
-import CreatableSelect from 'react-select/creatable'
-import makeAnimated from 'react-select/animated'
-const animatedComponents = makeAnimated()
+import {
+  Box,
+  Button,
+  Grid,
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Snackbar,
+} from '@material-ui/core';
+import { Alert } from '@material-ui/lab';
 
-const cropper = React.createRef(null)
+import CreatableSelect from 'react-select/creatable';
+import makeAnimated from 'react-select/animated';
 
-class OutfitAddForm extends Component {
-  constructor (props) {
-    super(props)
+const OutfitAddForm = (props) => {
+  const [image, setImage] = useState(null);
+  const [saveImage, setSaveImage] = useState(null);
+  const [status, setStatus] = useState(0);
 
-    this.state = {
-      image: null,
-      saveImage: null
+  const [snackbarStatus, setSnackbarStatus] = useState(false);
+  const [successAlertMessage, setSuccessAlertMessage] = useState('');
+  const [errorAlertMessage, setErrorAlertMessage] = useState('');
+
+  const cropper = useRef();
+  const animatedComponents = makeAnimated();
+
+  const { token, characterID, options, unmount } = props;
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+    formData.set('character_id', characterID);
+    formData.set('status', status);
+
+    if (saveImage !== null) {
+      formData.set('image', saveImage);
     }
 
-    this.token = props.token
-    this.characterID = props.characterID
-    this.options = props.options
-
-    this.handleSubmit = this.handleSubmit.bind(this)
-    this._cropImage = this._cropImage.bind(this)
-    this._getBase64 = this._getBase64.bind(this)
-  }
-
-  handleSubmit (e) {
-    e.preventDefault()
-    $('.modal-errors').html('').hide()
-    $('#modal-loader').show()
-    $('#modal-submit').hide()
-
-    const formData = new FormData(e.target)
-    formData.set('character_id', this.characterID)
-
-    if (this.state.saveImage !== null) {
-      formData.set('image', this.state.saveImage)
-    }
-
-    axios.post('/api/outfit/create', formData, {
-      headers: {
-        Accept: 'application/json',
-        Authorization: 'Bearer ' + this.token,
-        'content-type': 'multipart/form-data'
-      }
-    }).then((response) => {
-      if (response.status === 200) {
-        M.toast({ html: response.data.message })
-        $('#modal-close').trigger('click')
-        this.props.unmount()
-      }
-    }).catch((error) => {
-      if (error.response) {
-        let html = ''
-
-        if (Array.isArray(error.response)) {
-          for (const [key, value] of Object.entries(error.response.data.message)) {
-            html += key + ': ' + value + '<br>'
-          }
-        } else {
-          html += error.response.data.message
+    axios
+      .post('/api/outfit/create', formData, {
+        headers: {
+          Accept: 'application/json',
+          Authorization: `Bearer ${token}`,
+          'content-type': 'multipart/form-data',
+        },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          setSuccessAlertMessage(response.data.message);
+          setSnackbarStatus(true);
+          unmount();
         }
+      })
+      .catch((error) => {
+        if (error.response) {
+          let message = '';
 
-        $('.modal-errors').html(html).show()
-      }
-    }).then(() => {
-      $('#modal-loader').hide()
-      $('#modal-submit').show()
-    })
-  }
+          if (Array.isArray(error.response)) {
+            Object.keys(error.response.data.message).forEach((key) => {
+              message += `[${key}] - ${error.response.data.message[key]}\r\n`;
+            });
+          } else {
+            message += error.response.data.message;
+          }
 
-  _cropImage () {
-    this.setState({
-      saveImage: cropper.current.getCroppedCanvas().toDataURL()
-    })
-  }
+          setErrorAlertMessage(message);
+          setSnackbarStatus(true);
+        }
+      });
+  };
 
-  _getBase64 (e) {
-    const node = e.currentTarget
+  const cropImage = () => {
+    setSaveImage(cropper.current.getCroppedCanvas().toDataURL());
+  };
+
+  const getBase64 = (e) => {
+    const node = e.currentTarget;
 
     if (node.files !== null && node.files.length > 0) {
-      const image = node.files[0]
-      const reader = new FileReader()
+      const tempImage = node.files[0];
+      const reader = new FileReader();
 
-      reader.addEventListener('load', (e) => {
-        this.setState({
-          image: e.target.result
-        })
-      }, false)
+      reader.addEventListener(
+        'load',
+        (evt) => {
+          setImage(evt.target.result);
+        },
+        false,
+      );
 
-      if (image) {
-        reader.readAsDataURL(image)
+      if (tempImage) {
+        reader.readAsDataURL(tempImage);
       }
     }
-  }
+  };
 
-  componentDidMount () {
-    M.FormSelect.init($('select'))
-    M.Datepicker.init($('.datepicker'), {
-      format: 'yyyy-mm-dd'
-    })
-  }
+  const snackbarClose = () => {
+    setSnackbarStatus(false);
+  };
 
-  render () {
-    return (
-      <div className='row'>
-        <form className='col s12' onSubmit={this.handleSubmit}>
-          <div className='row'>
-            <div className='modal-errors col s12' />
+  const handleStatusChange = (e) => {
+    setStatus(e.target.value);
+  };
 
-            <div className='input-field col s12 m6'>
-              <input id='title' type='text' name='title' className='validate' required />
-              <label htmlFor='title'>Outfit Title *</label>
-            </div>
+  return (
+    <Box>
+      {errorAlertMessage && (
+        <Snackbar
+          anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+          open={snackbarStatus}
+          onClose={snackbarClose}
+          autoHideDuration={2000}
+        >
+          <Alert severity="error" style={{ whiteSpace: 'pre' }}>
+            {errorAlertMessage}
+          </Alert>
+        </Snackbar>
+      )}
 
-            <div className='input-field col s12 m6'>
-              <select name='status' defaultValue='0'>
-                <option value='0'>Future Cosplay</option>
-                <option value='1'>Owned & Unworn</option>
-                <option value='2'>Worn</option>
-              </select>
-              <label>Outfit Status *</label>
-            </div>
+      {successAlertMessage && (
+        <Snackbar
+          anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+          open={snackbarStatus}
+          onClose={snackbarClose}
+          autoHideDuration={2000}
+        >
+          <Alert severity="success">{successAlertMessage}</Alert>
+        </Snackbar>
+      )}
 
-            <div className='input-field col s12 m4'>
-              <input id='obtained_on' type='text' name='obtained_on' className='datepicker validate' />
-              <label htmlFor='obtained_on'>Obtained On</label>
-            </div>
+      <form onSubmit={handleSubmit}>
+        <Grid container spacing={3} alignItems="center">
+          <Grid item xs={12} md={6}>
+            <TextField
+              required
+              fullWidth
+              name="title"
+              variant="outlined"
+              label="Outfit Title"
+            />
+          </Grid>
 
-            <div className='input-field col s12 m4'>
-              <input id='creator' type='text' name='creator' className='validate' />
-              <label htmlFor='creator'>Creator</label>
-            </div>
+          <Grid item xs={12} md={6}>
+            <FormControl variant="outlined">
+              <InputLabel id="outfit-status">Outfit Status</InputLabel>
+              <Select
+                labelId="outfit-status"
+                defaultValue={0}
+                value={status}
+                onChange={handleStatusChange}
+                label="Outfit Status"
+                required
+              >
+                <MenuItem value={0}>Future Cosplay</MenuItem>
+                <MenuItem value={1}>Owned & Unworn</MenuItem>
+                <MenuItem value={2}>Worn</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
 
-            <div className='input-field col s12 m4'>
-              <input id='storage_location' type='text' name='storage_location' className='validate' />
-              <label htmlFor='storage_location'>Storage Location</label>
-            </div>
+          <Grid item xs={12} md={4}>
+            <TextField fullWidth name="obtained_on" type="date" />
+          </Grid>
 
-            <div className='input-field col s12 m6'>
-              <CreatableSelect
-                isMulti
-                isClearable={false}
-                name='tags[]'
-                closeMenuOnSelect={false}
-                components={animatedComponents}
-                placeholder='Select tags'
-                options={this.options}
+          <Grid item xs={12} md={4}>
+            <TextField
+              fullWidth
+              name="creator"
+              variant="outlined"
+              label="Creator"
+            />
+          </Grid>
+
+          <Grid item xs={12} md={4}>
+            <TextField
+              fullWidth
+              name="storage_location"
+              variant="outlined"
+              label="Storage Location"
+            />
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <CreatableSelect
+              isMulti
+              isClearable={false}
+              name="tags[]"
+              closeMenuOnSelect={false}
+              components={animatedComponents}
+              placeholder="Select tags"
+              options={options}
+            />
+          </Grid>
+
+          <Grid item xs={12} md={4}>
+            <TextField
+              fullWidth
+              multiline
+              name="times_worn"
+              variant="outlined"
+              label="Times Worn"
+            />
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <label htmlFor="image">
+              <input
+                id="image"
+                type="file"
+                name="image"
+                accept="image/*"
+                onChange={getBase64}
+                style={{ display: 'none' }}
               />
-            </div>
+              <Button variant="contained" color="primary" component="span">
+                Upload Image
+              </Button>
+            </label>
+          </Grid>
 
-            <div className='input-field col s12 m6'>
-              <textarea id='times_worn' className='materialize-textarea' name='times_worn' />
-              <label htmlFor='times_worn'>Times Worn</label>
-            </div>
-
-            <div className='col s12'>
-              <div className='file-field input-field'>
-                <div className='btn'>
-                  <span>Image</span>
-                  <input id='image' type='file' name='image' accept='image/*' onChange={(e) => this._getBase64(e)} />
-                </div>
-                <div className='file-path-wrapper'>
-                  <input className='file-path validate' type='text' name='image_text' />
-                </div>
-              </div>
-            </div>
-
-            { this.state.image &&
-            <div className='col s12' style={{ marginBottom: '1rem' }}>
+          {image && (
+            <Grid item xs={12} style={{ marginBottom: '1rem' }}>
               <Cropper
                 ref={cropper}
                 viewMode={1}
-                src={this.state.image}
+                src={image}
                 style={{ maxHeight: 350 }}
                 guides={false}
                 autoCropArea={1}
@@ -181,21 +238,20 @@ class OutfitAddForm extends Component {
                 zoomable={false}
                 scalable={false}
                 rotatable={false}
-                crop={this._cropImage}
+                crop={cropImage}
               />
-            </div>
-            }
+            </Grid>
+          )}
 
-            <div className='right-align'>
-              <button id='modal-submit' type='submit' className='waves-effect waves-green btn'>Add</button>
-              <div id='modal-loader' style={{ display: 'none' }} className='preloader-wrapper small active'><div className='spinner-layer spinner-green-only'><div className='circle-clipper left'><div className='circle' /></div><div className='gap-patch'><div className='circle' /></div><div className='circle-clipper right'><div className='circle' /></div></div></div>
-              <button id='modal-close' type='button' className='modal-close' style={{ display: 'none' }} />
-            </div>
-          </div>
-        </form>
-      </div>
-    )
-  }
-}
+          <Grid item xs={12}>
+            <Button type="submit" variant="contained" color="secondary">
+              Add Outfit
+            </Button>
+          </Grid>
+        </Grid>
+      </form>
+    </Box>
+  );
+};
 
-export default OutfitAddForm
+export default OutfitAddForm;

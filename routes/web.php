@@ -16,9 +16,9 @@ Route::get('/dashboard', function() {
     return view('authenticated');
 });
 
-Route::get('/dashboard/{any}/{all?}', function () {
+Route::get('/dashboard/{any}', function ($any) {
     return view('authenticated');
-});
+})->where('any', '.*');
 
 // Authentication Routes
 Route::get('/login', function () {

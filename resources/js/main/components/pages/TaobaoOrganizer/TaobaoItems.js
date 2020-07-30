@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-import { Fab, Box, Modal, Typography } from '@material-ui/core';
+import { Box, Snackbar, Typography } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import AddIcon from '@material-ui/icons/Add';
 import { makeStyles } from '@material-ui/core/styles';
@@ -35,8 +35,7 @@ const TaobaoItems = () => {
   const token = Helper.getToken();
 
   const [series, setSeries] = useState(null);
-  const [renderForm, setRenderForm] = useState(false);
-  const [modalStatus, setModalStatus] = useState(false);
+  const [snackbarStatus, setSnackbarStatus] = useState(false);
   const [errorAlertMessage, setErrorAlertMessage] = useState('');
 
   const getSeries = () => {
@@ -50,7 +49,6 @@ const TaobaoItems = () => {
       .then((response) => {
         if (response.data) {
           setSeries(response.data);
-          setRenderForm(true);
         }
       })
       .catch((error) => {
@@ -62,8 +60,13 @@ const TaobaoItems = () => {
           });
 
           setErrorAlertMessage(message);
+          setSnackbarStatus(true);
         }
       });
+  };
+
+  const snackbarClose = () => {
+    setSnackbarStatus(false);
   };
 
   useEffect(() => {
@@ -76,9 +79,16 @@ const TaobaoItems = () => {
       <Typography variant="h4">Series</Typography>
 
       {errorAlertMessage && (
-        <Alert severity="error" style={{ whiteSpace: 'pre' }}>
-          {errorAlertMessage}
-        </Alert>
+        <Snackbar
+          anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+          open={snackbarStatus}
+          onClose={snackbarClose}
+          autoHideDuration={2000}
+        >
+          <Alert severity="error" style={{ whiteSpace: 'pre' }}>
+            {errorAlertMessage}
+          </Alert>
+        </Snackbar>
       )}
 
       <div className="series-grid">
@@ -96,17 +106,6 @@ const TaobaoItems = () => {
             );
           })}
       </div>
-
-      <Fab
-        className={classes.fab}
-        color="secondary"
-        variant="extended"
-        aria-label="add"
-        onClick={modalOpen}
-      >
-        <AddIcon />
-        Add Series
-      </Fab>
     </Box>
   );
 };

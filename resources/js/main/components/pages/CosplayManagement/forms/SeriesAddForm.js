@@ -2,21 +2,22 @@ import React, { useState, useRef } from 'react';
 import axios from 'axios';
 import Cropper from 'react-cropper';
 
-import { Button, Grid, TextField } from '@material-ui/core';
+import { Box, Button, Grid, TextField, Snackbar } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 
 const SeriesAddForm = (props) => {
   const [image, setImage] = useState(null);
   const [saveImage, setSaveImage] = useState(null);
+  const [snackbarStatus, setSnackbarStatus] = useState(false);
   const [successAlertMessage, setSuccessAlertMessage] = useState('');
   const [errorAlertMessage, setErrorAlertMessage] = useState('');
 
   const cropper = useRef();
 
-  const { token } = props;
-  const { unmount } = props;
+  const { token, unmount } = props;
 
   const handleSubmit = (e) => {
+    e.preventDefault();
     const formData = new FormData(e.target);
 
     if (saveImage !== null) {
@@ -34,6 +35,7 @@ const SeriesAddForm = (props) => {
       .then((response) => {
         if (response.status === 200) {
           setSuccessAlertMessage(response.data.message);
+          setSnackbarStatus(true);
           unmount();
         }
       })
@@ -41,11 +43,16 @@ const SeriesAddForm = (props) => {
         if (error.response) {
           let message = '';
 
-          Object.keys(error.response.data.message).forEach((key) => {
-            message += `[${key}] - ${error.response.data.message[key]}\r\n`;
-          });
+          if (Array.isArray(error.response)) {
+            Object.keys(error.response.data.message).forEach((key) => {
+              message += `[${key}] - ${error.response.data.message[key]}\r\n`;
+            });
+          } else {
+            message += error.response.data.message;
+          }
 
           setErrorAlertMessage(message);
+          setSnackbarStatus(true);
         }
       });
   };
@@ -63,8 +70,8 @@ const SeriesAddForm = (props) => {
 
       reader.addEventListener(
         'load',
-        (e) => {
-          setImage(e.target.result);
+        (evt) => {
+          setImage(evt.target.result);
         },
         false,
       );
@@ -75,28 +82,45 @@ const SeriesAddForm = (props) => {
     }
   };
 
+  const snackbarClose = () => {
+    setSnackbarStatus(false);
+  };
+
   return (
-    <div>
+    <Box>
       {errorAlertMessage && (
-        <Alert severity="error" style={{ whiteSpace: 'pre' }}>
-          {errorAlertMessage}
-        </Alert>
+        <Snackbar
+          anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+          open={snackbarStatus}
+          onClose={snackbarClose}
+          autoHideDuration={2000}
+        >
+          <Alert severity="error" style={{ whiteSpace: 'pre' }}>
+            {errorAlertMessage}
+          </Alert>
+        </Snackbar>
       )}
 
       {successAlertMessage && (
-        <Alert severity="success">{successAlertMessage}</Alert>
+        <Snackbar
+          anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+          open={snackbarStatus}
+          onClose={snackbarClose}
+          autoHideDuration={2000}
+        >
+          <Alert severity="success">{successAlertMessage}</Alert>
+        </Snackbar>
       )}
 
-      <form className="col s12" onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit}>
         <Grid container spacing={3} alignItems="center">
           <Grid item xs={12} md={6}>
             <TextField
               required
               fullWidth
-              label="Series Title"
-              id="title"
               name="title"
               variant="outlined"
+              label="Series Title"
             />
           </Grid>
           <Grid item xs={12} md={6}>
@@ -140,7 +164,7 @@ const SeriesAddForm = (props) => {
           </Grid>
         </Grid>
       </form>
-    </div>
+    </Box>
   );
 };
 

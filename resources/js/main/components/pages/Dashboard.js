@@ -80,7 +80,7 @@ const Dashboard = () => {
           </NavLink>
         </Grid>
         <Grid item xs={12}>
-          <Paper className={[classes.paper, classes.changelog]}>
+          <Paper className={`${classes.paper} ${classes.changelog}`}>
             <ReactMarkdown source={changelog} />
           </Paper>
         </Grid>

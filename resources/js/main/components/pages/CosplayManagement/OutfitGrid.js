@@ -1,205 +1,250 @@
-import React, { Component } from 'react'
-import axios from 'axios'
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+
+import { Box, Fab, Modal, Typography, Snackbar } from '@material-ui/core';
+import { Alert } from '@material-ui/lab';
+import AddIcon from '@material-ui/icons/Add';
+import { makeStyles } from '@material-ui/core/styles';
 
 // Components
-import Helper from '../../Helper'
-import { Modal } from '@material-ui/core';
-import OutfitCard from '../OutfitCard'
-import OutfitAddForm from '../../forms/OutfitAddForm'
+import Helper from '../../Helper';
+import OutfitCard from './OutfitCard';
+import OutfitAddForm from './forms/OutfitAddForm';
 
-class OutfitGrid extends Component {
-  constructor (props) {
-    super(props)
+const useStyles = makeStyles((theme) => ({
+  root: {
+    padding: theme.spacing(2),
+  },
+  fab: {
+    position: 'absolute',
+    bottom: theme.spacing(2),
+    right: theme.spacing(2),
+  },
+  paper: {
+    position: 'absolute',
+    width: '65%',
+    backgroundColor: theme.palette.background.paper,
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+  },
+}));
 
-    this.state = {
-      seriesTitle: null,
-      characterName: null,
-      outfits: null,
-      allTags: null,
-      renderForm: false
+const OutfitGrid = (props) => {
+  const classes = useStyles();
+  const token = Helper.getToken();
+
+  const seriesID =
+    props.match.params.series !== undefined ? props.match.params.series : null;
+  const characterID =
+    props.match.params.character !== undefined
+      ? props.match.params.character
+      : null;
+
+  const [seriesTitle, setSeriesTitle] = useState(null);
+  const [characterName, setCharacterName] = useState(null);
+  const [outfits, setOutfits] = useState(null);
+  const [allTags, setAllTags] = useState(null);
+  const [renderForm, setRenderForm] = useState(false);
+  const [modalStatus, setModalStatus] = useState(false);
+  const [snackbarStatus, setSnackbarStatus] = useState(false);
+  const [errorAlertMessage, setErrorAlertMessage] = useState('');
+
+  const getTags = () => {
+    axios
+      .get('/api/tags', {
+        headers: {
+          Accept: 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        if (response.data) {
+          const tagArray = [];
+
+          Object.keys(response.data).forEach((tag) => {
+            tagArray.push({ value: tag.id, label: tag.title });
+          });
+
+          setAllTags(tagArray);
+        }
+      })
+      .catch((error) => {
+        if (error.response) {
+          let message = '';
+
+          if (Array.isArray(error.response)) {
+            Object.keys(error.response.data.message).forEach((key) => {
+              message += `[${key}] - ${error.response.data.message[key]}\r\n`;
+            });
+          } else {
+            message += error.response.data.message;
+          }
+
+          setErrorAlertMessage(message);
+          setSnackbarStatus(true);
+        }
+      });
+  };
+
+  const getSeriesTitle = () => {
+    axios
+      .get(`/api/series/${seriesID}`, {
+        headers: {
+          Accept: 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        if (response.data) {
+          setSeriesTitle(response.data.title);
+        }
+      })
+      .catch((error) => {
+        if (error.response) {
+          let message = '';
+
+          if (Array.isArray(error.response)) {
+            Object.keys(error.response.data.message).forEach((key) => {
+              message += `[${key}] - ${error.response.data.message[key]}\r\n`;
+            });
+          } else {
+            message += error.response.data.message;
+          }
+
+          setErrorAlertMessage(message);
+          setSnackbarStatus(true);
+        }
+      });
+  };
+
+  const getCharacterName = () => {
+    axios
+      .get(`/api/character/${characterID}`, {
+        headers: {
+          Accept: 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        if (response.data) {
+          setCharacterName(response.data.name);
+        }
+      })
+      .catch((error) => {
+        if (error.response) {
+          let message = '';
+
+          if (Array.isArray(error.response)) {
+            Object.keys(error.response.data.message).forEach((key) => {
+              message += `[${key}] - ${error.response.data.message[key]}\r\n`;
+            });
+          } else {
+            message += error.response.data.message;
+          }
+
+          setErrorAlertMessage(message);
+          setSnackbarStatus(true);
+        }
+      });
+  };
+
+  const getOutfits = () => {
+    axios
+      .get(`/api/outfits/${characterID}`, {
+        headers: {
+          Accept: 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        if (response.data) {
+          setOutfits(response.data);
+        }
+      })
+      .catch((error) => {
+        if (error.response) {
+          let message = '';
+
+          if (Array.isArray(error.response)) {
+            Object.keys(error.response.data.message).forEach((key) => {
+              message += `[${key}] - ${error.response.data.message[key]}\r\n`;
+            });
+          } else {
+            message += error.response.data.message;
+          }
+
+          setErrorAlertMessage(message);
+          setSnackbarStatus(true);
+        }
+      });
+  };
+
+  const handleFormUnmount = () => {
+    setRenderForm(false);
+    getOutfits();
+  };
+
+  const modalOpen = () => {
+    setRenderForm(true);
+    setModalStatus(true);
+  };
+
+  const modalClose = () => {
+    setModalStatus(false);
+  };
+
+  const snackbarClose = () => {
+    setSnackbarStatus(false);
+  };
+
+  useEffect(() => {
+    getTags();
+    getSeriesTitle();
+    getCharacterName();
+    getOutfits();
+  }, []);
+
+  useEffect(() => {
+    if (seriesTitle !== null && characterName !== null) {
+      document.title = `[${seriesTitle}] ${characterName} | CosManage`;
+    } else if (seriesTitle !== null && characterName === null) {
+      document.title = `[${seriesTitle}] Character Name | CosManage`;
+    } else if (seriesTitle === null && characterName !== null) {
+      document.title = `[Unknown] ${characterName} | CosManage`;
+    } else {
+      document.title = '[Unknown] Characters Name | CosManage';
     }
+  }, [seriesTitle, characterName]);
 
-    this.seriesID = (props.match.params.series !== undefined) ? props.match.params.series : null
-    this.characterID = (props.match.params.character !== undefined) ? props.match.params.character : null
-    this.token = Helper.getToken()
+  return (
+    <Box className={classes.root}>
+      <Typography variant="h4">
+        {seriesTitle} - {characterName}
+      </Typography>
 
-    this.handleFormUnmount = this.handleFormUnmount.bind(this)
-  }
+      {errorAlertMessage && (
+        <Snackbar
+          anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+          open={snackbarStatus}
+          onClose={snackbarClose}
+          autoHideDuration={2000}
+        >
+          <Alert severity="error" style={{ whiteSpace: 'pre' }}>
+            {errorAlertMessage}
+          </Alert>
+        </Snackbar>
+      )}
 
-  getTags () {
-    axios.get('/api/tags', {
-      headers: {
-        Accept: 'application/json',
-        Authorization: 'Bearer ' + this.token
-      }
-    }).then(response => {
-      if (response.data) {
-        const tagArray = []
-
-        for (const tag of response.data) {
-          tagArray.push({ value: tag.id, label: tag.title })
-        }
-
-        this.setState({
-          allTags: tagArray
-        })
-      }
-    }).catch(error => {
-      if (error.response) {
-        let html = ''
-
-        if (Array.isArray(error.response)) {
-          for (const [key, value] of Object.entries(error.response.data.message)) {
-            html += key + ': ' + value + '<br>'
-          }
-        } else {
-          html += error.response.data.message
-        }
-
-        M.toast({ html: html })
-      }
-    })
-  }
-
-  getSeriesTitle () {
-    axios.get('/api/series/' + this.seriesID, {
-      headers: {
-        Accept: 'application/json',
-        Authorization: 'Bearer ' + this.token
-      }
-    }).then(response => {
-      if (response.data) {
-        this.setState({
-          seriesTitle: response.data.title
-        })
-
-        if (this.state.seriesTitle !== null) {
-          document.title = '[' + this.state.seriesTitle + '] Character Name | CosManage'
-        }
-      }
-    }).catch(error => {
-      if (error.response) {
-        let html = ''
-
-        if (Array.isArray(error.response)) {
-          for (const [key, value] of Object.entries(error.response.data.message)) {
-            html += key + ': ' + value + '<br>'
-          }
-        } else {
-          html += error.response.data.message
-        }
-
-        M.toast({ html: html })
-      }
-    })
-  }
-
-  getCharacterName () {
-    axios.get('/api/character/' + this.characterID, {
-      headers: {
-        Accept: 'application/json',
-        Authorization: 'Bearer ' + this.token
-      }
-    }).then(response => {
-      if (response.data) {
-        this.setState({
-          characterName: response.data.name
-        })
-
-        if (this.state.seriesTitle !== null) {
-          document.title = '[' + this.state.seriesTitle + '] ' + this.state.characterName + ' | CosManage'
-        }
-      }
-    }).catch(error => {
-      if (error.response) {
-        let html = ''
-
-        if (Array.isArray(error.response)) {
-          for (const [key, value] of Object.entries(error.response.data.message)) {
-            html += key + ': ' + value + '<br>'
-          }
-        } else {
-          html += error.response.data.message
-        }
-
-        M.toast({ html: html })
-      }
-    })
-  }
-
-  getOutfits () {
-    axios.get('/api/outfits/' + this.characterID, {
-      headers: {
-        Accept: 'application/json',
-        Authorization: 'Bearer ' + this.token
-      }
-    }).then(response => {
-      if (response.data) {
-        this.setState({
-          outfits: response.data,
-          renderForm: true
-        })
-      }
-    }).catch(error => {
-      if (error.response) {
-        let html = ''
-
-        if (Array.isArray(error.response)) {
-          for (const [key, value] of Object.entries(error.response.data.message)) {
-            html += key + ': ' + value + '<br>'
-          }
-        } else {
-          html += error.response.data.message
-        }
-
-        M.toast({ html: html })
-      }
-    })
-  }
-
-  handleInit () {
-    M.Modal.init($('.modal'))
-    M.FloatingActionButton.init($('.fixed-action-btn'))
-  }
-
-  handleFormUnmount () {
-    this.setState({
-      renderForm: false
-    })
-
-    this.getOutfits()
-  }
-
-  componentDidMount () {
-    this.getTags()
-    this.getSeriesTitle()
-    this.getCharacterName()
-    this.getOutfits()
-
-    window.addEventListener('DOMContentLoaded', this.handleInit)
-    if (document.readyState !== 'loading') {
-      this.handleInit()
-    }
-  }
-
-  componentWillUnmount () {
-    window.removeEventListener('DOMContentLoaded', this.handleInit)
-  }
-
-  render () {
-    const outfits = this.state.outfits
-    const seriesTitle = this.state.seriesTitle
-    const characterName = this.state.characterName
-
-    return (
-      <main>
-        <h5>{seriesTitle} - {characterName}</h5>
-        <div className='outfit-grid'>
-          { outfits &&
-            outfits.map((item, key) => {
-              return <OutfitCard
-                key={'o-' + item.id}
-                token={this.token}
+      <Box className="outfit-grid">
+        {outfits &&
+          outfits.map((item, key) => {
+            return (
+              <OutfitCard
+                key={`o-${item.id}`}
+                token={token}
                 id={item.id}
                 title={item.title}
                 images={item.images}
@@ -209,30 +254,42 @@ class OutfitGrid extends Component {
                 storage_location={item.storage_location}
                 times_worn={item.times_worn}
                 tags={item.tags}
-                allTags={this.state.allTags} />
-            })
-          }
-        </div>
+                allTags={allTags}
+              />
+            );
+          })}
+      </Box>
 
-        <div className='fixed-action-btn modal-trigger' data-target='outfit-grid-modal'>
-          <a className='btn-large red' style={{ display: 'flex' }}>
-            <i className='large material-icons'>add</i><span>Add Outfit
-            </span>
-          </a>
-        </div>
+      <Fab
+        className={classes.fab}
+        color="secondary"
+        variant="extended"
+        aria-label="add"
+        onClick={modalOpen}
+      >
+        <AddIcon />
+        Add Outfit
+      </Fab>
 
-        <Modal id='outfit-grid-modal'>
-          { this.state.renderForm
-            ? <OutfitAddForm
-              token={this.token}
-              characterID={this.characterID}
-              options={this.state.allTags}
-              unmount={this.handleFormUnmount}
-            /> : null }
+      {renderForm ? (
+        <Modal
+          open={modalStatus}
+          onClose={modalClose}
+          disableEnforceFocus
+          disableAutoFocus
+        >
+          <Box className={classes.paper}>
+            <OutfitAddForm
+              token={token}
+              characterID={characterID}
+              options={allTags}
+              unmount={handleFormUnmount}
+            />
+          </Box>
         </Modal>
-      </main>
-    )
-  }
-}
+      ) : null}
+    </Box>
+  );
+};
 
-export default OutfitGrid
+export default OutfitGrid;

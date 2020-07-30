@@ -11,13 +11,14 @@ import {
   FormGroup,
   FormControlLabel,
   Checkbox,
+  Snackbar,
 } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import { makeStyles } from '@material-ui/core/styles';
 
 // Components
 import Helper from '../../Helper';
-// import OutfitCard from './OutfitCard';
+import OutfitCard from './OutfitCard';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -28,6 +29,12 @@ const useStyles = makeStyles((theme) => ({
   },
   searchInput: {
     paddingRight: '16px',
+  },
+  checkboxes: {
+    marginTop: theme.spacing(2),
+    [theme.breakpoints.up('md')]: {
+      marginTop: 0,
+    },
   },
 }));
 
@@ -54,6 +61,7 @@ const AllCosplaysPage = () => {
     wornCheckbox: true,
   });
 
+  const [snackbarStatus, setSnackbarStatus] = useState(false);
   const [errorAlertMessage, setErrorAlertMessage] = useState('');
 
   const handleSearch = (e) => {
@@ -87,11 +95,16 @@ const AllCosplaysPage = () => {
         if (error.response) {
           let message = '';
 
-          Object.keys(error.response.data.message).forEach((key) => {
-            message += `[${key}] - ${error.response.data.message[key]}\r\n`;
-          });
+          if (Array.isArray(error.response)) {
+            Object.keys(error.response.data.message).forEach((key) => {
+              message += `[${key}] - ${error.response.data.message[key]}\r\n`;
+            });
+          } else {
+            message += error.response.data.message;
+          }
 
           setErrorAlertMessage(message);
+          setSnackbarStatus(true);
         }
       });
   };
@@ -114,13 +127,22 @@ const AllCosplaysPage = () => {
         if (error.response) {
           let message = '';
 
-          Object.keys(error.response.data.message).forEach((key) => {
-            message += `[${key}] - ${error.response.data.message[key]}\r\n`;
-          });
+          if (Array.isArray(error.response)) {
+            Object.keys(error.response.data.message).forEach((key) => {
+              message += `[${key}] - ${error.response.data.message[key]}\r\n`;
+            });
+          } else {
+            message += error.response.data.message;
+          }
 
           setErrorAlertMessage(message);
+          setSnackbarStatus(true);
         }
       });
+  };
+
+  const snackbarClose = () => {
+    setSnackbarStatus(false);
   };
 
   // Set filter mask based on checkboxes.
@@ -230,9 +252,16 @@ const AllCosplaysPage = () => {
       <Typography variant="h4">All Cosplays</Typography>
 
       {errorAlertMessage && (
-        <Alert severity="error" style={{ whiteSpace: 'pre' }}>
-          {errorAlertMessage}
-        </Alert>
+        <Snackbar
+          anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+          open={snackbarStatus}
+          onClose={snackbarClose}
+          autoHideDuration={2000}
+        >
+          <Alert severity="error" style={{ whiteSpace: 'pre' }}>
+            {errorAlertMessage}
+          </Alert>
+        </Snackbar>
       )}
 
       <Grid container className={classes.filters}>
@@ -247,7 +276,7 @@ const AllCosplaysPage = () => {
             onChange={handleSearch}
           />
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={6} className={classes.checkboxes}>
           <FormControl component="fieldset">
             <FormLabel component="legend">Filters</FormLabel>
             <FormGroup row>
@@ -289,15 +318,8 @@ const AllCosplaysPage = () => {
       <Box className="outfit-grid">
         {outfits &&
           outfits.map((item) => {
-            return <div>{item.character_name}</div>;
-          })}
-      </Box>
-    </Box>
-  );
-};
-
-/**
- * <OutfitCard
+            return (
+              <OutfitCard
                 key={`o-${item.id}`}
                 token={token}
                 id={item.id}
@@ -312,6 +334,11 @@ const AllCosplaysPage = () => {
                 storage_location={item.storage_location}
                 times_worn={item.times_worn}
               />
- */
+            );
+          })}
+      </Box>
+    </Box>
+  );
+};
 
 export default AllCosplaysPage;
