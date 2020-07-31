@@ -34,9 +34,7 @@ const Character = (props) => {
   id = id !== undefined ? id : null;
   seriesID = seriesID !== undefined ? seriesID : null;
   outfitCount =
-    outfitCount !== undefined
-      ? outfitCount + (outfitCount === 1 ? ' Outfit' : ' Outfits')
-      : '0 Outfits';
+    outfitCount !== undefined && outfitCount !== null ? outfitCount : 0;
 
   const [visible, setVisible] = useState(true);
   const [name, setName] = useState(
@@ -61,7 +59,16 @@ const Character = (props) => {
         `Are you sure you want to delete this character [${name}]? This will delete all outfits in this character and is not reversible.`,
       )
     ) {
-      const answer = prompt('Please enter DELETE to confirm.');
+      let answer = null;
+      if (outfitCount !== 0) {
+        answer = prompt(
+          `You have ${
+            outfitCount + (outfitCount === 1 ? ' outfit' : ' outfits')
+          } under this Character. Please enter DELETE to confirm.`,
+        );
+      } else {
+        answer = 'DELETE';
+      }
 
       if (answer === 'DELETE') {
         axios
@@ -110,6 +117,16 @@ const Character = (props) => {
     }
 
     setRenderForm(false);
+  };
+
+  const handleFormSendSuccess = (data) => {
+    setSuccessAlertMessage(data);
+    setSnackbarStatus(true);
+  };
+
+  const handleFormSendError = (data) => {
+    setErrorAlertMessage(data);
+    setSnackbarStatus(true);
   };
 
   const modalOpen = (e) => {
@@ -170,7 +187,9 @@ const Character = (props) => {
 
               <Box className="character__name__text">
                 <Typography>{name}</Typography>
-                <Typography>{outfitCount}</Typography>
+                <Typography>
+                  {outfitCount + (outfitCount === 1 ? ' Outfit' : ' Outfits')}
+                </Typography>
               </Box>
 
               <Box
@@ -196,6 +215,8 @@ const Character = (props) => {
                   id={id}
                   name={name}
                   unmount={handleFormUnmount}
+                  sendSuccess={handleFormSendSuccess}
+                  sendError={handleFormSendError}
                 />
               </div>
             </Modal>

@@ -1,7 +1,20 @@
+// TODO: Setup filtering and search
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-import { Box, Snackbar, Typography } from '@material-ui/core';
+import {
+  Box,
+  Button,
+  Grid,
+  TextField,
+  FormLabel,
+  FormControl,
+  FormGroup,
+  FormControlLabel,
+  Checkbox,
+  Snackbar,
+  Typography,
+} from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import AddIcon from '@material-ui/icons/Add';
 import { makeStyles } from '@material-ui/core/styles';
@@ -14,8 +27,11 @@ const useStyles = makeStyles((theme) => ({
   root: {
     padding: theme.spacing(2),
   },
-  heading: {
-    marginBottom: '16px',
+  filters: {
+    margin: '16px 0 32px',
+  },
+  checkboxes: {
+    marginTop: theme.spacing(2),
   },
   fab: {
     position: 'absolute',
@@ -38,10 +54,76 @@ const TaobaoItems = () => {
   const classes = useStyles();
   const token = Helper.getToken();
 
-  const [items, setItems] = useState(null);
-  const [allTags, setAllTags] = useState(null);
   const [snackbarStatus, setSnackbarStatus] = useState(false);
+  const [successAlertMessage, setSuccessAlertMessage] = useState('');
   const [errorAlertMessage, setErrorAlertMessage] = useState('');
+
+  const [allItems, setAllItems] = useState(null);
+  const [items, setItems] = useState(null);
+  const [search, setSearch] = useState('');
+  const [filter, setFilter] = useState(null);
+  const [allTags, setAllTags] = useState(null);
+
+  const [checkboxes, setCheckboxes] = useState({
+    futureCheckbox: true,
+    ownedUnwornCheckbox: true,
+    wornCheckbox: true,
+  });
+
+  const [addItemUrl, setAddItemUrl] = useState('');
+
+  const handleSearch = (e) => {
+    setSearch(e.target.value);
+  };
+
+  const handleChange = (e) => {
+    setCheckboxes({ ...checkboxes, [e.target.name]: e.target.checked });
+  };
+
+  const handleUrlChange = (e) => {
+    setAddItemUrl(e.target.value);
+  };
+
+  const handleAddItem = (e) => {
+    const formData = new FormData();
+
+    // TODO: Check for duplicate first with /api/item/check
+
+    if (addItemUrl !== '') {
+      formData.set('url', addItemUrl);
+    }
+
+    axios
+      .post('/api/item/create', formData, {
+        headers: {
+          Accept: 'application/json',
+          Authorization: `Bearer ${token}`,
+          'content-type': 'multipart/form-data',
+        },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          setSuccessAlertMessage(response.data.message);
+          setSnackbarStatus(true);
+        }
+      })
+      .catch((error) => {
+        if (error.response) {
+          let message = '';
+
+          if (Array.isArray(error.response)) {
+            Object.keys(error.response.data.message).forEach((key) => {
+              message += `[${key}] - ${error.response.data.message[key]}\r\n`;
+            });
+          } else {
+            message += error.response.data.message;
+          }
+
+          setErrorAlertMessage(message);
+          setSnackbarStatus(true);
+        }
+      });
+  };
 
   const getTags = () => {
     axios
@@ -91,6 +173,7 @@ const TaobaoItems = () => {
       })
       .then((response) => {
         if (response.data) {
+          setAllItems(response.data);
           setItems(response.data);
         }
       })
@@ -120,9 +203,7 @@ const TaobaoItems = () => {
 
   return (
     <Box className={classes.root}>
-      <Typography variant="h4" className={classes.heading}>
-        Items
-      </Typography>
+      <Typography variant="h4">Items</Typography>
 
       {errorAlertMessage && (
         <Snackbar
@@ -136,6 +217,99 @@ const TaobaoItems = () => {
           </Alert>
         </Snackbar>
       )}
+
+      {successAlertMessage && (
+        <Snackbar
+          anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+          open={snackbarStatus}
+          onClose={snackbarClose}
+          autoHideDuration={2000}
+        >
+          <Alert severity="success">{successAlertMessage}</Alert>
+        </Snackbar>
+      )}
+
+      <Grid container className={classes.filters}>
+        <Grid
+          item
+          xs={12}
+          md={6}
+          style={{ padding: '0 8px', marginBottom: '16px' }}
+        >
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label="Add Item"
+              name="add"
+              variant="outlined"
+              value={addItemUrl}
+              onChange={handleUrlChange}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Button
+              fullWidth
+              variant="contained"
+              color="primary"
+              component="span"
+              style={{ marginTop: '16px' }}
+              onClick={handleAddItem}
+            >
+              <AddIcon /> Add
+            </Button>
+          </Grid>
+        </Grid>
+
+        <Grid item xs={12} md={6} style={{ padding: '0 8px' }}>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label="Search"
+              name="search"
+              variant="outlined"
+              className={classes.searchInput}
+              onChange={handleSearch}
+            />
+          </Grid>
+          <Grid item xs={12} className={classes.checkboxes}>
+            <FormControl component="fieldset">
+              <FormLabel component="legend">Filters</FormLabel>
+              <FormGroup row>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={checkboxes.futureCheckbox}
+                      name="futureCheckbox"
+                      onChange={handleChange}
+                    />
+                  }
+                  label="Future"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={checkboxes.ownedUnwornCheckbox}
+                      name="ownedUnwornCheckbox"
+                      onChange={handleChange}
+                    />
+                  }
+                  label="Owned & Unworn"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={checkboxes.wornCheckbox}
+                      name="wornCheckbox"
+                      onChange={handleChange}
+                    />
+                  }
+                  label="Worn"
+                />
+              </FormGroup>
+            </FormControl>
+          </Grid>
+        </Grid>
+      </Grid>
 
       <Box className="item-grid">
         {items &&
@@ -156,8 +330,8 @@ const TaobaoItems = () => {
                 quantity={item.quantity}
                 originalPrice={item.original_price}
                 isArchived={item.is_archived}
-                createdAt={item.createdAt}
-                updatedAt={item.updatedAt}
+                createdAt={item.created_at}
+                updatedAt={item.updated_at}
               />
             );
           })}

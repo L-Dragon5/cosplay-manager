@@ -15,6 +15,8 @@ class UserController extends Controller
 {
     /**
      * Attempt to login user.
+     * 
+     * @return \Illuminate\Http\Response
      */
     public function login(Request $request) {
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
@@ -28,6 +30,8 @@ class UserController extends Controller
 
     /**
      * Register a user account.
+     * 
+     * @return \Illuminate\Http\Response
      */
     public function register(Request $request) {
         $validator = Validator::make($request->all(), [
@@ -55,6 +59,8 @@ class UserController extends Controller
 
     /**
      * Updated user account password.
+     * 
+     * @return \Illuminate\Http\Response
      */
     public function updatePassword(Request $request)
     {
@@ -88,6 +94,8 @@ class UserController extends Controller
 
     /**
      * Email reset password to specified email address.
+     * 
+     * @return \Illuminate\Http\Response
      */
     public function forgotPassword(Request $request) {
         $validator = Validator::make($request->all(), [
@@ -122,6 +130,8 @@ class UserController extends Controller
 
     /**
      * Check if user is signed in and has access.
+     * 
+     * @return \Illuminate\Http\Response
      */
     public function checkUser(Request $request) {
         $token = $request->token;

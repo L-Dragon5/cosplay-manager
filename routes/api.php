@@ -20,6 +20,9 @@ Route::post('forgot-password', 'UserController@forgotPassword');
 Route::post('checkUser', 'UserController@checkUser');
 
 Route::middleware('auth:api')->group(function () {
+    // User Routes
+    Route::post('update-password', 'UserController@updatePassword');
+
     // Series Routes
     Route::get('series', 'SeriesController@index');
     Route::get('series/{id}', 'SeriesController@show');
@@ -52,4 +55,13 @@ Route::middleware('auth:api')->group(function () {
 
     // Item Routes
     Route::get('items', 'ItemController@index');
+    Route::post('item/create', 'ItemController@store');
+    Route::post('item/check', 'ItemController@checkItem');
+    Route::post('item/update/{id}', 'ItemController@update');
+    Route::get('item/archive/{id}', 'ItemController@archive');
+    Route::get('item/unarchive/{id}', 'ItemController@unarchive');
+    Route::get('item/destroy/{id}', 'ItemController@destroy');
+
+    // Account Setting Route
+    Route::get('account/getCSV', 'AccountSettingsController@getCSV');
 });

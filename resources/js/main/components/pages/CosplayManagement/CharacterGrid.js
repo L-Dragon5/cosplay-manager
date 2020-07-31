@@ -45,6 +45,7 @@ const CharacterGrid = (props) => {
   const [modalStatus, setModalStatus] = useState(false);
   const [snackbarStatus, setSnackbarStatus] = useState(false);
   const [errorAlertMessage, setErrorAlertMessage] = useState('');
+  const [successAlertMessage, setSuccessAlertMessage] = useState('');
 
   const seriesID =
     props.match.params.series !== undefined ? props.match.params.series : null;
@@ -116,6 +117,16 @@ const CharacterGrid = (props) => {
     getCharacters();
   };
 
+  const handleFormSendSuccess = (data) => {
+    setSuccessAlertMessage(data);
+    setSnackbarStatus(true);
+  };
+
+  const handleFormSendError = (data) => {
+    setErrorAlertMessage(data);
+    setSnackbarStatus(true);
+  };
+
   const modalOpen = () => {
     setRenderForm(true);
     setModalStatus(true);
@@ -161,6 +172,17 @@ const CharacterGrid = (props) => {
         </Snackbar>
       )}
 
+      {successAlertMessage && (
+        <Snackbar
+          anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+          open={snackbarStatus}
+          onClose={snackbarClose}
+          autoHideDuration={2000}
+        >
+          <Alert severity="success">{successAlertMessage}</Alert>
+        </Snackbar>
+      )}
+
       <Box className="character-grid">
         {characters &&
           characters.map((item) => {
@@ -201,6 +223,8 @@ const CharacterGrid = (props) => {
               token={token}
               seriesID={seriesID}
               unmount={handleFormUnmount}
+              sendSuccess={handleFormSendSuccess}
+              sendError={handleFormSendError}
             />
           </Box>
         </Modal>

@@ -11,9 +11,7 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Snackbar,
 } from '@material-ui/core';
-import { Alert } from '@material-ui/lab';
 
 import CreatableSelect from 'react-select/creatable';
 import makeAnimated from 'react-select/animated';
@@ -22,10 +20,6 @@ const OutfitEditForm = (props) => {
   const [image, setImage] = useState(null);
   const [saveImage, setSaveImage] = useState(null);
   const [status, setStatus] = useState(props.status);
-
-  const [snackbarStatus, setSnackbarStatus] = useState(false);
-  const [successAlertMessage, setSuccessAlertMessage] = useState('');
-  const [errorAlertMessage, setErrorAlertMessage] = useState('');
 
   const cropper = useRef();
   const animatedComponents = makeAnimated();
@@ -41,6 +35,8 @@ const OutfitEditForm = (props) => {
     options,
     tags,
     unmount,
+    sendSuccess,
+    sendError,
   } = props;
 
   const handleSubmit = (e) => {
@@ -63,8 +59,7 @@ const OutfitEditForm = (props) => {
       })
       .then((response) => {
         if (response.status === 200) {
-          setSuccessAlertMessage(response.data.message);
-          setSnackbarStatus(true);
+          sendSuccess(response.data.message);
           unmount(JSON.stringify(response.data.outfit));
         }
       })
@@ -80,8 +75,7 @@ const OutfitEditForm = (props) => {
             message += error.response.data.message;
           }
 
-          setErrorAlertMessage(message);
-          setSnackbarStatus(true);
+          sendError(message);
         }
       });
   };
@@ -111,40 +105,12 @@ const OutfitEditForm = (props) => {
     }
   };
 
-  const snackbarClose = () => {
-    setSnackbarStatus(false);
-  };
-
   const handleStatusChange = (e) => {
     setStatus(e.target.value);
   };
 
   return (
     <Box>
-      {errorAlertMessage && (
-        <Snackbar
-          anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
-          open={snackbarStatus}
-          onClose={snackbarClose}
-          autoHideDuration={2000}
-        >
-          <Alert severity="error" style={{ whiteSpace: 'pre' }}>
-            {errorAlertMessage}
-          </Alert>
-        </Snackbar>
-      )}
-
-      {successAlertMessage && (
-        <Snackbar
-          anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
-          open={snackbarStatus}
-          onClose={snackbarClose}
-          autoHideDuration={2000}
-        >
-          <Alert severity="success">{successAlertMessage}</Alert>
-        </Snackbar>
-      )}
-
       <form onSubmit={handleSubmit}>
         <Grid container spacing={3} alignItems="center">
           <Grid item xs={12} md={6}>

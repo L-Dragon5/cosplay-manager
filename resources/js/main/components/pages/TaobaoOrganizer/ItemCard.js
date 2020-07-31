@@ -49,6 +49,10 @@ const useStyles = makeStyles((theme) => ({
     left: '50%',
     transform: 'translate(-50%, -50%)',
   },
+  archivedItem: {
+    border: '2px solid red',
+    opacity: '75%',
+  },
 }));
 
 const ItemCard = (props) => {
@@ -74,6 +78,11 @@ const ItemCard = (props) => {
       ? parseInt(props.quantity, 10)
       : -1,
   );
+  const [isArchived, setIsArchived] = useState(
+    props.isArchived !== undefined && props.isArchived !== null
+      ? props.isArchived
+      : false,
+  );
   const [tags, setTags] = useState(
     props.tags !== undefined && props.tags !== null ? props.tags : [],
   );
@@ -90,7 +99,6 @@ const ItemCard = (props) => {
     sellerName,
     listingUrl,
     originalPrice,
-    isArchived,
     createdAt,
     updatedAt,
   } = props;
@@ -107,58 +115,126 @@ const ItemCard = (props) => {
         }]? This action is not reversible.`,
       )
     ) {
-      const answer = prompt('Please enter DELETE to confirm.');
+      axios
+        .get(`/api/item/destroy/${id}`, {
+          headers: {
+            Accept: 'application/json',
+            Authorization: `Bearer ${token}`,
+            'content-type': 'multipart/form-data',
+          },
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            setSuccessAlertMessage(response.data.message);
+            setVisible(false);
+          }
+        })
+        .catch((error) => {
+          if (error.response) {
+            let message = '';
 
-      if (answer === 'DELETE') {
-        axios
-          .get(`/api/item/destroy/${id}`, {
-            headers: {
-              Accept: 'application/json',
-              Authorization: `Bearer ${token}`,
-              'content-type': 'multipart/form-data',
-            },
-          })
-          .then((response) => {
-            if (response.status === 200) {
-              setSuccessAlertMessage(response.data.message);
-              setVisible(false);
+            if (Array.isArray(error.response)) {
+              Object.keys(error.response.data.message).forEach((key) => {
+                message += `[${key}] - ${error.response.data.message[key]}\r\n`;
+              });
+            } else {
+              message += error.response.data.message;
             }
-          })
-          .catch((error) => {
-            if (error.response) {
-              let message = '';
 
-              if (Array.isArray(error.response)) {
-                Object.keys(error.response.data.message).forEach((key) => {
-                  message += `[${key}] - ${error.response.data.message[key]}\r\n`;
-                });
-              } else {
-                message += error.response.data.message;
-              }
-
-              setErrorAlertMessage(message);
-              setSnackbarStatus(true);
-            }
-          });
-      } else {
-        setErrorAlertMessage('Deletion cancelled');
-      }
+            setErrorAlertMessage(message);
+            setSnackbarStatus(true);
+          }
+        });
     }
   };
 
-  const handleArchive = () => {};
-  const handleUnarchive = () => {};
+  const handleArchive = () => {
+    axios
+      .get(`/api/item/archive/${id}`, {
+        headers: {
+          Accept: 'application/json',
+          Authorization: `Bearer ${token}`,
+          'content-type': 'multipart/form-data',
+        },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          setIsArchived(true);
+          setSuccessAlertMessage(response.data.message);
+          setSnackbarStatus(true);
+        }
+      })
+      .catch((error) => {
+        if (error.response) {
+          let message = '';
+
+          if (Array.isArray(error.response)) {
+            Object.keys(error.response.data.message).forEach((key) => {
+              message += `[${key}] - ${error.response.data.message[key]}\r\n`;
+            });
+          } else {
+            message += error.response.data.message;
+          }
+
+          setErrorAlertMessage(message);
+          setSnackbarStatus(true);
+        }
+      });
+  };
+  const handleUnarchive = () => {
+    axios
+      .get(`/api/item/unarchive/${id}`, {
+        headers: {
+          Accept: 'application/json',
+          Authorization: `Bearer ${token}`,
+          'content-type': 'multipart/form-data',
+        },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          setIsArchived(false);
+          setSuccessAlertMessage(response.data.message);
+          setSnackbarStatus(true);
+        }
+      })
+      .catch((error) => {
+        if (error.response) {
+          let message = '';
+
+          if (Array.isArray(error.response)) {
+            Object.keys(error.response.data.message).forEach((key) => {
+              message += `[${key}] - ${error.response.data.message[key]}\r\n`;
+            });
+          } else {
+            message += error.response.data.message;
+          }
+
+          setErrorAlertMessage(message);
+          setSnackbarStatus(true);
+        }
+      });
+  };
 
   const handleFormUnmount = (data) => {
     const obj = JSON.parse(data);
     if (obj) {
-      setCustomTitle(obj.customTitle);
+      setCustomTitle(obj.custom_title);
       setQuantity(obj.quantity);
       setNotes(obj.notes);
       setTags(obj.tags !== undefined ? obj.tags : []);
 
       setRenderForm(false);
     }
+  };
+
+  const handleFormSendSuccess = (data) => {
+    setSuccessAlertMessage(data);
+    setSnackbarStatus(true);
+  };
+
+  const handleFormSendError = (data) => {
+    setErrorAlertMessage(data);
+    setSnackbarStatus(true);
   };
 
   const modalOpen = (e) => {
@@ -215,9 +291,13 @@ const ItemCard = (props) => {
           </Snackbar>
         )}
 
-        <Card className="item">
+        <Card className={`${isArchived ? classes.archivedItem : ''} item`}>
           <CardHeader
-            title={customTitle !== null ? customTitle : originalTitle}
+            title={
+              customTitle !== null && customTitle !== ''
+                ? customTitle
+                : originalTitle
+            }
             subheader={tagsDisplay}
             className="item__header"
           />
@@ -231,18 +311,30 @@ const ItemCard = (props) => {
           )}
 
           <CardActions disableSpacing>
-            <IconButton aria-label="edit" onClick={modalOpen}>
+            <IconButton aria-label="edit" title="Edit" onClick={modalOpen}>
               <EditIcon />
             </IconButton>
-            <IconButton aria-label="delete" onClick={handleDelete}>
+            <IconButton
+              aria-label="delete"
+              title="Delete"
+              onClick={handleDelete}
+            >
               <DeleteForeverIcon />
             </IconButton>
             {isArchived ? (
-              <IconButton aria-label="unacrhive" onClick={handleUnarchive}>
+              <IconButton
+                aria-label="unacrhive"
+                title="Unarchive"
+                onClick={handleUnarchive}
+              >
                 <UnarchiveIcon />
               </IconButton>
             ) : (
-              <IconButton aria-label="archive" onClick={handleArchive}>
+              <IconButton
+                aria-label="archive"
+                title="Archive"
+                onClick={handleArchive}
+              >
                 <ArchiveIcon />
               </IconButton>
             )}
@@ -283,6 +375,8 @@ const ItemCard = (props) => {
                 variant="contained"
                 color="primary"
                 href={listingUrl}
+                target="_blank"
+                rel="noopener noreferrer"
                 style={{ marginTop: '8px' }}
               >
                 Original Listing
@@ -308,6 +402,8 @@ const ItemCard = (props) => {
                 tags={tags}
                 allTags={allTags}
                 unmount={handleFormUnmount}
+                sendSuccess={handleFormSendSuccess}
+                sendError={handleFormSendError}
               />
             </Box>
           </Modal>

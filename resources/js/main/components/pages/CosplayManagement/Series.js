@@ -33,9 +33,9 @@ const Series = (props) => {
 
   id = id !== undefined ? id : null;
   characterCount =
-    characterCount !== undefined
-      ? characterCount + (characterCount === 1 ? ' Character' : ' Characters')
-      : '0 Characters';
+    characterCount !== undefined && characterCount !== null
+      ? characterCount
+      : 0;
 
   const [visible, setVisible] = useState(true);
   const [title, setTitle] = useState(
@@ -60,7 +60,17 @@ const Series = (props) => {
         `Are you sure you want to delete this series [${title}]? This will delete all characters and outfit in this series and is not reversible.`,
       )
     ) {
-      const answer = prompt('Please enter DELETE to confirm.');
+      let answer = null;
+      if (characterCount !== 0) {
+        answer = prompt(
+          `You have ${
+            characterCount +
+            (characterCount === 1 ? ' character' : ' characters')
+          } under this Series. Please enter DELETE to confirm.`,
+        );
+      } else {
+        answer = 'DELETE';
+      }
 
       if (answer === 'DELETE') {
         axios
@@ -109,6 +119,16 @@ const Series = (props) => {
     }
 
     setRenderForm(false);
+  };
+
+  const handleFormSendSuccess = (data) => {
+    setSuccessAlertMessage(data);
+    setSnackbarStatus(true);
+  };
+
+  const handleFormSendError = (data) => {
+    setErrorAlertMessage(data);
+    setSnackbarStatus(true);
   };
 
   const modalOpen = (e) => {
@@ -169,7 +189,10 @@ const Series = (props) => {
 
               <Box className="series__title__text">
                 <Typography>{title}</Typography>
-                <Typography>{characterCount}</Typography>
+                <Typography>
+                  {characterCount +
+                    (characterCount === 1 ? ' Character' : ' Characters')}
+                </Typography>
               </Box>
 
               <Box
@@ -195,6 +218,8 @@ const Series = (props) => {
                   id={id}
                   title={title}
                   unmount={handleFormUnmount}
+                  sendSuccess={handleFormSendSuccess}
+                  sendError={handleFormSendError}
                 />
               </div>
             </Modal>

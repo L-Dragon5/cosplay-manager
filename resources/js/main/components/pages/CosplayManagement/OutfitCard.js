@@ -113,42 +113,37 @@ const OutfitCard = (props) => {
         `Are you sure you want to delete this outfit [${title}]? This action is not reversible.`,
       )
     ) {
-      const answer = prompt('Please enter DELETE to confirm.');
+      axios
+        .get(`/api/outfit/destroy/${id}`, {
+          headers: {
+            Accept: 'application/json',
+            Authorization: `Bearer ${token}`,
+            'content-type': 'multipart/form-data',
+          },
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            setSuccessAlertMessage(response.data.message);
+            setSnackbarStatus(true);
+            setVisible(false);
+          }
+        })
+        .catch((error) => {
+          if (error.response) {
+            let message = '';
 
-      if (answer === 'DELETE') {
-        axios
-          .get(`/api/outfit/destroy/${id}`, {
-            headers: {
-              Accept: 'application/json',
-              Authorization: `Bearer ${token}`,
-              'content-type': 'multipart/form-data',
-            },
-          })
-          .then((response) => {
-            if (response.status === 200) {
-              setSuccessAlertMessage(response.data.message);
-              setVisible(false);
+            if (Array.isArray(error.response)) {
+              Object.keys(error.response.data.message).forEach((key) => {
+                message += `[${key}] - ${error.response.data.message[key]}\r\n`;
+              });
+            } else {
+              message += error.response.data.message;
             }
-          })
-          .catch((error) => {
-            if (error.response) {
-              let message = '';
 
-              if (Array.isArray(error.response)) {
-                Object.keys(error.response.data.message).forEach((key) => {
-                  message += `[${key}] - ${error.response.data.message[key]}\r\n`;
-                });
-              } else {
-                message += error.response.data.message;
-              }
-
-              setErrorAlertMessage(message);
-              setSnackbarStatus(true);
-            }
-          });
-      } else {
-        setErrorAlertMessage('Deletion cancelled');
-      }
+            setErrorAlertMessage(message);
+            setSnackbarStatus(true);
+          }
+        });
     }
   };
 
@@ -223,6 +218,16 @@ const OutfitCard = (props) => {
           setSnackbarStatus(true);
         }
       });
+  };
+
+  const handleFormSendSuccess = (data) => {
+    setSuccessAlertMessage(data);
+    setSnackbarStatus(true);
+  };
+
+  const handleFormSendError = (data) => {
+    setErrorAlertMessage(data);
+    setSnackbarStatus(true);
   };
 
   const modalOpen = (e) => {
@@ -385,6 +390,8 @@ const OutfitCard = (props) => {
                 tags={tags}
                 options={allTags}
                 unmount={handleFormUnmount}
+                sendSuccess={handleFormSendSuccess}
+                sendError={handleFormSendError}
               />
             </Box>
           </Modal>

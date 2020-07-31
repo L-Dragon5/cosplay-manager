@@ -1,17 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import axios from 'axios';
 
-import { Box, Button, Grid, TextField, Snackbar } from '@material-ui/core';
-import { Alert } from '@material-ui/lab';
+import { Box, Button, Grid, TextField } from '@material-ui/core';
 
 import CreatableSelect from 'react-select/creatable';
 import makeAnimated from 'react-select/animated';
 
 const ItemEditForm = (props) => {
-  const [snackbarStatus, setSnackbarStatus] = useState(false);
-  const [successAlertMessage, setSuccessAlertMessage] = useState('');
-  const [errorAlertMessage, setErrorAlertMessage] = useState('');
-
   const animatedComponents = makeAnimated();
 
   const {
@@ -23,6 +18,8 @@ const ItemEditForm = (props) => {
     allTags,
     tags,
     unmount,
+    sendSuccess,
+    sendError,
   } = props;
 
   const handleSubmit = (e) => {
@@ -40,8 +37,7 @@ const ItemEditForm = (props) => {
       })
       .then((response) => {
         if (response.status === 200) {
-          setSuccessAlertMessage(response.data.message);
-          setSnackbarStatus(true);
+          sendSuccess(response.data.message);
           unmount(JSON.stringify(response.data.item));
         }
       })
@@ -57,47 +53,17 @@ const ItemEditForm = (props) => {
             message += error.response.data.message;
           }
 
-          setErrorAlertMessage(message);
-          setSnackbarStatus(true);
+          sendError(message);
         }
       });
   };
 
-  const snackbarClose = () => {
-    setSnackbarStatus(false);
-  };
-
   return (
     <Box>
-      {errorAlertMessage && (
-        <Snackbar
-          anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
-          open={snackbarStatus}
-          onClose={snackbarClose}
-          autoHideDuration={2000}
-        >
-          <Alert severity="error" style={{ whiteSpace: 'pre' }}>
-            {errorAlertMessage}
-          </Alert>
-        </Snackbar>
-      )}
-
-      {successAlertMessage && (
-        <Snackbar
-          anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
-          open={snackbarStatus}
-          onClose={snackbarClose}
-          autoHideDuration={2000}
-        >
-          <Alert severity="success">{successAlertMessage}</Alert>
-        </Snackbar>
-      )}
-
       <form onSubmit={handleSubmit}>
         <Grid container spacing={3} alignItems="center">
           <Grid item xs={12} md={5}>
             <TextField
-              required
               fullWidth
               name="custom_title"
               variant="outlined"

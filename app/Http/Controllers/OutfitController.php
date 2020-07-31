@@ -377,7 +377,7 @@ class OutfitController extends Controller
             if ($success) {
                 return return_json_message('Deleted outfit succesfully', self::STATUS_SUCCESS);
             } else {
-                return return_json_message('Did not find a outfit to remove', self::STATUS_NOT_FOUND);
+                return return_json_message('Did not find an outfit to remove', self::STATUS_NOT_FOUND);
             }
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return return_json_message('Invalid outfit id', self::STATUS_BAD_REQUEST);

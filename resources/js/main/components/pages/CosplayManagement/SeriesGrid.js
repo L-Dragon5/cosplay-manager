@@ -43,6 +43,7 @@ const SeriesGrid = () => {
   const [renderForm, setRenderForm] = useState(false);
   const [modalStatus, setModalStatus] = useState(false);
   const [snackbarStatus, setSnackbarStatus] = useState(false);
+  const [successAlertMessage, setSuccessAlertMessage] = useState('');
   const [errorAlertMessage, setErrorAlertMessage] = useState('');
 
   const getSeries = () => {
@@ -79,6 +80,16 @@ const SeriesGrid = () => {
   const handleFormUnmount = () => {
     setRenderForm(false);
     getSeries();
+  };
+
+  const handleFormSendSuccess = (data) => {
+    setSuccessAlertMessage(data);
+    setSnackbarStatus(true);
+  };
+
+  const handleFormSendError = (data) => {
+    setErrorAlertMessage(data);
+    setSnackbarStatus(true);
   };
 
   const modalOpen = () => {
@@ -118,6 +129,17 @@ const SeriesGrid = () => {
         </Snackbar>
       )}
 
+      {successAlertMessage && (
+        <Snackbar
+          anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+          open={snackbarStatus}
+          onClose={snackbarClose}
+          autoHideDuration={2000}
+        >
+          <Alert severity="success">{successAlertMessage}</Alert>
+        </Snackbar>
+      )}
+
       <Box className="series-grid">
         {series &&
           series.map((item) => {
@@ -153,7 +175,12 @@ const SeriesGrid = () => {
           disableAutoFocus
         >
           <Box className={classes.paper}>
-            <SeriesAddForm token={token} unmount={handleFormUnmount} />
+            <SeriesAddForm
+              token={token}
+              unmount={handleFormUnmount}
+              sendSuccess={handleFormSendSuccess}
+              sendError={handleFormSendError}
+            />
           </Box>
         </Modal>
       ) : null}

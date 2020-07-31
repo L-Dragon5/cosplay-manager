@@ -7,10 +7,12 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class AccountController extends Controller
+class AccountSettingsController extends Controller
 {
   /**
    * Download CSV of Items from Taobao Organizer.
+   * 
+   * @return StreamedResponse csv file
    */
   public function getCSV(Request $request) {
     // Get user ID

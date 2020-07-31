@@ -53,6 +53,7 @@ const OutfitGrid = (props) => {
   const [renderForm, setRenderForm] = useState(false);
   const [modalStatus, setModalStatus] = useState(false);
   const [snackbarStatus, setSnackbarStatus] = useState(false);
+  const [successAlertMessage, setSuccessAlertMessage] = useState('');
   const [errorAlertMessage, setErrorAlertMessage] = useState('');
 
   const getTags = () => {
@@ -191,6 +192,16 @@ const OutfitGrid = (props) => {
     getOutfits();
   };
 
+  const handleFormSendSuccess = (data) => {
+    setSuccessAlertMessage(data);
+    setSnackbarStatus(true);
+  };
+
+  const handleFormSendError = (data) => {
+    setErrorAlertMessage(data);
+    setSnackbarStatus(true);
+  };
+
   const modalOpen = () => {
     setRenderForm(true);
     setModalStatus(true);
@@ -242,6 +253,17 @@ const OutfitGrid = (props) => {
         </Snackbar>
       )}
 
+      {successAlertMessage && (
+        <Snackbar
+          anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+          open={snackbarStatus}
+          onClose={snackbarClose}
+          autoHideDuration={2000}
+        >
+          <Alert severity="success">{successAlertMessage}</Alert>
+        </Snackbar>
+      )}
+
       <Box className="outfit-grid">
         {outfits &&
           outfits.map((item, key) => {
@@ -288,6 +310,8 @@ const OutfitGrid = (props) => {
               characterID={characterID}
               options={allTags}
               unmount={handleFormUnmount}
+              sendSuccess={handleFormSendSuccess}
+              sendError={handleFormSendError}
             />
           </Box>
         </Modal>
