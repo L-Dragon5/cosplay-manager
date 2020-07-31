@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Validator;
+use Illuminate\Support\Facades\Validator;
 
 class TagController extends Controller
 {
@@ -156,5 +156,22 @@ class TagController extends Controller
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return return_json_message('Invalid tag id', self::STATUS_BAD_REQUEST);
         }
+    }
+
+    /**
+     * Create tree tag array from tags array.
+     */
+    private function createTree(&$list, $parent)
+    {
+        $tree = array();
+        foreach($parent as $k => $v) {
+            if(isset($list[$v['id']])) {
+                $v['children'] = $this->createTree($list, $list[$v['id']]);
+            }
+
+            $tree[] = $v;
+        }
+
+        return $tree;
     }
 }

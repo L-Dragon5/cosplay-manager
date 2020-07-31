@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
 import axios from 'axios';
-import Carousel from 'react-material-ui-carousel';
 
 import {
+  Button,
   Card,
   CardHeader,
   CardMedia,
@@ -19,13 +19,14 @@ import {
 import { Alert } from '@material-ui/lab';
 import { makeStyles } from '@material-ui/core/styles';
 import EditIcon from '@material-ui/icons/Edit';
-import DeleteIcon from '@material-ui/icons/Delete';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+import ArchiveIcon from '@material-ui/icons/Archive';
+import UnarchiveIcon from '@material-ui/icons/Unarchive';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 // Components
 import Tag from '../../Tag';
-import OutfitEditForm from './forms/OutfitEditForm';
+import ItemEditFrom from './forms/ItemEditForm';
 
 const useStyles = makeStyles((theme) => ({
   expand: {
@@ -50,46 +51,28 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const OutfitCard = (props) => {
+const ItemCard = (props) => {
   const classes = useStyles();
 
   const [expanded, setExpanded] = useState(false);
   const [visible, setVisible] = useState(true);
   const [renderForm, setRenderForm] = useState(true);
-  const [renderCarousel, setRenderCarousel] = useState(true);
   const [modalStatus, setModalStatus] = useState(false);
   const [snackbarStatus, setSnackbarStatus] = useState(false);
   const [successAlertMessage, setSuccessAlertMessage] = useState('');
   const [errorAlertMessage, setErrorAlertMessage] = useState('');
 
-  const [title, setTitle] = useState(
-    props.title !== undefined ? props.title : 'Error',
+  // Editable Settings
+  const [customTitle, setCustomTitle] = useState(
+    props.customTitle !== undefined ? props.customTitle : null,
   );
-  const [images, setImages] = useState(props.images);
-  const [status, setStatus] = useState(
-    props.status !== undefined ? parseInt(props.status, 10) : -1,
+  const [notes, setNotes] = useState(
+    props.notes !== undefined ? props.notes : null,
   );
-  const [obtainedOn, setObtainedOn] = useState(
-    props.obtained_on !== undefined && props.obtained_on !== null
-      ? props.obtained_on
-      : null,
-  );
-  const [creator, setCreator] = useState(
-    props.creator !== undefined && props.creator !== null
-      ? props.creator
-      : null,
-  );
-  const [storageLocation, setStorageLocation] = useState(
-    props.storage_location !== undefined &&
-      props.storage_location !== null &&
-      props.storage_location.length
-      ? props.storage_location
-      : null,
-  );
-  const [timesWorn, setTimesWorn] = useState(
-    props.times_worn !== undefined && props.times_worn !== null
-      ? props.times_worn
-      : null,
+  const [quantity, setQuantity] = useState(
+    props.quantity !== undefined && props.quantity !== null
+      ? parseInt(props.quantity, 10)
+      : -1,
   );
   const [tags, setTags] = useState(
     props.tags !== undefined && props.tags !== null ? props.tags : [],
@@ -98,10 +81,19 @@ const OutfitCard = (props) => {
     props.allTags !== undefined && props.allTags !== null ? props.allTags : [],
   );
 
-  const { token } = props;
-  const id = props.id !== undefined ? props.id : null;
-  const characterName =
-    props.character_name !== undefined ? props.character_name : null;
+  // Uneditable Settings
+  const {
+    token,
+    id,
+    originalTitle,
+    imageUrl,
+    sellerName,
+    listingUrl,
+    originalPrice,
+    isArchived,
+    createdAt,
+    updatedAt,
+  } = props;
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -110,14 +102,16 @@ const OutfitCard = (props) => {
   const handleDelete = () => {
     if (
       confirm(
-        `Are you sure you want to delete this outfit [${title}]? This action is not reversible.`,
+        `Are you sure you want to delete this item [${
+          customTitle !== null ? customTitle : originalTitle
+        }]? This action is not reversible.`,
       )
     ) {
       const answer = prompt('Please enter DELETE to confirm.');
 
       if (answer === 'DELETE') {
         axios
-          .get(`/api/outfit/destroy/${id}`, {
+          .get(`/api/item/destroy/${id}`, {
             headers: {
               Accept: 'application/json',
               Authorization: `Bearer ${token}`,
@@ -152,77 +146,19 @@ const OutfitCard = (props) => {
     }
   };
 
+  const handleArchive = () => {};
+  const handleUnarchive = () => {};
+
   const handleFormUnmount = (data) => {
     const obj = JSON.parse(data);
     if (obj) {
-      setTitle(obj.title);
-      setImages(obj.images);
-      setStatus(
-        obj.status !== undefined && obj.status.length
-          ? parseInt(obj.status, 10)
-          : -1,
-      );
-      setObtainedOn(
-        obj.obtained_on !== undefined && obj.obtained_on !== null
-          ? obj.obtained_on
-          : null,
-      );
-      setCreator(
-        obj.creator !== undefined && obj.creator !== null ? obj.creator : null,
-      );
-      setStorageLocation(
-        obj.storage_location !== undefined &&
-          obj.storage_location !== null &&
-          obj.storage_location.length
-          ? obj.storage_location
-          : null,
-      );
-      setTimesWorn(
-        obj.times_worn !== undefined && obj.times_worn !== null
-          ? obj.times_worn
-          : null,
-      );
+      setCustomTitle(obj.customTitle);
+      setQuantity(obj.quantity);
+      setNotes(obj.notes);
       setTags(obj.tags !== undefined ? obj.tags : []);
 
       setRenderForm(false);
     }
-  };
-
-  const handleRemovePhoto = (e, index) => {
-    e.stopPropagation();
-
-    axios
-      .get(`/api/outfit/${id}/deleteImage/${index}`, {
-        headers: {
-          Accept: 'application/json',
-          Authorization: `Bearer ${token}`,
-          'content-type': 'multipart/form-data',
-        },
-      })
-      .then((response) => {
-        if (response.status === 200) {
-          setSuccessAlertMessage(response.data.message);
-          setSnackbarStatus(true);
-          setImages(response.data.images);
-          setRenderCarousel(true);
-        }
-      })
-      .catch((error) => {
-        if (error.response) {
-          let message = '';
-
-          if (Array.isArray(error.response)) {
-            Object.keys(error.response.data.message).forEach((key) => {
-              message += `[${key}] - ${error.response.data.message[key]}\r\n`;
-            });
-          } else {
-            message += error.response.data.message;
-          }
-
-          setErrorAlertMessage(message);
-          setSnackbarStatus(true);
-        }
-      });
   };
 
   const modalOpen = (e) => {
@@ -241,22 +177,16 @@ const OutfitCard = (props) => {
   };
 
   if (visible) {
-    let statusClass = '';
-    // 0 = Future Cosplay, 1 = Owned & Unworn, 2 = Worn
-    if (status === 0) {
-      statusClass = 'outfit--future';
-    } else if (status === 1) {
-      statusClass = 'outfit--unworn';
-    } else if (status === 2) {
-      statusClass = 'outfit--worn';
-    }
+    let tagsDisplay = '';
 
-    let obtainedOnFormatted = '';
-
-    if (obtainedOn !== null) {
-      const d = new Date(obtainedOn);
-      const month = d.toLocaleString('default', { month: 'long' });
-      obtainedOnFormatted = `${month} ${d.getDate()}, ${d.getFullYear()}`;
+    if (tags.length > 0) {
+      tagsDisplay = (
+        <Box className="item__tags">
+          {tags.map((item, i) => {
+            return <Tag key={`${item.label}-${i}`}>{item.label}</Tag>;
+          })}
+        </Box>
+      );
     }
 
     return (
@@ -285,48 +215,20 @@ const OutfitCard = (props) => {
           </Snackbar>
         )}
 
-        <Card className={`outfit ${statusClass}`}>
-          <CardHeader title={title} subheader={characterName} />
+        <Card className="item">
+          <CardHeader
+            title={customTitle !== null ? customTitle : originalTitle}
+            subheader={tagsDisplay}
+            className="item__header"
+          />
 
-          <CardMedia className="carousel">
-            {renderCarousel ? (
-              <Carousel autoPlay={false} indicators={false} timeout={150}>
-                {images.map((item, i) => {
-                  return (
-                    <Box key={`${title}-image-${i}`}>
-                      <img
-                        src={item}
-                        className="outfit__image"
-                        alt=""
-                        draggable={false}
-                      />
-                      <Box
-                        className="outfit__image__delete"
-                        onClick={(e) => {
-                          setRenderCarousel(false);
-                          handleRemovePhoto(e, i);
-                        }}
-                      >
-                        <DeleteIcon />
-                      </Box>
-                    </Box>
-                  );
-                })}
-              </Carousel>
-            ) : (
-              <></>
-            )}
-          </CardMedia>
+          <CardMedia component="img" image={imageUrl} />
 
-          {tags.length > 0 ? (
+          {notes && (
             <CardContent>
-              <Box className="outfit__tags">
-                {tags.map((item, i) => {
-                  return <Tag key={`${item.label}-${i}`}>{item.label}</Tag>;
-                })}
-              </Box>
+              <Box>{notes}</Box>
             </CardContent>
-          ) : null}
+          )}
 
           <CardActions disableSpacing>
             <IconButton aria-label="edit" onClick={modalOpen}>
@@ -335,6 +237,15 @@ const OutfitCard = (props) => {
             <IconButton aria-label="delete" onClick={handleDelete}>
               <DeleteForeverIcon />
             </IconButton>
+            {isArchived ? (
+              <IconButton aria-label="unacrhive" onClick={handleUnarchive}>
+                <UnarchiveIcon />
+              </IconButton>
+            ) : (
+              <IconButton aria-label="archive" onClick={handleArchive}>
+                <ArchiveIcon />
+              </IconButton>
+            )}
             <IconButton
               className={clsx(classes.expand, {
                 [classes.expandOpen]: expanded,
@@ -350,17 +261,32 @@ const OutfitCard = (props) => {
           <Collapse in={expanded} timeout="auto" unmountOnExit>
             <CardContent>
               <Typography variant="body1">
-                <strong>Obtained On:</strong> {obtainedOnFormatted}
+                <strong>Original Title:</strong> {originalTitle}
               </Typography>
               <Typography variant="body1">
-                <strong>Creator:</strong> {creator}
+                <strong>Seller:</strong> {sellerName}
               </Typography>
               <Typography variant="body1">
-                <strong>Storage Location:</strong> {storageLocation}
+                <strong>Price:</strong> {originalPrice}
               </Typography>
               <Typography variant="body1">
-                <strong>Times Worn:</strong> {timesWorn}
+                <strong>Quantity:</strong> {quantity}
               </Typography>
+              <Typography variant="body1">
+                <strong>Created At:</strong> {createdAt}
+              </Typography>
+              <Typography variant="body1">
+                <strong>Updated At:</strong> {updatedAt}
+              </Typography>
+              <Button
+                fullWidth
+                variant="contained"
+                color="primary"
+                href={listingUrl}
+                style={{ marginTop: '8px' }}
+              >
+                Original Listing
+              </Button>
             </CardContent>
           </Collapse>
         </Card>
@@ -373,17 +299,14 @@ const OutfitCard = (props) => {
             disableAutoFocus
           >
             <Box className={classes.paper}>
-              <OutfitEditForm
+              <ItemEditFrom
                 token={token}
                 id={id}
-                title={title}
-                status={status}
-                obtained_on={obtainedOn}
-                creator={creator}
-                storage_location={storageLocation}
-                times_worn={timesWorn}
+                customTitle={customTitle}
+                quantity={quantity}
+                notes={notes}
                 tags={tags}
-                options={allTags}
+                allTags={allTags}
                 unmount={handleFormUnmount}
               />
             </Box>
@@ -396,4 +319,4 @@ const OutfitCard = (props) => {
   return null;
 };
 
-export default OutfitCard;
+export default ItemCard;

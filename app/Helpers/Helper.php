@@ -254,3 +254,23 @@ if (!function_exists('save_image_url')) {
     return $return_path;
   }
 }
+
+/**
+ * Convert USD to CNY.
+ */
+if (!function_exists('convert_currency')) {
+  function convert_currency($amount) {
+	  $origPrice = explode(' - ', $amount);
+	  $priceString = "";
+
+	  if(count($origPrice) == 1) {
+      $priceString = '¥' . $origPrice[0] . 'CNY ($' . number_format(round($origPrice[0] * .16), 2) . 'USD)';
+    } else if(count($origPrice) == 2) {
+      $priceString = '¥' . $origPrice[0] . ' - ¥' . $origPrice[1] . 'CNY ($' . number_format(round($origPrice[0] * .16), 2) . ' - $' . number_format(round($origPrice[1] * .16), 2) . 'USD)';
+    } else {
+      $priceString = "Error";
+    }
+
+		return $priceString;
+	}
+}

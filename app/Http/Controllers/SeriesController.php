@@ -7,13 +7,10 @@ use App\Character;
 use App\Outfit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Validator;
+use Illuminate\Support\Facades\Validator;
 
 class SeriesController extends Controller
 {
-    private $successStatus = 200;
-    private $errorStatus = 422;
-
     /**
      * Display a listing of the resource.
      *

@@ -49,4 +49,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('tag/create', 'TagController@store');
     Route::post('tag/update/{id}', 'TagController@update');
     Route::get('tag/destroy/{id}', 'TagController@destroy');
+
+    // Item Routes
+    Route::get('items', 'ItemController@index');
 });

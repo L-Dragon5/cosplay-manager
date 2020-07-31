@@ -5,10 +5,11 @@ namespace App\Http\Controllers;
 use App\User;
 use App\Mail\ResetPassword;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use Validator;
 
 class UserController extends Controller
 {
@@ -46,10 +47,43 @@ class UserController extends Controller
         }
 
         $input = $request->all();
-        $input['password'] = bcrypt($input['password']);
+        $input['password'] = Hash::make($input['password']);
         $user = User::create($input);
 
         return return_json_message($user->createToken('CosplayManagerToken')->accessToken, self::STATUS_CREATED);
+    }
+
+    /**
+     * Updated user account password.
+     */
+    public function updatePassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'old_password' => 'string|required',
+            'new_password' => 'string|requried',
+        ]);
+
+        if ($validator->fails()) {
+            return return_json_message($validator->errors(), self::STATUS_BAD_REQUEST);
+        }
+
+        $existing_user = User::where('uid', Auth::user()->id);
+        if (empty($existing_user)) {
+            return return_json_message('User doesn\'t exist', self::STATUS_BAD_REQUEST);
+        } else {
+            if (Hash::check($request->old_password, $existing_user->password)) {
+                $existing_user->password = Hash::make($request->new_password);
+                $success = $existing_user->save();
+
+                if ($success) {
+                    return return_json_message('Password updated successfully', self::STATUS_SUCCESS);
+                } else {
+                    return return_json_message('Something went wrong trying to update the password', self::STATUS_UNPROCESSABLE);
+                }
+            } else {
+                return return_json_message('Old password doesn\'t match', self::STATUS_BAD_REQUEST);
+            }
+        }
     }
 
     /**
@@ -70,7 +104,7 @@ class UserController extends Controller
         // If it exists, reset password and send email.
         if (!empty($existing_user)) {
             $new_password = Str::random(16);
-            $existing_user->password = bcrypt($new_password);
+            $existing_user->password = Hash::make($new_password);
             $success = $existing_user->save();
 
             if ($success) {

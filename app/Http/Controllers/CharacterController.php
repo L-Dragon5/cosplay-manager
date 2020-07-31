@@ -6,7 +6,7 @@ use App\Character;
 use App\Outfit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Validator;
+use Illuminate\Support\Facades\Validator;
 
 class CharacterController extends Controller
 {
