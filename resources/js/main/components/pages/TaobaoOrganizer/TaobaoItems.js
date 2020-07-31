@@ -1,4 +1,3 @@
-// TODO: Setup filtering and search
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
@@ -61,13 +60,12 @@ const TaobaoItems = () => {
   const [allItems, setAllItems] = useState(null);
   const [items, setItems] = useState(null);
   const [search, setSearch] = useState('');
-  const [filter, setFilter] = useState(null);
+  const [filter, setFilter] = useState(3); // Filter mask for active/archive (active = 1, archive = 2)
   const [allTags, setAllTags] = useState(null);
 
   const [checkboxes, setCheckboxes] = useState({
-    futureCheckbox: true,
-    ownedUnwornCheckbox: true,
-    wornCheckbox: true,
+    activeItemsCheckbox: true,
+    archivedItemsCheckbox: true,
   });
 
   const [addItemUrl, setAddItemUrl] = useState('');
@@ -84,27 +82,155 @@ const TaobaoItems = () => {
     setAddItemUrl(e.target.value);
   };
 
-  const handleAddItem = (e) => {
-    const formData = new FormData();
+  const snackbarClose = () => {
+    setSnackbarStatus(false);
+  };
 
-    // TODO: Check for duplicate first with /api/item/check
+  // Set outfits based on search and filters.
+  const filterItems = () => {
+    const lowerSearch = String(search).toLowerCase();
+
+    if (allItems !== null) {
+      switch (filter) {
+        case 0: // None
+          setItems(null);
+          break;
+        case 1: // Active Only
+          setItems(
+            allItems.filter(
+              (item) =>
+                item.is_archived === 0 &&
+                (String(item.custom_title)
+                  .toLowerCase()
+                  .indexOf(lowerSearch) !== -1 ||
+                  String(item.original_title)
+                    .toLowerCase()
+                    .indexOf(lowerSearch) !== -1),
+            ),
+          );
+          break;
+        case 2: // Archive Only
+          setItems(
+            allItems.filter(
+              (item) =>
+                item.is_archived === 1 &&
+                (String(item.custom_title)
+                  .toLowerCase()
+                  .indexOf(lowerSearch) !== -1 ||
+                  String(item.original_title)
+                    .toLowerCase()
+                    .indexOf(lowerSearch) !== -1),
+            ),
+          );
+          break;
+        case 3: // Active & Archive
+          setItems(
+            allItems.filter(
+              (item) =>
+                String(item.custom_title).toLowerCase().indexOf(lowerSearch) !==
+                  -1 ||
+                String(item.original_title)
+                  .toLowerCase()
+                  .indexOf(lowerSearch) !== -1,
+            ),
+          );
+          break;
+        default:
+          break;
+      }
+    }
+  };
+
+  const getItems = () => {
+    axios
+      .get('/api/items', {
+        headers: {
+          Accept: 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        if (response.data) {
+          setAllItems(response.data);
+          setItems(response.data);
+          filterItems();
+        }
+      })
+      .catch((error) => {
+        if (error.response) {
+          let message = '';
+
+          Object.keys(error.response.data.message).forEach((key) => {
+            message += `[${key}] - ${error.response.data.message[key]}\r\n`;
+          });
+
+          setErrorAlertMessage(message);
+          setSnackbarStatus(true);
+        }
+      });
+  };
+
+  const handleAddItem = () => {
+    const formData = new FormData();
 
     if (addItemUrl !== '') {
       formData.set('url', addItemUrl);
     }
 
     axios
-      .post('/api/item/create', formData, {
+      .post('/api/item/check', formData, {
         headers: {
           Accept: 'application/json',
           Authorization: `Bearer ${token}`,
           'content-type': 'multipart/form-data',
         },
       })
-      .then((response) => {
-        if (response.status === 200) {
-          setSuccessAlertMessage(response.data.message);
-          setSnackbarStatus(true);
+      .then((checkResponse) => {
+        if (checkResponse.status === 200) {
+          if (checkResponse.data.message.exists === true) {
+            if (
+              confirm('This item already exists. Would you like to re-add?')
+            ) {
+            } else {
+              setAddItemUrl('');
+              return;
+            }
+          }
+
+          axios
+            .post('/api/item/create', formData, {
+              headers: {
+                Accept: 'application/json',
+                Authorization: `Bearer ${token}`,
+                'content-type': 'multipart/form-data',
+              },
+            })
+            .then((response) => {
+              if (response.status === 200) {
+                setSuccessAlertMessage(response.data.message);
+                setSnackbarStatus(true);
+                getItems();
+              }
+            })
+            .catch((error) => {
+              if (error.response) {
+                let message = '';
+
+                if (Array.isArray(error.response)) {
+                  Object.keys(error.response.data.message).forEach((key) => {
+                    message += `[${key}] - ${error.response.data.message[key]}\r\n`;
+                  });
+                } else {
+                  message += error.response.data.message;
+                }
+
+                setErrorAlertMessage(message);
+                setSnackbarStatus(true);
+              }
+            })
+            .finally(() => {
+              setAddItemUrl('');
+            });
         }
       })
       .catch((error) => {
@@ -163,37 +289,24 @@ const TaobaoItems = () => {
       });
   };
 
-  const getItems = () => {
-    axios
-      .get('/api/items', {
-        headers: {
-          Accept: 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        if (response.data) {
-          setAllItems(response.data);
-          setItems(response.data);
-        }
-      })
-      .catch((error) => {
-        if (error.response) {
-          let message = '';
+  // Set filter mask based on checkboxes.
+  useEffect(() => {
+    let mask = 0;
 
-          Object.keys(error.response.data.message).forEach((key) => {
-            message += `[${key}] - ${error.response.data.message[key]}\r\n`;
-          });
+    if (checkboxes.activeItemsCheckbox) {
+      mask += 1;
+    }
 
-          setErrorAlertMessage(message);
-          setSnackbarStatus(true);
-        }
-      });
-  };
+    if (checkboxes.archivedItemsCheckbox) {
+      mask += 2;
+    }
 
-  const snackbarClose = () => {
-    setSnackbarStatus(false);
-  };
+    setFilter(mask);
+  }, [checkboxes]);
+
+  useEffect(() => {
+    filterItems();
+  }, [filter, search]);
 
   useEffect(() => {
     getTags();
@@ -240,6 +353,7 @@ const TaobaoItems = () => {
             <TextField
               fullWidth
               label="Add Item"
+              placeholder="Enter http links here..."
               name="add"
               variant="outlined"
               value={addItemUrl}
@@ -255,7 +369,7 @@ const TaobaoItems = () => {
               style={{ marginTop: '16px' }}
               onClick={handleAddItem}
             >
-              <AddIcon /> Add
+              <AddIcon /> Add Item
             </Button>
           </Grid>
         </Grid>
@@ -278,32 +392,22 @@ const TaobaoItems = () => {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      checked={checkboxes.futureCheckbox}
-                      name="futureCheckbox"
+                      checked={checkboxes.activeItemsCheckbox}
+                      name="activeItemsCheckbox"
                       onChange={handleChange}
                     />
                   }
-                  label="Future"
+                  label="Active Items"
                 />
                 <FormControlLabel
                   control={
                     <Checkbox
-                      checked={checkboxes.ownedUnwornCheckbox}
-                      name="ownedUnwornCheckbox"
+                      checked={checkboxes.archivedItemsCheckbox}
+                      name="archivedItemsCheckbox"
                       onChange={handleChange}
                     />
                   }
-                  label="Owned & Unworn"
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={checkboxes.wornCheckbox}
-                      name="wornCheckbox"
-                      onChange={handleChange}
-                    />
-                  }
-                  label="Worn"
+                  label="Archived Items"
                 />
               </FormGroup>
             </FormControl>

@@ -13,13 +13,6 @@ use DateTimeZone;
 
 class ItemController extends Controller
 {
-    private $stream_opts = [
-        "ssl" => [
-            "verify_peer" => FALSE,
-            "verify_peer_name" => FALSE,
-        ]
-    ];
-
     /**
     * Get all items associated with User.
     * 
@@ -47,16 +40,6 @@ class ItemController extends Controller
                 
                 $item->tags = $final_tags;
             }
-            
-            if ($item->created_at !== NULL) {
-                $converted_time_added = new DateTime($item->created_at);
-                $item->created_at_est = $converted_time_added->setTimezone(new DateTimeZone('America/New_York'));
-            }
-
-            if ($item->archived_at !== NULL) {
-                $converted_time_archived = new DateTime($item->archived_at);
-                $item->archived_at_est = $converted_time_archived->setTimezone(new DateTimeZone('America/New_York'));
-            }
         }
         
         return $items;
@@ -74,15 +57,6 @@ class ItemController extends Controller
             ['user_id', $user_id],
             ['tag_id', $id],
         ])->orderBy('created_at', 'DESC')->get();
-        
-        foreach($items as $item) {
-            $converted_time_added = new DateTime($item->created_at);
-            $item->created_at_est = $converted_time_added->setTimezone(new DateTimeZone('America/New_York'));
-            
-            $converted_time_archived = new DateTime($item->archived_at);
-            $item->archived_at_est = $converted_time_archived->setTimezone(new DateTimeZone('America/New_York'));
-        }
-        
         return $items;
     }
     
@@ -306,16 +280,6 @@ class ItemController extends Controller
                     });
                     
                     $item->tags = $final_tags;
-                }
-                
-                if ($item->created_at !== NULL) {
-                    $converted_time_added = new DateTime($item->created_at);
-                    $item->created_at_est = $converted_time_added->setTimezone(new DateTimeZone('America/New_York'));
-                }
-
-                if ($item->archived_at !== NULL) {
-                    $converted_time_archived = new DateTime($item->archived_at);
-                    $item->archived_at_est = $converted_time_archived->setTimezone(new DateTimeZone('America/New_York'));
                 }
                 
                 return return_json_message('Updated item succesfully', self::STATUS_SUCCESS, ['item' => $item]);

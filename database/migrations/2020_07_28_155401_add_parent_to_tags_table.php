@@ -15,7 +15,7 @@ class AddParentToTagsTable extends Migration
     {
         if (Schema::hasTable('tags')) {
             Schema::table('tags', function (Blueprint $table) {
-                $table->unsignedBigInteger('parent_id')->nullable();
+                $table->unsignedBigInteger('parent_id')->default(0);
             });
         }
     }

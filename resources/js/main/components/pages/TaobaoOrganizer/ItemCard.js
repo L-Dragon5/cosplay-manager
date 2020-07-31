@@ -99,9 +99,15 @@ const ItemCard = (props) => {
     sellerName,
     listingUrl,
     originalPrice,
-    createdAt,
-    updatedAt,
   } = props;
+
+  let { createdAt, updatedAt } = props;
+
+  // Convert timestamps to readable times
+  createdAt =
+    createdAt !== null ? new Date(createdAt).toLocaleDateString() : null;
+  updatedAt =
+    updatedAt !== null ? new Date(updatedAt).toLocaleDateString() : null;
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -352,9 +358,11 @@ const ItemCard = (props) => {
 
           <Collapse in={expanded} timeout="auto" unmountOnExit>
             <CardContent>
-              <Typography variant="body1">
-                <strong>Original Title:</strong> {originalTitle}
-              </Typography>
+              {customTitle !== null && customTitle !== '' && (
+                <Typography variant="body1">
+                  <strong>Original Title:</strong> {originalTitle}
+                </Typography>
+              )}
               <Typography variant="body1">
                 <strong>Seller:</strong> {sellerName}
               </Typography>

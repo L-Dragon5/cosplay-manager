@@ -21,6 +21,9 @@ import OutfitGrid from './components/pages/CosplayManagement/OutfitGrid';
 // Taobao Organizer Pages
 import TaobaoItems from './components/pages/TaobaoOrganizer/TaobaoItems';
 
+// Tag Manager Pages
+import TagManager from './components/pages/TagManager/TagManager';
+
 const theme = createMuiTheme({
   palette: {
     primary: orange,
@@ -53,6 +56,10 @@ const AuthenticatedMain = () => {
     {
       path: '/taobao-organizer',
       component: TaobaoItems,
+    },
+    {
+      path: '/tag-manager',
+      component: TagManager,
     },
   ];
 

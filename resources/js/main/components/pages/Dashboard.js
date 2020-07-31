@@ -79,6 +79,17 @@ const Dashboard = () => {
             </Paper>
           </NavLink>
         </Grid>
+        <Grid item xs={12} md={6}>
+          <NavLink to="tag-manager" className={classes.gridLink}>
+            <Paper className={classes.paper}>
+              <Typography variant="h5">Tag Manager</Typography>
+              <Typography variant="body1">
+                Manage tags used for organizing and sorting through outfits in
+                Cosplay Management and items in Taobao Organizer.
+              </Typography>
+            </Paper>
+          </NavLink>
+        </Grid>
         <Grid item xs={12}>
           <Paper className={`${classes.paper} ${classes.changelog}`}>
             <ReactMarkdown source={changelog} />

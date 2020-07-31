@@ -120,6 +120,9 @@ const Navbar = () => {
             <ListItem button onClick={() => mobileNavClick('/')}>
               <ListItemText primary="Dashboard" />
             </ListItem>
+            <ListItem button onClick={() => mobileNavClick('/tag-manager')}>
+              <ListItemText primary="Tag Manager" />
+            </ListItem>
           </List>
           <List
             component="nav"
@@ -234,7 +237,9 @@ const Navbar = () => {
                 Taobao Organizer
               </NavLink>
 
-              <Box component="a">Tag Manager</Box>
+              <NavLink to="/tag-manager" activeClassName="active-tool">
+                Tag Manager
+              </NavLink>
 
               <IconButton
                 aria-label="account of current user"

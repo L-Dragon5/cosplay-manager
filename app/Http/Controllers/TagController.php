@@ -19,7 +19,18 @@ class TagController extends Controller
         $user_id = Auth::user()->id;
         $tags = Tag::where('user_id', $user_id)->orderBy('title', 'ASC')->get();
 
-        return $tags;
+        $temp_tags = [];
+        foreach($tags as $tag) {
+            $temp_tags[$tag['parent_id']][] = $tag;
+        }
+
+        if(!empty($temp_tags)) {
+            $tags_tree = $this->createTree($temp_tags, $temp_tags[0]);
+        } else {
+            $tags_tree = [];
+        }
+
+        return $tags_tree;
     }
 
     /**
@@ -51,6 +62,7 @@ class TagController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'title' => 'string|required',
+            'parent_id' => 'numeric|required',
         ]);
 
         if($validator->fails()) {
@@ -66,6 +78,7 @@ class TagController extends Controller
         $tag = new Tag;
         $tag->user_id = $user_id;
         $tag->title = trim($request->title);
+        $tag->parent_id = $request->parent_id;
 
         $success = $tag->save();
 
