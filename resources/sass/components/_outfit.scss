@@ -33,12 +33,10 @@
   }
 
   &__tags {
-    overflow-x: scroll;
-    overflow-y: hidden;
+    overflow-y: scroll;
+    display: flex;
+    flex-wrap: wrap;
 
-    height: 25px;
-
-    -ms-overflow-style: none;
     &::-webkit-scrollbar {
       display: none;
     }

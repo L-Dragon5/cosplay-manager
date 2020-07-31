@@ -9,9 +9,6 @@ use Validator;
 
 class TagController extends Controller
 {
-    private $successStatus = 200;
-    private $errorStatus = 422;
-
     /**
      * Display a listing of the resource.
      *

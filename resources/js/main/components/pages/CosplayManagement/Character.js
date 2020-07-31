@@ -58,14 +58,14 @@ const Character = (props) => {
 
     if (
       confirm(
-        `Are you sure you want to delete this character [${this.state.name}]? This will delete all outfits in this character and is not reversible.`,
+        `Are you sure you want to delete this character [${name}]? This will delete all outfits in this character and is not reversible.`,
       )
     ) {
       const answer = prompt('Please enter DELETE to confirm.');
 
       if (answer === 'DELETE') {
         axios
-          .get(`/api/character/destroy/${this.id}`, {
+          .get(`/api/character/destroy/${id}`, {
             headers: {
               Accept: 'application/json',
               Authorization: `Bearer ${token}`,

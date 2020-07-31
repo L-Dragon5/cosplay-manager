@@ -148,25 +148,22 @@ const OutfitAddForm = (props) => {
           </Grid>
 
           <Grid item xs={12} md={6}>
-            <FormControl variant="outlined">
+            <FormControl variant="outlined" fullWidth>
               <InputLabel id="outfit-status">Outfit Status</InputLabel>
               <Select
+                required
+                fullWidth
                 labelId="outfit-status"
                 defaultValue={0}
                 value={status}
                 onChange={handleStatusChange}
                 label="Outfit Status"
-                required
               >
                 <MenuItem value={0}>Future Cosplay</MenuItem>
                 <MenuItem value={1}>Owned & Unworn</MenuItem>
                 <MenuItem value={2}>Worn</MenuItem>
               </Select>
             </FormControl>
-          </Grid>
-
-          <Grid item xs={12} md={4}>
-            <TextField fullWidth name="obtained_on" type="date" />
           </Grid>
 
           <Grid item xs={12} md={4}>
@@ -187,6 +184,20 @@ const OutfitAddForm = (props) => {
             />
           </Grid>
 
+          <Grid item xs={12} md={4}>
+            <TextField
+              fullWidth
+              multiline
+              name="times_worn"
+              variant="outlined"
+              label="Times Worn"
+            />
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <TextField fullWidth name="obtained_on" type="date" />
+          </Grid>
+
           <Grid item xs={12} md={6}>
             <CreatableSelect
               isMulti
@@ -196,16 +207,6 @@ const OutfitAddForm = (props) => {
               components={animatedComponents}
               placeholder="Select tags"
               options={options}
-            />
-          </Grid>
-
-          <Grid item xs={12} md={4}>
-            <TextField
-              fullWidth
-              multiline
-              name="times_worn"
-              variant="outlined"
-              label="Times Worn"
             />
           </Grid>
 

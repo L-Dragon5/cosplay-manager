@@ -160,9 +160,10 @@ const OutfitEditForm = (props) => {
           </Grid>
 
           <Grid item xs={12} md={6}>
-            <FormControl variant="outlined">
+            <FormControl variant="outlined" fullWidth>
               <InputLabel id="outfit-status">Outfit Status</InputLabel>
               <Select
+                fullWidth
                 labelId="outfit-status"
                 defaultValue={status}
                 value={status}
@@ -175,16 +176,6 @@ const OutfitEditForm = (props) => {
                 <MenuItem value={2}>Worn</MenuItem>
               </Select>
             </FormControl>
-          </Grid>
-
-          <Grid item xs={12} md={4}>
-            <TextField
-              fullWidth
-              name="obtained_on"
-              type="date"
-              defaultValue={obtained_on}
-              InputLabelProps={{ shrink: true }}
-            />
           </Grid>
 
           <Grid item xs={12} md={4}>
@@ -209,6 +200,28 @@ const OutfitEditForm = (props) => {
             />
           </Grid>
 
+          <Grid item xs={12} md={4}>
+            <TextField
+              fullWidth
+              multiline
+              name="times_worn"
+              variant="outlined"
+              label="Times Worn"
+              defaultValue={times_worn}
+              InputLabelProps={{ shrink: true }}
+            />
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
+              name="obtained_on"
+              type="date"
+              defaultValue={obtained_on}
+              InputLabelProps={{ shrink: true }}
+            />
+          </Grid>
+
           <Grid item xs={12} md={6}>
             <CreatableSelect
               isMulti
@@ -219,18 +232,6 @@ const OutfitEditForm = (props) => {
               placeholder="Select tags"
               options={options}
               defaultValue={tags}
-            />
-          </Grid>
-
-          <Grid item xs={12} md={4}>
-            <TextField
-              fullWidth
-              multiline
-              name="times_worn"
-              variant="outlined"
-              label="Times Worn"
-              defaultValue={times_worn}
-              InputLabelProps={{ shrink: true }}
             />
           </Grid>
 

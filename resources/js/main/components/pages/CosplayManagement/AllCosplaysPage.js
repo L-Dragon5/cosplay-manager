@@ -84,8 +84,9 @@ const AllCosplaysPage = () => {
         if (response.data) {
           const tagArray = [];
 
-          Object.keys(response.data).forEach((tag) => {
-            tagArray.push({ value: tag.id, lable: tag.title });
+          Object.keys(response.data).forEach((index) => {
+            const tag = response.data[index];
+            tagArray.push({ value: tag.id, label: tag.title });
           });
 
           setAllTags(tagArray);

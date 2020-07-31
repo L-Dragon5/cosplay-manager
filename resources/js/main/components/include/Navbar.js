@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { NavLink, withRouter } from 'react-router-dom';
+import { NavLink, withRouter, useHistory } from 'react-router-dom';
 
 import {
   AppBar,
@@ -8,6 +8,8 @@ import {
   SwipeableDrawer,
   List,
   ListItem,
+  ListItemText,
+  ListSubheader,
   Toolbar,
   Typography,
   Menu,
@@ -50,6 +52,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Navbar = () => {
+  const history = useHistory();
   const classes = useStyles();
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -91,6 +94,11 @@ const Navbar = () => {
     setDrawerStatus(false);
   };
 
+  const mobileNavClick = (url) => {
+    drawerClose();
+    history.push(url);
+  };
+
   return (
     <div className={classes.root}>
       <Hidden mdUp>
@@ -100,29 +108,61 @@ const Navbar = () => {
           onClose={drawerClose}
           onOpen={drawerOpen}
         >
-          <List>
-            <ListItem>
-              <NavLink to="/" onClick={drawerClose}>
-                Dashboard
-              </NavLink>
+          <List
+            component="nav"
+            aria-labelledby="main-options-mobile-header"
+            subheader={
+              <ListSubheader component="div" id="main-options-mobile-header">
+                Main Options
+              </ListSubheader>
+            }
+          >
+            <ListItem button onClick={() => mobileNavClick('/')}>
+              <ListItemText primary="Dashboard" />
             </ListItem>
-            <ListItem>
-              <NavLink
-                to="/cosplay-management"
-                activeClassName="active-tool"
-                onClick={drawerClose}
+          </List>
+          <List
+            component="nav"
+            aria-labelledby="cosplay-management-mobile-header"
+            subheader={
+              <ListSubheader
+                component="div"
+                id="cosplay-management-mobile-header"
               >
                 Cosplay Management
-              </NavLink>
+              </ListSubheader>
+            }
+          >
+            <ListItem
+              button
+              onClick={() => mobileNavClick('/cosplay-management')}
+            >
+              <ListItemText primary="Series Grid" />
             </ListItem>
-            <ListItem>
-              <NavLink
-                to="/taobao-organizer"
-                activeClassName="active-tool"
-                onClick={drawerClose}
+            <ListItem
+              button
+              onClick={() => mobileNavClick('/cosplay-management/all-cosplays')}
+            >
+              <ListItemText primary="All Cosplays" />
+            </ListItem>
+          </List>
+          <List
+            component="nav"
+            aria-labelledby="taobao-organizer-mobile-header"
+            subheader={
+              <ListSubheader
+                component="div"
+                id="taobao-organizer-mobile-header"
               >
                 Taobao Organizer
-              </NavLink>
+              </ListSubheader>
+            }
+          >
+            <ListItem
+              button
+              onClick={() => mobileNavClick('/taobao-organizer')}
+            >
+              <ListItemText primary="All Items" />
             </ListItem>
           </List>
         </SwipeableDrawer>
@@ -222,9 +262,6 @@ const Navbar = () => {
               >
                 <MenuItem onClick={closeAccountSettingsMenu}>
                   My Account (In Progress)
-                </MenuItem>
-                <MenuItem onClick={closeAccountSettingsMenu}>
-                  Changelog (In Progress)
                 </MenuItem>
               </Menu>
             </Hidden>

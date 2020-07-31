@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import ReactMarkdown from 'react-markdown';
+
 import {
   Button,
   CssBaseline,
@@ -18,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
   },
   image: {
-    backgroundImage: 'url(https://source.unsplash.com/random)',
+    backgroundImage: 'url(/storage/organized-bg.jpg)',
     backgroundRepeat: 'no-repeat',
     backgroundColor:
       theme.palette.type === 'light'
@@ -31,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
   },
   overlay: {
     position: 'absolute',
-    background: 'rgba(0, 0, 0, 0.5)',
+    background: 'rgba(0, 0, 0, 0.75)',
     height: '100%',
     width: '100%',
     top: '0',
@@ -68,10 +70,36 @@ const useStyles = makeStyles((theme) => ({
     background:
       'linear-gradient(180deg, rgba(255,153,0,1) 0%, rgba(255,106,0,1) 100%)',
   },
+  changelog: {
+    maxHeight: '600px',
+    overflowY: 'auto',
+    padding: theme.spacing(2),
+    paddingTop: '0',
+    color: theme.palette.text.primary,
+  },
 }));
 
 const HomePage = () => {
   const classes = useStyles();
+
+  const [changelog, setChangelog] = useState(null);
+
+  useEffect(() => {
+    document.title = 'Dashboard | CosManage';
+
+    fetch(
+      'https://raw.githubusercontent.com/L-Dragon5/cosplay-manager/v2/CHANGELOG.md',
+    )
+      .then((response) => {
+        if (response.ok) {
+          return response.text();
+        }
+        throw new Error('Error reading from github.');
+      })
+      .then((data) => {
+        setChangelog(data);
+      });
+  }, []);
 
   return (
     <>
@@ -120,6 +148,13 @@ const HomePage = () => {
           <Typography variant="body1">
             Stuff will go here eventually...
           </Typography>
+
+          <Paper
+            align="left"
+            className={`${classes.paper} ${classes.changelog}`}
+          >
+            <ReactMarkdown source={changelog} />
+          </Paper>
         </Paper>
 
         <Box className={classes.about} align="center">
