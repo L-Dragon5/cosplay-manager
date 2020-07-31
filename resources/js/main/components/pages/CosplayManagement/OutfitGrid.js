@@ -15,6 +15,9 @@ const useStyles = makeStyles((theme) => ({
   root: {
     padding: theme.spacing(2),
   },
+  heading: {
+    marginBottom: '16px',
+  },
   fab: {
     position: 'absolute',
     bottom: theme.spacing(2),
@@ -222,7 +225,7 @@ const OutfitGrid = (props) => {
 
   return (
     <Box className={classes.root}>
-      <Typography variant="h4">
+      <Typography variant="h4" className={classes.heading}>
         {seriesTitle} - {characterName}
       </Typography>
 

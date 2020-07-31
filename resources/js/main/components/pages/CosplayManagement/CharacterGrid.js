@@ -15,6 +15,9 @@ const useStyles = makeStyles((theme) => ({
   root: {
     padding: theme.spacing(2),
   },
+  heading: {
+    marginBottom: '16px',
+  },
   fab: {
     position: 'absolute',
     bottom: theme.spacing(2),
@@ -141,7 +144,9 @@ const CharacterGrid = (props) => {
 
   return (
     <Box className={classes.root}>
-      <Typography variant="h4">{seriesTitle}</Typography>
+      <Typography variant="h4" className={classes.heading}>
+        {seriesTitle}
+      </Typography>
 
       {errorAlertMessage && (
         <Snackbar
