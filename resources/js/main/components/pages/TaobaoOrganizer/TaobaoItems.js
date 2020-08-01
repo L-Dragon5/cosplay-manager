@@ -104,7 +104,10 @@ const TaobaoItems = () => {
                   .indexOf(lowerSearch) !== -1 ||
                   String(item.original_title)
                     .toLowerCase()
-                    .indexOf(lowerSearch) !== -1),
+                    .indexOf(lowerSearch) !== -1 ||
+                  item.tags.filter((tag) => {
+                    return tag.label.toLowerCase().indexOf(lowerSearch) !== -1;
+                  }).length > 0),
             ),
           );
           break;
@@ -118,7 +121,10 @@ const TaobaoItems = () => {
                   .indexOf(lowerSearch) !== -1 ||
                   String(item.original_title)
                     .toLowerCase()
-                    .indexOf(lowerSearch) !== -1),
+                    .indexOf(lowerSearch) !== -1 ||
+                  item.tags.filter((tag) => {
+                    return tag.label.toLowerCase().indexOf(lowerSearch) !== -1;
+                  }).length > 0),
             ),
           );
           break;
@@ -130,7 +136,10 @@ const TaobaoItems = () => {
                   -1 ||
                 String(item.original_title)
                   .toLowerCase()
-                  .indexOf(lowerSearch) !== -1,
+                  .indexOf(lowerSearch) !== -1 ||
+                item.tags.filter((tag) => {
+                  return tag.label.toLowerCase().indexOf(lowerSearch) !== -1;
+                }).length > 0,
             ),
           );
           break;

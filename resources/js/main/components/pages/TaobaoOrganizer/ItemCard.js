@@ -53,6 +53,9 @@ const useStyles = makeStyles((theme) => ({
     border: '2px solid red',
     opacity: '75%',
   },
+  imgSmallFit: {
+    maxHeight: '300px',
+  },
 }));
 
 const ItemCard = (props) => {
@@ -305,7 +308,11 @@ const ItemCard = (props) => {
             className="item__header"
           />
 
-          <CardMedia component="img" image={imageUrl} />
+          <CardMedia
+            className={!expanded ? classes.imgSmallFit : null}
+            component="img"
+            image={imageUrl}
+          />
 
           {notes && (
             <CardContent>

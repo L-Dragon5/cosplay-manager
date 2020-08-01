@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
+import Carousel from 'react-material-ui-carousel';
 
 import {
   Button,
@@ -55,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: '32px',
   },
   features: {
-    height: '100vh',
+    minHeight: '100vh',
     width: '100%',
     padding: '32px',
   },
@@ -71,11 +72,18 @@ const useStyles = makeStyles((theme) => ({
       'linear-gradient(180deg, rgba(255,153,0,1) 0%, rgba(255,106,0,1) 100%)',
   },
   changelog: {
-    maxHeight: '600px',
+    maxHeight: '400px',
     overflowY: 'auto',
     padding: theme.spacing(2),
     paddingTop: '0',
     color: theme.palette.text.primary,
+  },
+  carousel: {
+    maxWidth: '1200px',
+    margin: '32px 0',
+    '& img': {
+      width: '100%',
+    },
   },
 }));
 
@@ -145,12 +153,90 @@ const HomePage = () => {
         <Paper elevation={4} className={classes.features} align="center">
           <Typography variant="h3">Features</Typography>
 
-          <Typography variant="body1">
-            Stuff will go here eventually...
-          </Typography>
+          <Grid container spacing={2} style={{ margin: '32px 0' }}>
+            <Grid item xs={12} md={4}>
+              <Typography variant="h5">Cosplay Management</Typography>
+              <Typography variant="body1">
+                Organize your cosplay plans and ones currently owned in one easy
+                place. Easy to look through and organize with images and
+                customized text fields.
+              </Typography>
+              <Typography variant="body2" style={{ marginTop: '16px' }}>
+                The colors match up to the status of the outfit in the plan.
+              </Typography>
+              <Typography variant="body2">
+                (Future = Green, Owned & Unworn = Blue, Worn = Red)
+              </Typography>
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <Typography variant="h5">Taobao Organizer</Typography>
+              <Typography variant="body1">
+                If you buy a lot of your cosplays on Taobao and have a
+                never-ending folder of bookmarks on your browser, this is the
+                right tool for you. Just paste in the taobao link of your choice
+                and it will grab the necessary information of the item and
+                display in it a grid format for easy viewing and access.
+              </Typography>
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <Typography variant="h5">Tag Manager</Typography>
+              <Typography variant="body1">
+                An added bonus for more management, there is a tag management
+                system that can be applied to all Outfits in the Cosplay
+                Management tool and all Items in the Taobao Organizer tool and
+                can be searched for on the corresponding pages. This will make
+                it easier to have custom names that aren't available straight
+                out of the box.
+              </Typography>
+            </Grid>
+          </Grid>
+
+          <Carousel className={classes.carousel}>
+            <img
+              src="/storage/homepage-carousel/features-1.png"
+              alt="Cosplay management series page"
+              draggable={false}
+            />
+            <img
+              src="/storage/homepage-carousel/features-2.png"
+              alt="Cosplay management editing series"
+              draggable={false}
+            />
+            <img
+              src="/storage/homepage-carousel/features-3.png"
+              alt="Cosplay management series page"
+              draggable={false}
+            />
+            <img
+              src="/storage/homepage-carousel/features-4.png"
+              alt="Cosplay management adding new character"
+              draggable={false}
+            />
+            <img
+              src="/storage/homepage-carousel/features-5.png"
+              alt="Cosplay managmenet adding new outfit"
+              draggable={false}
+            />
+            <img
+              src="/storage/homepage-carousel/features-6.png"
+              alt="Cosplay management all outfits grid"
+              draggable={false}
+            />
+            <img
+              src="/storage/homepage-carousel/features-7.png"
+              alt="Taobao organizer all item"
+              draggable={false}
+            />
+            <img
+              src="/storage/homepage-carousel/features-8.png"
+              alt="Tag manager"
+              draggable={false}
+            />
+          </Carousel>
 
           <Paper
             align="left"
+            elevation={6}
             className={`${classes.paper} ${classes.changelog}`}
           >
             <ReactMarkdown source={changelog} />
@@ -170,9 +256,9 @@ const HomePage = () => {
             >
               GitHub
             </Link>
-            ). A lot of my friends are very active cosplayers and I built this
-            website as a collection of tools for them to use to organize their
-            plans.
+            ). My girlfriend and a lot of my friends are very active cosplayers,
+            so I built this website as a collection of tools for them to use to
+            organize their plans.
           </Typography>
 
           <Typography variant="body1" style={{ marginTop: '16px' }}>
@@ -183,7 +269,6 @@ const HomePage = () => {
           <Button
             type="button"
             variant="outlined"
-            color="link"
             size="large"
             style={{ marginTop: '32px' }}
             href="mailto:help@cosmanage.com"

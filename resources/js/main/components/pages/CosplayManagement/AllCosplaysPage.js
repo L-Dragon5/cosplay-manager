@@ -140,7 +140,13 @@ const AllCosplaysPage = () => {
             allOutfits.filter(
               (item) =>
                 item.status === 0 &&
-                String(item.title).toLowerCase().indexOf(lowerSearch) !== -1,
+                (String(item.title).toLowerCase().indexOf(lowerSearch) !== -1 ||
+                  String(item.character_name)
+                    .toLowerCase()
+                    .indexOf(lowerSearch) !== -1 ||
+                  item.tags.filter((tag) => {
+                    return tag.label.toLowerCase().indexOf(lowerSearch) !== -1;
+                  }).length > 0),
             ),
           );
           break;
@@ -149,7 +155,13 @@ const AllCosplaysPage = () => {
             allOutfits.filter(
               (item) =>
                 item.status === 1 &&
-                String(item.title).toLowerCase().indexOf(lowerSearch) !== -1,
+                (String(item.title).toLowerCase().indexOf(lowerSearch) !== -1 ||
+                  String(item.character_name)
+                    .toLowerCase()
+                    .indexOf(lowerSearch) !== -1 ||
+                  item.tags.filter((tag) => {
+                    return tag.label.toLowerCase().indexOf(lowerSearch) !== -1;
+                  }).length > 0),
             ),
           );
           break;
@@ -158,7 +170,13 @@ const AllCosplaysPage = () => {
             allOutfits.filter(
               (item) =>
                 (item.status === 0 || item.status === 1) &&
-                String(item.title).toLowerCase().indexOf(lowerSearch) !== -1,
+                (String(item.title).toLowerCase().indexOf(lowerSearch) !== -1 ||
+                  String(item.character_name)
+                    .toLowerCase()
+                    .indexOf(lowerSearch) !== -1 ||
+                  item.tags.filter((tag) => {
+                    return tag.label.toLowerCase().indexOf(lowerSearch) !== -1;
+                  }).length > 0),
             ),
           );
           break;
@@ -167,7 +185,13 @@ const AllCosplaysPage = () => {
             allOutfits.filter(
               (item) =>
                 item.status === 2 &&
-                String(item.title).toLowerCase().indexOf(lowerSearch) !== -1,
+                (String(item.title).toLowerCase().indexOf(lowerSearch) !== -1 ||
+                  String(item.character_name)
+                    .toLowerCase()
+                    .indexOf(lowerSearch) !== -1 ||
+                  item.tags.filter((tag) => {
+                    return tag.label.toLowerCase().indexOf(lowerSearch) !== -1;
+                  }).length > 0),
             ),
           );
           break;
@@ -176,7 +200,13 @@ const AllCosplaysPage = () => {
             allOutfits.filter(
               (item) =>
                 (item.status === 0 || item.status === 2) &&
-                String(item.title).toLowerCase().indexOf(lowerSearch) !== -1,
+                (String(item.title).toLowerCase().indexOf(lowerSearch) !== -1 ||
+                  String(item.character_name)
+                    .toLowerCase()
+                    .indexOf(lowerSearch) !== -1 ||
+                  item.tags.filter((tag) => {
+                    return tag.label.toLowerCase().indexOf(lowerSearch) !== -1;
+                  }).length > 0),
             ),
           );
           break;
@@ -185,7 +215,13 @@ const AllCosplaysPage = () => {
             allOutfits.filter(
               (item) =>
                 (item.status === 1 || item.status === 2) &&
-                String(item.title).toLowerCase().indexOf(lowerSearch) !== -1,
+                (String(item.title).toLowerCase().indexOf(lowerSearch) !== -1 ||
+                  String(item.character_name)
+                    .toLowerCase()
+                    .indexOf(lowerSearch) !== -1 ||
+                  item.tags.filter((tag) => {
+                    return tag.label.toLowerCase().indexOf(lowerSearch) !== -1;
+                  }).length > 0),
             ),
           );
           break;
@@ -193,7 +229,13 @@ const AllCosplaysPage = () => {
           setOutfits(
             allOutfits.filter(
               (item) =>
-                String(item.title).toLowerCase().indexOf(lowerSearch) !== -1,
+                String(item.title).toLowerCase().indexOf(lowerSearch) !== -1 ||
+                String(item.character_name)
+                  .toLowerCase()
+                  .indexOf(lowerSearch) !== -1 ||
+                item.tags.filter((tag) => {
+                  return tag.label.toLowerCase().indexOf(lowerSearch) !== -1;
+                }).length > 0,
             ),
           );
           break;

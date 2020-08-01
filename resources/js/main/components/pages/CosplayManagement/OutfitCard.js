@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import axios from 'axios';
 import Carousel from 'react-material-ui-carousel';
@@ -196,7 +196,6 @@ const OutfitCard = (props) => {
           setSuccessAlertMessage(response.data.message);
           setSnackbarStatus(true);
           setImages(response.data.images);
-          setRenderCarousel(true);
         }
       })
       .catch((error) => {
@@ -241,6 +240,12 @@ const OutfitCard = (props) => {
   const snackbarClose = () => {
     setSnackbarStatus(false);
   };
+
+  useEffect(() => {
+    if (images.length > 0) {
+      setRenderCarousel(true);
+    }
+  }, [images]);
 
   if (visible) {
     let statusClass = '';

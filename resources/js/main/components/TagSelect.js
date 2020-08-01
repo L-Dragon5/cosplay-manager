@@ -53,9 +53,13 @@ const TagSelect = (props) => {
   const updateTags = (tags) => {
     if (apiUpdateRoute !== null) {
       const formData = new FormData();
-      Object.keys(tags).forEach((key) => {
-        formData.append('tags[]', tags[key]);
-      });
+      if (tags.length > 0) {
+        Object.keys(tags).forEach((key) => {
+          formData.append('tags[]', tags[key]);
+        });
+      } else {
+        formData.append('tags[]', '');
+      }
 
       axios
         .post(`/api/${apiUpdateRoute}`, formData, {

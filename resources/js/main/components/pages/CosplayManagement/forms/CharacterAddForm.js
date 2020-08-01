@@ -126,7 +126,7 @@ const CharacterAddForm = (props) => {
 
           <Grid item xs={12}>
             <Button type="submit" variant="contained" color="secondary">
-              Add Series
+              Add Character
             </Button>
           </Grid>
         </Grid>

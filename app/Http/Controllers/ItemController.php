@@ -93,18 +93,23 @@ class ItemController extends Controller
             $title = str_replace('\\', '', preg_replace('/u([0-9A-F]+)/', '&#x$1;', $product_array['title']));
             $info['title'] = html_entity_decode($title, ENT_COMPAT, 'UTF-8');
         } else if (strpos($request->url, 'tmall') !== FALSE) {
-            // TODO: Figure out a way to scrape TMall
-            /*
             $content = $this->get_page($request->url);
-            preg_match('#<script(.*?)</script>#is', $content, $matches);
-            $shop_setup_json = $this->get_string_between($content, 'TShop.Setup(', '})();');
-            //$shop_setup_json = json_decode($this->get_string_between($content, 'TShop.Setup(', '})();'));
-            
-            var_dump($content);
-            var_dump($matches);
-            var_dump($shop_setup_json);
-            */
-            return return_json_message('TMall links are not currently supported', self::STATUS_BAD_REQUEST);
+
+            if (!empty($content)) {
+                $shop_setup_text_dirty = $this->get_string_between($content, 'TShop.Setup(', '})();');
+                $shop_setup_text = $this->get_string_between('$5' . $shop_setup_text_dirty, '$5', ');');
+                $shop_setup_json = json_decode($shop_setup_text);
+    
+                $item_json = $shop_setup_json->itemDO;
+    
+                $info['title'] = $item_json->title;
+                $info['seller'] = $item_json->brand;
+                $info['image'] = 'http:' . $item_json->imgVedioPic;
+                $info['price'] = (!empty($shop_setup_json->detail->defaultItemPrice) ? $shop_setup_json->detail->defaultItemPrice : '-1.00');
+                $info['url'] = $request->url;
+            } else {
+                return return_json_message('Could not retrieve information from TMall. Please try again later.', self::STATUS_UNPROCESSABLE);
+            }
         } else {
             return return_json_message('URL not recognized', self::STATUS_BAD_REQUEST);
         }
@@ -404,7 +409,7 @@ class ItemController extends Controller
         if ($ini == 0) return '';
         $ini += strlen($start);
         $len = strpos($string, $end, $ini) - $ini;
-        return substr($string, $ini, $len);
+        return trim(substr($string, $ini, $len));
     }
 
     private function get_page($url) {
@@ -413,6 +418,8 @@ class ItemController extends Controller
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
         curl_setopt($curl, CURLOPT_ENCODING ,"");
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($curl, CURLOPT_HTTPHEADER, ['Content-Type: text/plain; charset=UTF-8']); 
         curl_setopt($curl,CURLOPT_USERAGENT,'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36');
         $return = curl_exec($curl);

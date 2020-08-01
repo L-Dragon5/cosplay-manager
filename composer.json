@@ -17,6 +17,7 @@
         "laravel/passport": "^7.5",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^2.0",
+        "spatie/laravel-backup": "^6.11",
         "voku/portable-utf8": "^5.4",
         "voku/simple_html_dom": "^4.7"
     },
