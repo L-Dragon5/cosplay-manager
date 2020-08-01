@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class TagController extends Controller
@@ -29,6 +30,95 @@ class TagController extends Controller
         } else {
             $tags_tree = [];
         }
+
+        return $tags_tree;
+    }
+
+    /**
+     * Display tags for Select.
+     * 
+     * @return \Illuminate\Http\Response
+     */
+    public function tagsForSelect() {
+        $user_id = Auth::user()->id;
+        $all_tags = Tag::where('user_id', $user_id)->orderBy('title', 'ASC')->get();
+
+        $temp_tags = [];
+        foreach ($all_tags as $tag) {
+            $tag->label = $tag->title;
+            $tag->value = $tag->id;
+            $tag->checked = TRUE;
+            
+            $temp_tags[$tag['parent_id']][] = $tag;
+        }
+
+        if (!empty($temp_tags)) {
+            $tags_tree = $this->createTree($temp_tags, $temp_tags[0]);
+        } else {
+            $tags_tree = [];
+        };
+
+        return $tags_tree;
+    }
+
+    /**
+     * Display tags for selected item for Select.
+     * 
+     * @return \Illuminate\Http\Response
+     */
+    public function tagsByItemSelect($id) {
+        $user_id = Auth::user()->id;
+        $all_tags = Tag::where('user_id', $user_id)->orderBy('title', 'ASC')->get();
+        $item_tags = DB::table('items_tags')->where('items_tags.item_id', $id)->pluck('tag_id')->toArray();
+
+        $temp_tags = [];
+        foreach ($all_tags as $tag) {
+            $tag->label = $tag->title;
+            $tag->value = $tag->id;
+
+            if (in_array($tag->id, $item_tags)) {
+                $tag->checked = TRUE;
+            }
+
+            $temp_tags[$tag['parent_id']][] = $tag;
+        }
+
+        if (!empty($temp_tags)) {
+            $tags_tree = $this->createTree($temp_tags, $temp_tags[0]);
+        } else {
+            $tags_tree = [];
+        };
+
+        return $tags_tree;
+    }
+
+    /**
+     * Display tags for selected outfit for Select.
+     * 
+     * @return \Illuminate\Http\Response
+     */
+    public function tagsByOutfitSelect($id) {
+        $user_id = Auth::user()->id;
+        $all_tags = Tag::where('user_id', $user_id)->orderBy('title', 'ASC')->get();
+        $item_tags = DB::table('outfits_tags')->where('outfits_tags.outfit_id', $id)->pluck('tag_id')->toArray();
+
+        $temp_tags = [];
+        foreach ($all_tags as $tag) {
+            $tag->label = $tag->title;
+            $tag->value = $tag->id;
+
+            if (in_array($tag->id, $item_tags)) {
+                $tag->checked = TRUE;
+            }
+
+            $temp_tags[$tag['parent_id']][] = $tag;
+        }
+
+        if (!empty($temp_tags)) {
+            $tags_tree = $this->createTree($temp_tags, $temp_tags[0]);
+        } else {
+            $tags_tree = [];
+        };
 
         return $tags_tree;
     }

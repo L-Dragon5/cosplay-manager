@@ -8,8 +8,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use DateTime;
-use DateTimeZone;
 
 class ItemController extends Controller
 {
@@ -42,21 +40,6 @@ class ItemController extends Controller
             }
         }
         
-        return $items;
-    }
-
-    /**
-     * TODO: Might not need this function.
-     * Get all items associated with User based on Tag ID.
-     * 
-     * @return \Illuminate\Http\Response
-     */
-    public function indexByTag($id) {
-        $user_id = Auth::user()->id;
-        $items = Item::where([
-            ['user_id', $user_id],
-            ['tag_id', $id],
-        ])->orderBy('created_at', 'DESC')->get();
         return $items;
     }
     
@@ -189,7 +172,8 @@ class ItemController extends Controller
             'custom_title'  => 'string|nullable',
             'quantity'      => 'numeric|nullable',
             'notes'         => 'string|nullable',
-            'tags'          => 'array|nullable',
+            'tags'          => 'nullable',
+            'tags.*'        => 'string|nullable',
         ]);
         
         if($validator->fails()) {

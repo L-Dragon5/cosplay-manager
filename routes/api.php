@@ -48,6 +48,9 @@ Route::middleware('auth:api')->group(function () {
 
     // Tag Routes
     Route::get('tags', 'TagController@index');
+    Route::get('tagsForSelect', 'TagController@tagsForSelect');
+    Route::get('tagsByItemSelect/{id}', 'TagController@tagsByItemSelect');
+    Route::get('tagsByOutfitSelect/{id}', 'TagController@tagsByOutfitSelect');
     Route::get('tag/{id}', 'TagController@show');
     Route::post('tag/create', 'TagController@store');
     Route::post('tag/update/{id}', 'TagController@update');

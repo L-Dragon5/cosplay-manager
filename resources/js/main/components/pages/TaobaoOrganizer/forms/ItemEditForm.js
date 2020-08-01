@@ -3,20 +3,15 @@ import axios from 'axios';
 
 import { Box, Button, Grid, TextField } from '@material-ui/core';
 
-import CreatableSelect from 'react-select/creatable';
-import makeAnimated from 'react-select/animated';
+import TagSelect from '../../../TagSelect';
 
 const ItemEditForm = (props) => {
-  const animatedComponents = makeAnimated();
-
   const {
     token,
     id,
     customTitle,
     quantity,
     notes,
-    allTags,
-    tags,
     unmount,
     sendSuccess,
     sendError,
@@ -74,16 +69,7 @@ const ItemEditForm = (props) => {
           </Grid>
 
           <Grid item xs={12} md={5}>
-            <CreatableSelect
-              isMulti
-              isClearable={false}
-              name="tags[]"
-              closeMenuOnSelect={false}
-              components={animatedComponents}
-              placeholder="Select tags"
-              options={allTags}
-              defaultValue={tags}
-            />
+            <TagSelect token={token} itemId={id} />
           </Grid>
 
           <Grid item xs={12} md={2}>

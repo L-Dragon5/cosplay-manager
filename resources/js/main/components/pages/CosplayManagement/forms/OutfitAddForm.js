@@ -13,25 +13,14 @@ import {
   MenuItem,
 } from '@material-ui/core';
 
-import CreatableSelect from 'react-select/creatable';
-import makeAnimated from 'react-select/animated';
-
 const OutfitAddForm = (props) => {
   const [image, setImage] = useState(null);
   const [saveImage, setSaveImage] = useState(null);
   const [status, setStatus] = useState(0);
 
   const cropper = useRef();
-  const animatedComponents = makeAnimated();
 
-  const {
-    token,
-    characterID,
-    options,
-    unmount,
-    sendSuccess,
-    sendError,
-  } = props;
+  const { token, characterID, unmount, sendSuccess, sendError } = props;
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -167,18 +156,6 @@ const OutfitAddForm = (props) => {
 
           <Grid item xs={12} md={6}>
             <TextField fullWidth name="obtained_on" type="date" />
-          </Grid>
-
-          <Grid item xs={12} md={6}>
-            <CreatableSelect
-              isMulti
-              isClearable={false}
-              name="tags[]"
-              closeMenuOnSelect={false}
-              components={animatedComponents}
-              placeholder="Select tags"
-              options={options}
-            />
           </Grid>
 
           <Grid item xs={12} md={6}>

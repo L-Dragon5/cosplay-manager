@@ -53,7 +53,6 @@ const AllCosplaysPage = () => {
   const [outfits, setOutfits] = useState(null); // Outfits being displayed
   const [search, setSearch] = useState(''); // Search input
   const [filter, setFilter] = useState(7); // Filter mask
-  const [allTags, setAllTags] = useState([]); // All tag options
 
   const [checkboxes, setCheckboxes] = useState({
     futureCheckbox: true,
@@ -70,44 +69,6 @@ const AllCosplaysPage = () => {
 
   const handleChange = (e) => {
     setCheckboxes({ ...checkboxes, [e.target.name]: e.target.checked });
-  };
-
-  const getTags = () => {
-    axios
-      .get('/api/tags', {
-        headers: {
-          Accept: 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        if (response.data) {
-          const tagArray = [];
-
-          Object.keys(response.data).forEach((index) => {
-            const tag = response.data[index];
-            tagArray.push({ value: tag.id, label: tag.title });
-          });
-
-          setAllTags(tagArray);
-        }
-      })
-      .catch((error) => {
-        if (error.response) {
-          let message = '';
-
-          if (Array.isArray(error.response)) {
-            Object.keys(error.response.data.message).forEach((key) => {
-              message += `[${key}] - ${error.response.data.message[key]}\r\n`;
-            });
-          } else {
-            message += error.response.data.message;
-          }
-
-          setErrorAlertMessage(message);
-          setSnackbarStatus(true);
-        }
-      });
   };
 
   const getOutfits = () => {
@@ -244,7 +205,6 @@ const AllCosplaysPage = () => {
 
   useEffect(() => {
     document.title = 'All Cosplays | CosManage';
-    getTags();
     getOutfits();
   }, []);
 
@@ -331,7 +291,6 @@ const AllCosplaysPage = () => {
                 obtained_on={item.obtained_on}
                 creator={item.creator}
                 tags={item.tags}
-                allTags={allTags}
                 storage_location={item.storage_location}
                 times_worn={item.times_worn}
               />

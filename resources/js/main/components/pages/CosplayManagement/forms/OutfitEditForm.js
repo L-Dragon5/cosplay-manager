@@ -13,8 +13,7 @@ import {
   MenuItem,
 } from '@material-ui/core';
 
-import CreatableSelect from 'react-select/creatable';
-import makeAnimated from 'react-select/animated';
+import TagSelect from '../../../TagSelect';
 
 const OutfitEditForm = (props) => {
   const [image, setImage] = useState(null);
@@ -22,7 +21,6 @@ const OutfitEditForm = (props) => {
   const [status, setStatus] = useState(props.status);
 
   const cropper = useRef();
-  const animatedComponents = makeAnimated();
 
   const {
     token,
@@ -32,8 +30,6 @@ const OutfitEditForm = (props) => {
     creator,
     storage_location,
     times_worn,
-    options,
-    tags,
     unmount,
     sendSuccess,
     sendError,
@@ -189,16 +185,7 @@ const OutfitEditForm = (props) => {
           </Grid>
 
           <Grid item xs={12} md={6}>
-            <CreatableSelect
-              isMulti
-              isClearable={false}
-              name="tags[]"
-              closeMenuOnSelect={false}
-              components={animatedComponents}
-              placeholder="Select tags"
-              options={options}
-              defaultValue={tags}
-            />
+            <TagSelect token={token} outfitId={id} />
           </Grid>
 
           <Grid item xs={12} md={6}>

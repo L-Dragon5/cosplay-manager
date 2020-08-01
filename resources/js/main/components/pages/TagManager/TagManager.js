@@ -1,12 +1,16 @@
-// TODO: Test adding tags
-// TODO: Edit/Delete tags
-// TODO: Use dropdown-tree-select to change out all the Tag selectors in forms
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-import { Box, TextField, Snackbar, Typography } from '@material-ui/core';
+import {
+  Box,
+  IconButton,
+  TextField,
+  Snackbar,
+  Typography,
+} from '@material-ui/core';
 import { Alert, TreeView, TreeItem } from '@material-ui/lab';
-import AddIcon from '@material-ui/icons/Add';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import { makeStyles } from '@material-ui/core/styles';
@@ -24,6 +28,9 @@ const useStyles = makeStyles((theme) => ({
   addTagField: {
     marginLeft: theme.spacing(2),
     marginBottom: theme.spacing(3),
+  },
+  buttons: {
+    marginLeft: theme.spacing(2),
   },
 }));
 
@@ -69,6 +76,8 @@ const TagManager = () => {
   };
 
   const handleAddTag = (e, parentId) => {
+    e.persist();
+
     if (e.key === 'Enter') {
       const formData = new FormData();
       formData.set('title', e.target.value);
@@ -76,6 +85,92 @@ const TagManager = () => {
 
       axios
         .post('/api/tag/create', formData, {
+          headers: {
+            Accept: 'application/json',
+            Authorization: `Bearer ${token}`,
+            'content-type': 'multipart/form-data',
+          },
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            e.target.value = null;
+            setSuccessAlertMessage(response.data.message);
+            setSnackbarStatus(true);
+            getTags();
+          }
+        })
+        .catch((error) => {
+          if (error.response) {
+            let message = '';
+
+            if (Array.isArray(error.response)) {
+              Object.keys(error.response.data.message).forEach((key) => {
+                message += `[${key}] - ${error.response.data.message[key]}\r\n`;
+              });
+            } else {
+              message += error.response.data.message;
+            }
+
+            setErrorAlertMessage(message);
+            setSnackbarStatus(true);
+          }
+        });
+    }
+  };
+
+  const handleEdit = (e, id) => {
+    e.stopPropagation();
+
+    const newTitle = prompt('Please enter the new tag title.');
+
+    if (newTitle !== null) {
+      const formData = new FormData();
+      formData.set('title', newTitle);
+
+      axios
+        .post(`/api/tag/update/${id}`, formData, {
+          headers: {
+            Accept: 'application/json',
+            Authorization: `Bearer ${token}`,
+            'content-type': 'multipart/form-data',
+          },
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            setSuccessAlertMessage(response.data.message);
+            setSnackbarStatus(true);
+            getTags();
+          }
+        })
+        .catch((error) => {
+          if (error.response) {
+            let message = '';
+
+            if (Array.isArray(error.response)) {
+              Object.keys(error.response.data.message).forEach((key) => {
+                message += `[${key}] - ${error.response.data.message[key]}\r\n`;
+              });
+            } else {
+              message += error.response.data.message;
+            }
+
+            setErrorAlertMessage(message);
+            setSnackbarStatus(true);
+          }
+        });
+    }
+  };
+
+  const handleDelete = (e, id) => {
+    e.stopPropagation();
+
+    if (
+      confirm(
+        `Are you sure you want to delete this tag? This will delete all associations to this tag and is not reversible.`,
+      )
+    ) {
+      axios
+        .get(`/api/tag/destroy/${id}`, {
           headers: {
             Accept: 'application/json',
             Authorization: `Bearer ${token}`,
@@ -109,23 +204,43 @@ const TagManager = () => {
   };
 
   const renderTree = (nodes) => {
-    return (
+    const buttons = (
       <>
-        <TreeItem
-          key={nodes.id}
-          nodeId={nodes.id.toString()}
-          label={nodes.title}
-        >
-          {nodes.children !== undefined && Array.isArray(nodes.children)
-            ? nodes.children.map((node) => renderTree(node))
-            : null}
-          <TextField
-            label="Add tag"
-            onKeyPress={(e) => handleAddTag(e, nodes.id)}
-            className={classes.addTagField}
-          />
-        </TreeItem>
+        <Box component="span">{nodes.title}</Box>
+        <Box component="span" className={classes.buttons}>
+          <IconButton
+            size="small"
+            color="secondary"
+            onClick={(e) => {
+              handleEdit(e, nodes.id);
+            }}
+          >
+            <EditIcon />
+          </IconButton>
+          <IconButton
+            size="small"
+            color="secondary"
+            onClick={(e) => {
+              handleDelete(e, nodes.id);
+            }}
+          >
+            <DeleteIcon />
+          </IconButton>
+        </Box>
       </>
+    );
+
+    return (
+      <TreeItem key={nodes.id} nodeId={nodes.id.toString()} label={buttons}>
+        {nodes.children !== undefined && Array.isArray(nodes.children)
+          ? nodes.children.map((node) => renderTree(node))
+          : null}
+        <TextField
+          label="Add tag"
+          onKeyPress={(e) => handleAddTag(e, nodes.id)}
+          className={classes.addTagField}
+        />
+      </TreeItem>
     );
   };
 

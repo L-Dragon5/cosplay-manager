@@ -86,9 +86,6 @@ const ItemCard = (props) => {
   const [tags, setTags] = useState(
     props.tags !== undefined && props.tags !== null ? props.tags : [],
   );
-  const [allTags, setAllTags] = useState(
-    props.allTags !== undefined && props.allTags !== null ? props.allTags : [],
-  );
 
   // Uneditable Settings
   const {
@@ -407,8 +404,6 @@ const ItemCard = (props) => {
                 customTitle={customTitle}
                 quantity={quantity}
                 notes={notes}
-                tags={tags}
-                allTags={allTags}
                 unmount={handleFormUnmount}
                 sendSuccess={handleFormSendSuccess}
                 sendError={handleFormSendError}

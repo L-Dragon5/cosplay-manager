@@ -61,7 +61,6 @@ const TaobaoItems = () => {
   const [items, setItems] = useState(null);
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState(3); // Filter mask for active/archive (active = 1, archive = 2)
-  const [allTags, setAllTags] = useState(null);
 
   const [checkboxes, setCheckboxes] = useState({
     activeItemsCheckbox: true,
@@ -251,44 +250,6 @@ const TaobaoItems = () => {
       });
   };
 
-  const getTags = () => {
-    axios
-      .get('/api/tags', {
-        headers: {
-          Accept: 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        if (response.data) {
-          const tagArray = [];
-
-          Object.keys(response.data).forEach((index) => {
-            const tag = response.data[index];
-            tagArray.push({ value: tag.id, label: tag.title });
-          });
-
-          setAllTags(tagArray);
-        }
-      })
-      .catch((error) => {
-        if (error.response) {
-          let message = '';
-
-          if (Array.isArray(error.response)) {
-            Object.keys(error.response.data.message).forEach((key) => {
-              message += `[${key}] - ${error.response.data.message[key]}\r\n`;
-            });
-          } else {
-            message += error.response.data.message;
-          }
-
-          setErrorAlertMessage(message);
-          setSnackbarStatus(true);
-        }
-      });
-  };
-
   // Set filter mask based on checkboxes.
   useEffect(() => {
     let mask = 0;
@@ -309,7 +270,6 @@ const TaobaoItems = () => {
   }, [filter, search]);
 
   useEffect(() => {
-    getTags();
     getItems();
     document.title = 'Taobao Organizer | CosManage';
   }, []);
@@ -424,7 +384,6 @@ const TaobaoItems = () => {
                 token={token}
                 id={item.id}
                 tags={item.tags}
-                allTags={allTags}
                 imageUrl={item.image_url}
                 originalTitle={item.original_title}
                 customTitle={item.custom_title}

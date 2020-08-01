@@ -49,50 +49,11 @@ const OutfitGrid = (props) => {
   const [seriesTitle, setSeriesTitle] = useState(null);
   const [characterName, setCharacterName] = useState(null);
   const [outfits, setOutfits] = useState(null);
-  const [allTags, setAllTags] = useState(null);
   const [renderForm, setRenderForm] = useState(false);
   const [modalStatus, setModalStatus] = useState(false);
   const [snackbarStatus, setSnackbarStatus] = useState(false);
   const [successAlertMessage, setSuccessAlertMessage] = useState('');
   const [errorAlertMessage, setErrorAlertMessage] = useState('');
-
-  const getTags = () => {
-    axios
-      .get('/api/tags', {
-        headers: {
-          Accept: 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        if (response.data) {
-          const tagArray = [];
-
-          Object.keys(response.data).forEach((index) => {
-            const tag = response.data[index];
-            tagArray.push({ value: tag.id, label: tag.title });
-          });
-
-          setAllTags(tagArray);
-        }
-      })
-      .catch((error) => {
-        if (error.response) {
-          let message = '';
-
-          if (Array.isArray(error.response)) {
-            Object.keys(error.response.data.message).forEach((key) => {
-              message += `[${key}] - ${error.response.data.message[key]}\r\n`;
-            });
-          } else {
-            message += error.response.data.message;
-          }
-
-          setErrorAlertMessage(message);
-          setSnackbarStatus(true);
-        }
-      });
-  };
 
   const getSeriesTitle = () => {
     axios
@@ -216,7 +177,6 @@ const OutfitGrid = (props) => {
   };
 
   useEffect(() => {
-    getTags();
     getSeriesTitle();
     getCharacterName();
     getOutfits();
@@ -280,7 +240,6 @@ const OutfitGrid = (props) => {
                 storage_location={item.storage_location}
                 times_worn={item.times_worn}
                 tags={item.tags}
-                allTags={allTags}
               />
             );
           })}
@@ -308,7 +267,6 @@ const OutfitGrid = (props) => {
             <OutfitAddForm
               token={token}
               characterID={characterID}
-              options={allTags}
               unmount={handleFormUnmount}
               sendSuccess={handleFormSendSuccess}
               sendError={handleFormSendError}

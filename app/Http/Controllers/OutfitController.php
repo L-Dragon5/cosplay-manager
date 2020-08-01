@@ -198,15 +198,15 @@ class OutfitController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'title' => 'string|required',
+            'title' => 'string',
             'images' => 'string|nullable',
-            'status' => 'integer|required',
+            'status' => 'integer',
             'obtained_on' => 'date_format:Y-m-d|nullable',
             'creator' => 'string|nullable',
             'storage_location' => 'string|nullable',
             'times_worn' => 'string|nullable',
             'tags' => 'nullable',
-            'tags.*' => 'string|nullable'
+            'tags.*' => 'string|nullable',
         ]);
 
         if($validator->fails()) {
