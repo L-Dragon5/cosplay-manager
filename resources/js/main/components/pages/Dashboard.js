@@ -9,11 +9,6 @@ const useStyles = makeStyles((theme) => ({
   root: {
     padding: theme.spacing(2),
   },
-  fab: {
-    position: 'absolute',
-    bottom: theme.spacing(2),
-    right: theme.spacing(2),
-  },
   gridLink: {
     color: theme.palette.text.primary,
     textDecoration: 'none',

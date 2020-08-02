@@ -33,11 +33,6 @@ const useStyles = makeStyles((theme) => ({
   checkboxes: {
     marginTop: theme.spacing(2),
   },
-  fab: {
-    position: 'absolute',
-    bottom: theme.spacing(2),
-    right: theme.spacing(2),
-  },
   paper: {
     position: 'absolute',
     width: '65%',
