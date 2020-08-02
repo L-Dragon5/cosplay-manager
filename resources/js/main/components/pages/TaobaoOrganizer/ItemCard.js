@@ -256,6 +256,8 @@ const ItemCard = (props) => {
 
   const snackbarClose = () => {
     setSnackbarStatus(false);
+    setSuccessAlertMessage('');
+    setErrorAlertMessage('');
   };
 
   if (visible) {

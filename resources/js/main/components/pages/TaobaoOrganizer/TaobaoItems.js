@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import LazyLoad, { forceCheck } from 'react-lazyload';
 
 import {
   Box,
@@ -83,6 +84,8 @@ const TaobaoItems = () => {
 
   const snackbarClose = () => {
     setSnackbarStatus(false);
+    setSuccessAlertMessage('');
+    setErrorAlertMessage('');
   };
 
   // Set outfits based on search and filters.
@@ -161,7 +164,6 @@ const TaobaoItems = () => {
         if (response.data) {
           setAllItems(response.data);
           setItems(response.data);
-          filterItems();
         }
       })
       .catch((error) => {
@@ -275,8 +277,12 @@ const TaobaoItems = () => {
   }, [checkboxes]);
 
   useEffect(() => {
+    forceCheck();
+  }, [items]);
+
+  useEffect(() => {
     filterItems();
-  }, [filter, search]);
+  }, [filter, search, allItems]);
 
   useEffect(() => {
     getItems();
@@ -388,23 +394,25 @@ const TaobaoItems = () => {
         {items &&
           items.map((item) => {
             return (
-              <ItemCard
-                key={`i-${item.id}`}
-                token={token}
-                id={item.id}
-                tags={item.tags}
-                imageUrl={item.image_url}
-                originalTitle={item.original_title}
-                customTitle={item.custom_title}
-                sellerName={item.seller_name}
-                listingUrl={item.listing_url}
-                notes={item.notes}
-                quantity={item.quantity}
-                originalPrice={item.original_price}
-                isArchived={item.is_archived}
-                createdAt={item.created_at}
-                updatedAt={item.updated_at}
-              />
+              <LazyLoad key={`lazy-${item.id}`} height={500} once offset={100}>
+                <ItemCard
+                  key={`i-${item.id}`}
+                  token={token}
+                  id={item.id}
+                  tags={item.tags}
+                  imageUrl={item.image_url}
+                  originalTitle={item.original_title}
+                  customTitle={item.custom_title}
+                  sellerName={item.seller_name}
+                  listingUrl={item.listing_url}
+                  notes={item.notes}
+                  quantity={item.quantity}
+                  originalPrice={item.original_price}
+                  isArchived={item.is_archived}
+                  createdAt={item.created_at}
+                  updatedAt={item.updated_at}
+                />
+              </LazyLoad>
             );
           })}
       </Box>

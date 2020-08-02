@@ -246,6 +246,8 @@ const TagManager = () => {
 
   const snackbarClose = () => {
     setSnackbarStatus(false);
+    setSuccessAlertMessage('');
+    setErrorAlertMessage('');
   };
 
   useEffect(() => {

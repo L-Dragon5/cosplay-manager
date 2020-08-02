@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import LazyLoad, { forceCheck } from 'react-lazyload';
 
 import {
   Box,
@@ -105,6 +106,7 @@ const AllCosplaysPage = () => {
 
   const snackbarClose = () => {
     setSnackbarStatus(false);
+    setErrorAlertMessage('');
   };
 
   // Set filter mask based on checkboxes.
@@ -246,6 +248,10 @@ const AllCosplaysPage = () => {
   }, [filter, search]);
 
   useEffect(() => {
+    forceCheck();
+  }, [outfits]);
+
+  useEffect(() => {
     document.title = 'All Cosplays | CosManage';
     getOutfits();
   }, []);
@@ -322,20 +328,22 @@ const AllCosplaysPage = () => {
         {outfits &&
           outfits.map((item) => {
             return (
-              <OutfitCard
-                key={`o-${item.id}`}
-                token={token}
-                id={item.id}
-                character_name={item.character_name}
-                title={item.title}
-                images={item.images}
-                status={item.status}
-                obtained_on={item.obtained_on}
-                creator={item.creator}
-                tags={item.tags}
-                storage_location={item.storage_location}
-                times_worn={item.times_worn}
-              />
+              <LazyLoad key={`lazy-${item.id}`} height={600} once offset={100}>
+                <OutfitCard
+                  key={`o-${item.id}`}
+                  token={token}
+                  id={item.id}
+                  character_name={item.character_name}
+                  title={item.title}
+                  images={item.images}
+                  status={item.status}
+                  obtained_on={item.obtained_on}
+                  creator={item.creator}
+                  tags={item.tags}
+                  storage_location={item.storage_location}
+                  times_worn={item.times_worn}
+                />
+              </LazyLoad>
             );
           })}
       </Box>

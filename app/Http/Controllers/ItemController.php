@@ -101,11 +101,13 @@ class ItemController extends Controller
                 $shop_setup_json = json_decode($shop_setup_text);
     
                 $item_json = $shop_setup_json->itemDO;
+                $detail_json = $shop_setup_json->detail;
+                $property_pics_json = $shop_setup_json->propertyPics;
     
                 $info['title'] = $item_json->title;
                 $info['seller'] = $item_json->brand;
-                $info['image'] = 'http:' . $item_json->imgVedioPic;
-                $info['price'] = (!empty($shop_setup_json->detail->defaultItemPrice) ? $shop_setup_json->detail->defaultItemPrice : '-1.00');
+                $info['image'] = 'http:' . $property_pics_json->default[0];
+                $info['price'] = (!empty($detail_json->defaultItemPrice) ? $detail_json->defaultItemPrice : '-1.00');
                 $info['url'] = $request->url;
             } else {
                 return return_json_message('Could not retrieve information from TMall. Please try again later.', self::STATUS_UNPROCESSABLE);

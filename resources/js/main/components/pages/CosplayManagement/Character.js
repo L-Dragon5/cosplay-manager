@@ -142,6 +142,8 @@ const Character = (props) => {
 
   const snackbarClose = () => {
     setSnackbarStatus(false);
+    setSuccessAlertMessage('');
+    setErrorAlertMessage('');
   };
 
   if (visible) {

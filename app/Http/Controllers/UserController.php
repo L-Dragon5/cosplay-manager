@@ -66,14 +66,14 @@ class UserController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'old_password' => 'string|required',
-            'new_password' => 'string|requried',
+            'new_password' => 'string|required',
         ]);
 
         if ($validator->fails()) {
             return return_json_message($validator->errors(), self::STATUS_BAD_REQUEST);
         }
 
-        $existing_user = User::where('uid', Auth::user()->id);
+        $existing_user = User::where('id', Auth::user()->id)->first();
         if (empty($existing_user)) {
             return return_json_message('User doesn\'t exist', self::STATUS_BAD_REQUEST);
         } else {

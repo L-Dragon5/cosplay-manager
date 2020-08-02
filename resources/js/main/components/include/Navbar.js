@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import { NavLink, withRouter, useHistory } from 'react-router-dom';
+import FileDownload from 'js-file-download';
 
 import {
   AppBar,
   Box,
+  Modal,
   Hidden,
   SwipeableDrawer,
   List,
@@ -15,10 +18,15 @@ import {
   Menu,
   MenuItem,
   IconButton,
+  Snackbar,
 } from '@material-ui/core';
+import { Alert } from '@material-ui/lab';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import MenuIcon from '@material-ui/icons/Menu';
 import { makeStyles } from '@material-ui/core/styles';
+
+import Helper from '../Helper';
+import PasswordEditForm from './PasswordEditForm';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -49,6 +57,16 @@ const useStyles = makeStyles((theme) => ({
       borderBottom: '2px solid rgba(0, 0, 0, 0.87)',
     },
   },
+  paper: {
+    position: 'absolute',
+    width: '65%',
+    backgroundColor: theme.palette.background.paper,
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+  },
 }));
 
 const Navbar = () => {
@@ -63,8 +81,15 @@ const Navbar = () => {
   const [accountSettingsMenuStatus, setAccountSettingsMenuStatus] = useState(
     false,
   );
-
   const [drawerStatus, setDrawerStatus] = useState(false);
+
+  const [renderForm, setRenderForm] = useState(false);
+  const [modalStatus, setModalStatus] = useState(false);
+  const [snackbarStatus, setSnackbarStatus] = useState(false);
+  const [successAlertMessage, setSuccessAlertMessage] = useState('');
+  const [errorAlertMessage, setErrorAlertMessage] = useState('');
+
+  const token = Helper.getToken();
 
   const openCosplayManagementMenu = (e) => {
     e.preventDefault();
@@ -99,8 +124,92 @@ const Navbar = () => {
     history.push(url);
   };
 
+  const handleFormSendSuccess = (data) => {
+    setSuccessAlertMessage(data);
+    setSnackbarStatus(true);
+    setModalStatus(false);
+    setRenderForm(false);
+  };
+
+  const handleFormSendError = (data) => {
+    setErrorAlertMessage(data);
+    setSnackbarStatus(true);
+  };
+
+  const modalOpen = () => {
+    closeAccountSettingsMenu();
+    setRenderForm(true);
+    setModalStatus(true);
+  };
+
+  const modalClose = () => {
+    setModalStatus(false);
+  };
+
+  const snackbarClose = () => {
+    setSnackbarStatus(false);
+    setSuccessAlertMessage('');
+    setErrorAlertMessage('');
+  };
+
+  const downloadTBOCSV = () => {
+    closeAccountSettingsMenu();
+    axios
+      .get(`/api/account/getCSV`, {
+        headers: {
+          Accept: 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        FileDownload(response.data, 'tborganizer-export.csv');
+        setSuccessAlertMessage('File downloading...');
+        setSnackbarStatus(true);
+      })
+      .catch((error) => {
+        if (error.response) {
+          let message = '';
+
+          if (Array.isArray(error.response)) {
+            Object.keys(error.response.data.message).forEach((key) => {
+              message += `[${key}] - ${error.response.data.message[key]}\r\n`;
+            });
+          } else {
+            message += error.response.data.message;
+          }
+
+          setErrorAlertMessage(message);
+          setSnackbarStatus(true);
+        }
+      });
+  };
+
   return (
-    <div className={classes.root}>
+    <Box className={classes.root}>
+      {errorAlertMessage && (
+        <Snackbar
+          anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+          open={snackbarStatus}
+          onClose={snackbarClose}
+          autoHideDuration={2000}
+        >
+          <Alert severity="error" style={{ whiteSpace: 'pre' }}>
+            {errorAlertMessage}
+          </Alert>
+        </Snackbar>
+      )}
+
+      {successAlertMessage && (
+        <Snackbar
+          anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+          open={snackbarStatus}
+          onClose={snackbarClose}
+          autoHideDuration={2000}
+        >
+          <Alert severity="success">{successAlertMessage}</Alert>
+        </Snackbar>
+      )}
+
       <Hidden mdUp>
         <SwipeableDrawer
           anchor="left"
@@ -265,15 +374,33 @@ const Navbar = () => {
                 open={accountSettingsMenuStatus}
                 onClose={closeAccountSettingsMenu}
               >
-                <MenuItem onClick={closeAccountSettingsMenu}>
-                  My Account (In Progress)
+                <MenuItem onClick={downloadTBOCSV}>
+                  Download Taobao Organizer CSV
                 </MenuItem>
+                <MenuItem onClick={modalOpen}>Change Password</MenuItem>
               </Menu>
             </Hidden>
           </nav>
         </Toolbar>
       </AppBar>
-    </div>
+
+      {renderForm ? (
+        <Modal
+          open={modalStatus}
+          onClose={modalClose}
+          disableEnforceFocus
+          disableAutoFocus
+        >
+          <Box className={classes.paper}>
+            <PasswordEditForm
+              token={token}
+              sendSuccess={handleFormSendSuccess}
+              sendError={handleFormSendError}
+            />
+          </Box>
+        </Modal>
+      ) : null}
+    </Box>
   );
 };
 

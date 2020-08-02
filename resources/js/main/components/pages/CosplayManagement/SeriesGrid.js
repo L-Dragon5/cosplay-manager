@@ -103,6 +103,8 @@ const SeriesGrid = () => {
 
   const snackbarClose = () => {
     setSnackbarStatus(false);
+    setSuccessAlertMessage('');
+    setErrorAlertMessage('');
   };
 
   useEffect(() => {

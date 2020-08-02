@@ -138,6 +138,8 @@ const CharacterGrid = (props) => {
 
   const snackbarClose = () => {
     setSnackbarStatus(false);
+    setSuccessAlertMessage('');
+    setErrorAlertMessage('');
   };
 
   useEffect(() => {

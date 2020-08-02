@@ -41,7 +41,7 @@ class AccountSettingsController extends Controller
       $fp = fopen('php://output', 'w');
 
       // Write BOM character sequence to fix UTF-8 in Excel
-      fputs( $fp, $bom = chr(0xEF) . chr(0xBB) . chr(0xBF) );
+      fputs( $fp, $bom = chr(239) . chr(187) . chr(191) );
 
       //Then, loop through the rows and write them to the CSV file.
       foreach ($items as $row) {
