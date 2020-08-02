@@ -1,10 +1,11 @@
 ## Changelog
 
-## August XX, 2020 - MAJOR CHANGES
+## August 2nd, 2020 - MAJOR CHANGES
 - Refactored a lot of CosManage
 - Merged TBOrganizer into CosManage, now all future tooling will be slowly added to this site
 - Forms and buttons may look different due to styling changes, but base functionality remains the same
 - Outfit Cards operate differently than previously due to updated styling
+- Outfit Cards and Taobao Item Cards are lazyloaded to load items more efficiently
 - Added changelog to website that loads dynamically from GitHub
 
 ### December 20th, 2019
