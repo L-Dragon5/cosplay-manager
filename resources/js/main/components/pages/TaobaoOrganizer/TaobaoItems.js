@@ -256,6 +256,12 @@ const TaobaoItems = () => {
       });
   };
 
+  const handleAddItemEnter = (e) => {
+    if (e.key === 'Enter') {
+      handleAddItem();
+    }
+  };
+
   // Set filter mask based on checkboxes.
   useEffect(() => {
     let mask = 0;
@@ -328,6 +334,7 @@ const TaobaoItems = () => {
               variant="outlined"
               value={addItemUrl}
               onChange={handleUrlChange}
+              onKeyPress={handleAddItemEnter}
             />
           </Grid>
           <Grid item xs={12}>
