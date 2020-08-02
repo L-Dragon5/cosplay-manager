@@ -21,6 +21,11 @@ class ItemController extends Controller
         $items = Item::where('user_id', $user_id)->orderBy('created_at', 'DESC')->get();
         
         foreach($items as $item) {
+            // If local image, add / for root directory
+            if (filter_var($item->image_url, FILTER_VALIDATE_URL) === FALSE) {
+                $item->image_url = '/' . $item->image_url;
+            }
+            
             $tags = DB::table('items_tags')->where('items_tags.item_id', $item->id)->pluck('tag_id');
 
             if(!empty($tags)) {
