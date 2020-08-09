@@ -64,6 +64,7 @@ const TaobaoItems = () => {
   });
 
   const [addItemUrl, setAddItemUrl] = useState('');
+  const [addButtonDisabled, setAddButtonDisabled] = useState(false);
 
   const handleSearch = (e) => {
     setSearch(e.target.value);
@@ -202,6 +203,8 @@ const TaobaoItems = () => {
             }
           }
 
+          setAddButtonDisabled(true);
+
           axios
             .post('/api/item/create', formData, {
               headers: {
@@ -235,6 +238,7 @@ const TaobaoItems = () => {
             })
             .finally(() => {
               setAddItemUrl('');
+              setAddButtonDisabled(false);
             });
         }
       })
@@ -345,8 +349,15 @@ const TaobaoItems = () => {
               component="span"
               style={{ marginTop: '16px' }}
               onClick={handleAddItem}
+              disabled={addButtonDisabled}
             >
-              <AddIcon /> Add Item
+              {addButtonDisabled ? (
+                'Adding item...'
+              ) : (
+                <>
+                  <AddIcon /> <>Add Item</>
+                </>
+              )}
             </Button>
           </Grid>
         </Grid>
