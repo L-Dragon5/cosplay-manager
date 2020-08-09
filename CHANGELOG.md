@@ -1,5 +1,8 @@
 ## Changelog
 
+### August 9th, 2020
+- Set TBOrganizer to disable button when adding item to prevent multiple accidental submissions.
+
 ## August 2nd, 2020 - MAJOR CHANGES
 - Refactored a lot of CosManage
 - Merged TBOrganizer into CosManage, now all future tooling will be slowly added to this site
