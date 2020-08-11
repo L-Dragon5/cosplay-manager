@@ -1,7 +1,11 @@
 ## Changelog
 
+### August 10th, 2020
+- Fixed the TBOrganizer to disable form field as well to prevent accidental submissions
+- Fixed a bug that left an empty space in the grid after deleting an item
+
 ### August 9th, 2020
-- Set TBOrganizer to disable button when adding item to prevent multiple accidental submissions.
+- Set TBOrganizer to disable button when adding item to prevent multiple accidental submissions
 
 ## August 2nd, 2020 - MAJOR CHANGES
 - Refactored a lot of CosManage

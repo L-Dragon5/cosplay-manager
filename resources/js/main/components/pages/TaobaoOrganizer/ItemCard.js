@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
 import axios from 'axios';
+import LazyLoad from 'react-lazyload';
 
 import {
   Button,
@@ -274,7 +275,7 @@ const ItemCard = (props) => {
     }
 
     return (
-      <>
+      <LazyLoad key={`lazy-${id}`} height={500} once offset={100}>
         {errorAlertMessage && (
           <Snackbar
             anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
@@ -420,7 +421,7 @@ const ItemCard = (props) => {
             </Box>
           </Modal>
         ) : null}
-      </>
+      </LazyLoad>
     );
   }
 

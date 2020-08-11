@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import LazyLoad, { forceCheck } from 'react-lazyload';
+import { forceCheck } from 'react-lazyload';
 
 import {
   Box,
@@ -339,6 +339,7 @@ const TaobaoItems = () => {
               value={addItemUrl}
               onChange={handleUrlChange}
               onKeyPress={handleAddItemEnter}
+              disabled={addButtonDisabled}
             />
           </Grid>
           <Grid item xs={12}>
@@ -407,25 +408,23 @@ const TaobaoItems = () => {
         {items &&
           items.map((item) => {
             return (
-              <LazyLoad key={`lazy-${item.id}`} height={500} once offset={100}>
-                <ItemCard
-                  key={`i-${item.id}`}
-                  token={token}
-                  id={item.id}
-                  tags={item.tags}
-                  imageUrl={item.image_url}
-                  originalTitle={item.original_title}
-                  customTitle={item.custom_title}
-                  sellerName={item.seller_name}
-                  listingUrl={item.listing_url}
-                  notes={item.notes}
-                  quantity={item.quantity}
-                  originalPrice={item.original_price}
-                  isArchived={item.is_archived}
-                  createdAt={item.created_at}
-                  updatedAt={item.updated_at}
-                />
-              </LazyLoad>
+              <ItemCard
+                key={`i-${item.id}`}
+                token={token}
+                id={item.id}
+                tags={item.tags}
+                imageUrl={item.image_url}
+                originalTitle={item.original_title}
+                customTitle={item.custom_title}
+                sellerName={item.seller_name}
+                listingUrl={item.listing_url}
+                notes={item.notes}
+                quantity={item.quantity}
+                originalPrice={item.original_price}
+                isArchived={item.is_archived}
+                createdAt={item.created_at}
+                updatedAt={item.updated_at}
+              />
             );
           })}
       </Box>
