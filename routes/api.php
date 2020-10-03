@@ -77,7 +77,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('item/unarchive/{id}', [ItemController::class, 'unarchive']);
     Route::get('item/destroy/{id}', [ItemController::class, 'destroy']);
 
-    // Account Setting Route
+    // Account Setting Routes
     Route::get('account/getCSV', [AccountSettingsController::class, 'getCSV']);
     Route::get('account/getPublicLink', [AccountSettingsController::class, 'getPublicLink']);
 });
