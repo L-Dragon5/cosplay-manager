@@ -4,6 +4,7 @@
 - Added publicly shareable link for all cosplays
 - Added the support email to the Dashboard
 - TMall support is iffy. It will sometimes add and sometimes not. No good way to resolve the issue
+- Readded ability to add images for Cosplay Management from URLs. No longer having to download the image and uploading
 
 ### August 10th, 2020
 - Fixed the TBOrganizer to disable form field as well to prevent accidental submissions
