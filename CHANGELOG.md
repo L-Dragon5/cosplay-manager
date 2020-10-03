@@ -1,5 +1,10 @@
 ## Changelog
 
+### October 3rd, 2020
+- Added publicly shareable link for all cosplays
+- Added the support email to the Dashboard
+- TMall support is iffy. It will sometimes add and sometimes not. No good way to resolve the issue
+
 ### August 10th, 2020
 - Fixed the TBOrganizer to disable form field as well to prevent accidental submissions
 - Fixed a bug that left an empty space in the grid after deleting an item
