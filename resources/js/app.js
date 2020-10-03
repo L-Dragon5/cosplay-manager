@@ -12,6 +12,7 @@ import HomePage from './main/HomePage';
 import LoginPage from './main/LoginPage';
 import RegisterPage from './main/RegisterPage';
 import ForgotPasswordPage from './main/ForgotPasswordPage';
+import PublicSharedPage from './main/PublicSharedPage';
 
 /**
  * First we will load all of this project's JavaScript dependencies which
@@ -26,6 +27,7 @@ const homeRoot = document.getElementById('home-root');
 const loginRoot = document.getElementById('login-root');
 const registerRoot = document.getElementById('register-root');
 const forgotPasswordRoot = document.getElementById('forgot-password-root');
+const publicSharedRoot = document.getElementById('public-shared-root');
 
 if (typeof authenticatedRoot !== 'undefined' && authenticatedRoot !== null) {
   ReactDOM.render(<AuthenticatedMain />, authenticatedRoot);
@@ -40,4 +42,9 @@ if (typeof authenticatedRoot !== 'undefined' && authenticatedRoot !== null) {
   forgotPasswordRoot !== null
 ) {
   ReactDOM.render(<ForgotPasswordPage />, forgotPasswordRoot);
+} else if (
+  typeof publicSharedRoot !== 'undefined' &&
+  publicSharedRoot !== null
+) {
+  ReactDOM.render(<PublicSharedPage />, publicSharedRoot);
 }

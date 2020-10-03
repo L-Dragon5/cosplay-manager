@@ -10,12 +10,15 @@ import { makeStyles } from '@material-ui/core/styles';
 import Helper from '../../Helper';
 import Series from './Series';
 import SeriesAddForm from './forms/SeriesAddForm';
+import PublicLink from '../../PublicLink';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: theme.spacing(2),
   },
-  heading: {
+  title: {
+    display: 'flex',
+    justifyContent: 'space-between',
     marginBottom: '16px',
   },
   fab: {
@@ -114,9 +117,13 @@ const SeriesGrid = () => {
 
   return (
     <Box className={classes.root}>
-      <Typography variant="h4" className={classes.heading}>
-        Series
-      </Typography>
+      <Box className={classes.title}>
+        <Typography component="span" variant="h4">
+          Series
+        </Typography>
+
+        <PublicLink />
+      </Box>
 
       {errorAlertMessage && (
         <Snackbar

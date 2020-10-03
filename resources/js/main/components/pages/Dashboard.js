@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { NavLink, withRouter } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 
-import { Grid, Paper, Typography } from '@material-ui/core';
+import { Grid, Paper, Typography, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
@@ -89,6 +89,22 @@ const Dashboard = () => {
           <Paper className={`${classes.paper} ${classes.changelog}`}>
             <ReactMarkdown source={changelog} />
           </Paper>
+        </Grid>
+        <Grid item xs={12}>
+          <Typography variant="body1" style={{ marginTop: '16px' }}>
+            Feel free to contact me if you have any problems or any things you
+            wanted added in the future. I hope to grow this as much as possible!
+          </Typography>
+
+          <Button
+            type="button"
+            variant="outlined"
+            size="large"
+            style={{ marginTop: '32px' }}
+            href="mailto:help@cosmanage.com"
+          >
+            help@cosmanage.com
+          </Button>
         </Grid>
       </Grid>
     </div>

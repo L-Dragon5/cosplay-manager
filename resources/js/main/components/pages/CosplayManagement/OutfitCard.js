@@ -100,6 +100,8 @@ const OutfitCard = (props) => {
   const characterName =
     props.character_name !== undefined ? props.character_name : null;
 
+  const publicView = token == null;
+
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
@@ -309,15 +311,17 @@ const OutfitCard = (props) => {
                         alt=""
                         draggable={false}
                       />
-                      <Box
-                        className="outfit__image__delete"
-                        onClick={(e) => {
-                          setRenderCarousel(false);
-                          handleRemovePhoto(e, i);
-                        }}
-                      >
-                        <DeleteIcon />
-                      </Box>
+                      {!publicView && (
+                        <Box
+                          className="outfit__image__delete"
+                          onClick={(e) => {
+                            setRenderCarousel(false);
+                            handleRemovePhoto(e, i);
+                          }}
+                        >
+                          <DeleteIcon />
+                        </Box>
+                      )}
                     </Box>
                   );
                 })}
@@ -338,12 +342,17 @@ const OutfitCard = (props) => {
           ) : null}
 
           <CardActions disableSpacing>
-            <IconButton aria-label="edit" onClick={modalOpen}>
-              <EditIcon />
-            </IconButton>
-            <IconButton aria-label="delete" onClick={handleDelete}>
-              <DeleteForeverIcon />
-            </IconButton>
+            {!publicView && (
+              <>
+                <IconButton aria-label="edit" onClick={modalOpen}>
+                  <EditIcon />
+                </IconButton>
+                <IconButton aria-label="delete" onClick={handleDelete}>
+                  <DeleteForeverIcon />
+                </IconButton>
+              </>
+            )}
+
             <IconButton
               className={clsx(classes.expand, {
                 [classes.expandOpen]: expanded,
