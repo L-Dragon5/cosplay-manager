@@ -89,6 +89,23 @@ const OutfitAddForm = (props) => {
     }
   };
 
+  const getImageFromUrl = () => {
+    const url = prompt('Enter URL here');
+
+    const xhr = new XMLHttpRequest();
+    xhr.onload = () => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImage(reader.result);
+      };
+      reader.readAsDataURL(xhr.response);
+    };
+
+    xhr.open('GET', url);
+    xhr.responseType = 'blob';
+    xhr.send();
+  };
+
   const handleStatusChange = (e) => {
     setStatus(e.target.value);
   };
@@ -158,7 +175,7 @@ const OutfitAddForm = (props) => {
             <TextField fullWidth name="obtained_on" type="date" />
           </Grid>
 
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} sm={6} md={3}>
             <label htmlFor="image">
               <input
                 id="image"
@@ -172,6 +189,17 @@ const OutfitAddForm = (props) => {
                 Upload Image
               </Button>
             </label>
+          </Grid>
+
+          <Grid item xs={12} sm={6} md={3}>
+            <Button
+              variant="contained"
+              color="primary"
+              component="span"
+              onClick={getImageFromUrl}
+            >
+              Get Image from URL
+            </Button>
           </Grid>
 
           {image && (
