@@ -93,8 +93,6 @@ const HomePage = () => {
   const [changelog, setChangelog] = useState(null);
 
   useEffect(() => {
-    document.title = 'Dashboard | CosManage';
-
     fetch(
       'https://raw.githubusercontent.com/L-Dragon5/cosplay-manager/v2/CHANGELOG.md',
     )

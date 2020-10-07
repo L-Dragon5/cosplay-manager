@@ -133,7 +133,7 @@ const RegisterPage = () => {
                 fullWidth
                 name="c_password"
                 label="Confirm Password"
-                type="c_password"
+                type="password"
                 id="c_password"
               />
             </Grid>
