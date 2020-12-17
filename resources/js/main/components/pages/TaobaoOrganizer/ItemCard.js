@@ -358,6 +358,7 @@ const ItemCard = (props) => {
               onClick={handleExpandClick}
               aria-expanded={expanded}
               aria-label="show details"
+              title="Show Details"
             >
               <ExpandMoreIcon />
             </IconButton>

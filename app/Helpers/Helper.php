@@ -112,7 +112,7 @@ if (!function_exists('save_image_uploaded')) {
         $final_img = Image::make($img)->resize(null, $height, function ($constraint) {
           $constraint->aspectRatio();
         });
-        $final_img->save(storage_path("app/public/$location/$filename_to_store"), 80);
+        $final_img->save(storage_path("app/public/$location/$filename_to_store"), 100);
 
         // Add delimiter for outfit images
         if ($location === 'outfit') {

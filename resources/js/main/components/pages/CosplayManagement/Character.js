@@ -182,6 +182,7 @@ const Character = (props) => {
               <Box
                 onClick={modalOpen}
                 className="character__icon"
+                title="Edit Character"
                 style={{ backgroundColor: teal[300] }}
               >
                 <EditIcon />
@@ -197,6 +198,7 @@ const Character = (props) => {
               <Box
                 onClick={handleDelete}
                 className="character__icon"
+                title="Delete Character"
                 style={{ backgroundColor: red[300] }}
               >
                 <DeleteIcon />

@@ -1,5 +1,10 @@
 ## Changelog
 
+### December 16th, 2020
+- Fixed issue where images uploaded via URL were slightly blurry
+- Hovering over icons will show what they do
+- Added a bit of padding on images so they don't get cut off too much on the sides
+
 ### October 3rd, 2020
 - Added publicly shareable link for all cosplays
 - Added the support email to the Dashboard

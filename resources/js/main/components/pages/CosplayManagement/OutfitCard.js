@@ -318,6 +318,7 @@ const OutfitCard = (props) => {
                             setRenderCarousel(false);
                             handleRemovePhoto(e, i);
                           }}
+                          title="Delete Image"
                         >
                           <DeleteIcon />
                         </Box>
@@ -344,10 +345,18 @@ const OutfitCard = (props) => {
           <CardActions disableSpacing>
             {!publicView && (
               <>
-                <IconButton aria-label="edit" onClick={modalOpen}>
+                <IconButton
+                  aria-label="edit"
+                  title="Edit Outfit"
+                  onClick={modalOpen}
+                >
                   <EditIcon />
                 </IconButton>
-                <IconButton aria-label="delete" onClick={handleDelete}>
+                <IconButton
+                  aria-label="delete"
+                  title="Delete Outfit"
+                  onClick={handleDelete}
+                >
                   <DeleteForeverIcon />
                 </IconButton>
               </>
@@ -360,6 +369,7 @@ const OutfitCard = (props) => {
               onClick={handleExpandClick}
               aria-expanded={expanded}
               aria-label="show details"
+              title="Show Details"
             >
               <ExpandMoreIcon />
             </IconButton>

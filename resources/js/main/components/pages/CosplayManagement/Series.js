@@ -184,6 +184,7 @@ const Series = (props) => {
               <Box
                 onClick={modalOpen}
                 className="series__icon"
+                title="Edit Series"
                 style={{ backgroundColor: teal[300] }}
               >
                 <EditIcon />
@@ -200,6 +201,7 @@ const Series = (props) => {
               <Box
                 onClick={handleDelete}
                 className="series__icon"
+                title="Delete Series"
                 style={{ backgroundColor: red[300] }}
               >
                 <DeleteIcon />
