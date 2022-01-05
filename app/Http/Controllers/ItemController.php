@@ -437,6 +437,13 @@ class ItemController extends Controller
 			'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/5.0)',
         ];
 
+        /*
+        let cookies = document.cookie;
+        cookies = cookies.split(";");
+        cookies = cookies.map(cookie => cookie.replace(" ", ""));
+        copy(cookies);
+        */
+
         $options = [
 			CURLOPT_RETURNTRANSFER => true, 	// return web page
 			CURLOPT_HEADER         => true, 	// return headers in addition to content
@@ -449,7 +456,25 @@ class ItemController extends Controller
 			CURLINFO_HEADER_OUT    => true,
 			CURLOPT_SSL_VERIFYPEER => false, 	// Disabled SSL Cert checks
 			CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,
-			CURLOPT_COOKIE         => null,
+			CURLOPT_COOKIE         => [
+                "t=790766c71d5d9bd5cdc3c45a8be55e56",
+                "_tb_token_=755b38eee3f93",
+                "csg=548b8a07",
+                "lgc=ldragon5",
+                "cancelledSubSites=empty",
+                "dnk=ldragon5",
+                "existShop=MTY0MTM1MDAwNQ%3D%3D",
+                "tracknick=ldragon5",
+                "_cc_=UtASsssmfA%3D%3D",
+                "_l_g_=Ug%3D%3D",
+                "sg=55e",
+                "_nk_=ldragon5",
+                "mt=ci=0_1",
+                "uc1=cookie15=W5iHLLyFOGW7aA%3D%3D&existShop=false&cookie16=VT5L2FSpNgq6fDudInPRgavC%2BQ%3D%3D&pas=0&cookie21=W5iHLLyFfoaZ&cookie14=UoewAeY0P8oV%2Bg%3D%3D",
+                "thw=us",
+                "l=eBMsyl9Ig0zVzMyyKOfZnurza779LIRfguPzaNbMiOCP_L5y5i5fW6pWUXT2CnMNnsieR35T8LLDBWLidyzhCk_ErAcBs2JZndLh.",
+                "isg=BG5uuTiSg4x3I_foygyQFxdev8QwbzJpscUlrZg3iHEsew_VAPyxeO-xN_-XoyqB"
+            ],
             CURLOPT_USERAGENT      => $user_agent[array_rand($user_agent)],
             CURLOPT_HTTPHEADER     => ['Content-Type: text/plain; charset=UTF-8'],
         ];
