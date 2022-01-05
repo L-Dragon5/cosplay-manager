@@ -57,7 +57,7 @@ class DownloadThumbs extends Command
         try {
           $arContext['http']['timeout'] = 3;
           $context = stream_context_create($arContext);
-          $img = file_get_contents($url, 0, $context);
+          $img = @file_get_contents($url, 0, $context);
 
           if(!empty($img)) {
             $im = imagecreatefromstring($img);
@@ -78,7 +78,7 @@ class DownloadThumbs extends Command
             DB::update('UPDATE items SET image_url=? WHERE image_url=?', [$linkName, $url]);
           }
         } catch (Exception $e) {
-				  $this->error($e);
+				  // $this->error($e);
         }
 
 			}
