@@ -56,69 +56,80 @@ class ItemController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'url' => 'url|required',
+            'url' => 'string|required',
         ]);
 
         if ($validator->fails()) {
             return return_json_message($validator->errors(), self::STATUS_BAD_REQUEST);
         }
+
+        $validated = $validator->validated();
         
         $info = [];
         
-        // If "taobao" is in the URL, it's a Taobao link
-        // Check for tmall as well.
-        if (strpos($request->url, 'taobao') !== FALSE) {
-            $content = $this->get_page($request->url);
+        // Verify value validates and isn't empty.
+        if (!empty($validated['url'])) {
+            $url = $validated['url'];
 
-            preg_match('#<script(.*?)</script>#is', $content, $matches);
-            $base_script = strip_tags($matches[0]); // The <script> tag that contains all the config variables.
+            // If url is actually a JSON object.
+            if ($this->isJson($url)) {
+                $info = json_decode($url, true);
+            }
+            // If "taobao" is in the URL, it's a Taobao link
+            // Check for tmall as well.
+            else if (strpos($url, 'taobao') !== FALSE) {
+                $content = $this->get_page($url);
 
-            $script_parts = explode('};', $base_script);    // Separate script.
-            $first_curly_bracket = strpos($script_parts[0], '{');   // Get position of first curly bracket of object.
-            $json = substr($script_parts[0], $first_curly_bracket + 1); // Get JSON object from first curly bracket.
-            $json_split = explode(',', $json);  // Separate json by commas.
-    
-            $product_array = [];    // Turning json object values into a php array for use.
-            foreach ($json_split as $entry) {
-                $colonSplit = explode(':', $entry); // Separate by the colon for key and value.
-                $key = trim($colonSplit[0]);
-                $value = "";    // Some keys don't have values.
-                if (!empty($colonSplit[1])) {
-                    $value = trim($colonSplit[1]);
+                preg_match('#<script(.*?)</script>#is', $content, $matches);
+                $base_script = strip_tags($matches[0]); // The <script> tag that contains all the config variables.
+
+                $script_parts = explode('};', $base_script);    // Separate script.
+                $first_curly_bracket = strpos($script_parts[0], '{');   // Get position of first curly bracket of object.
+                $json = substr($script_parts[0], $first_curly_bracket + 1); // Get JSON object from first curly bracket.
+                $json_split = explode(',', $json);  // Separate json by commas.
+        
+                $product_array = [];    // Turning json object values into a php array for use.
+                foreach ($json_split as $entry) {
+                    $colonSplit = explode(':', $entry); // Separate by the colon for key and value.
+                    $key = trim($colonSplit[0]);
+                    $value = "";    // Some keys don't have values.
+                    if (!empty($colonSplit[1])) {
+                        $value = trim($colonSplit[1]);
+                    }
+        
+                    $product_array[$key] = $this->getValueInQuotes($value); // Get value without the quotes.
                 }
-    
-                $product_array[$key] = $this->getValueInQuotes($value); // Get value without the quotes.
-            }
-    
-            $info['image'] = 'http:' . $product_array['pic'];
-            $info['seller'] = $product_array['sellerNick'];
-            $info['price'] = (!empty($product_array['price']) ? $product_array['price'] : '-1.00');
-            $info['url'] = $request->url;
-    
-            $title = str_replace('\\', '', preg_replace('/u([0-9A-F]+)/', '&#x$1;', $product_array['title']));
-            $info['title'] = html_entity_decode($title, ENT_COMPAT, 'UTF-8');
-        } else if (strpos($request->url, 'tmall') !== FALSE) {
-            $content = $this->get_page($request->url);
+        
+                $info['image'] = 'http:' . $product_array['pic'];
+                $info['seller'] = $product_array['sellerNick'];
+                $info['price'] = (!empty($product_array['price']) ? $product_array['price'] : '-1.00');
+                $info['url'] = $url;
+        
+                $title = str_replace('\\', '', preg_replace('/u([0-9A-F]+)/', '&#x$1;', $product_array['title']));
+                $info['title'] = html_entity_decode($title, ENT_COMPAT, 'UTF-8');
+            } else if (strpos($url, 'tmall') !== FALSE) {
+                $content = $this->get_page($url);
 
-            if (!empty($content)) {
-                $shop_setup_text_dirty = $this->get_string_between($content, 'TShop.Setup(', '})();');
-                $shop_setup_text = $this->get_string_between('$5' . $shop_setup_text_dirty, '$5', ');');
-                $shop_setup_json = json_decode($shop_setup_text);
-    
-                $item_json = $shop_setup_json->itemDO;
-                $detail_json = $shop_setup_json->detail;
-                $property_pics_json = $shop_setup_json->propertyPics;
-    
-                $info['title'] = $item_json->title;
-                $info['seller'] = $item_json->brand;
-                $info['image'] = 'http:' . $property_pics_json->default[0];
-                $info['price'] = (!empty($detail_json->defaultItemPrice) ? $detail_json->defaultItemPrice : '-1.00');
-                $info['url'] = $request->url;
+                if (!empty($content)) {
+                    $shop_setup_text_dirty = $this->get_string_between($content, 'TShop.Setup(', '})();');
+                    $shop_setup_text = $this->get_string_between('$5' . $shop_setup_text_dirty, '$5', ');');
+                    $shop_setup_json = json_decode($shop_setup_text);
+        
+                    $item_json = $shop_setup_json->itemDO;
+                    $detail_json = $shop_setup_json->detail;
+                    $property_pics_json = $shop_setup_json->propertyPics;
+        
+                    $info['title'] = $item_json->title;
+                    $info['seller'] = $item_json->brand;
+                    $info['image'] = 'http:' . $property_pics_json->default[0];
+                    $info['price'] = (!empty($detail_json->defaultItemPrice) ? $detail_json->defaultItemPrice : '-1.00');
+                    $info['url'] = $url;
+                } else {
+                    return return_json_message('Could not retrieve information from TMall. Please try again later.', self::STATUS_UNPROCESSABLE);
+                }
             } else {
-                return return_json_message('Could not retrieve information from TMall. Please try again later.', self::STATUS_UNPROCESSABLE);
+                return return_json_message('URL not recognized', self::STATUS_BAD_REQUEST);
             }
-        } else {
-            return return_json_message('URL not recognized', self::STATUS_BAD_REQUEST);
         }
 
         if(empty($info)) {
@@ -150,22 +161,35 @@ class ItemController extends Controller
      */
     public function checkItem(Request $request) {
         $validator = Validator::make($request->all(), [
-            'url' => 'url|required',
+            'url' => 'string|required',
         ]);
 
         if ($validator->fails()) {
             return return_json_message($validator->errors(), self::STATUS_BAD_REQUEST);
         }
 
+        $validated = $validator->validated();
+
         $user_id = Auth::user()->id;
 
-        $split_url = explode('&', $request->url)[0];
-        $item = Item::where([['user_id', '=', $user_id], ['listing_url', 'LIKE', '%' . $split_url . '%']])->first();
+        // Verify value validates and isn't empty.
+        if (!empty($validated['url'])) {
+            $url = $validated['url'];
 
-        if ($item === NULL) {
-            return return_json_message(['exists' => FALSE], self::STATUS_SUCCESS);
-        } else {
-            return return_json_message(['exists' => TRUE], self::STATUS_SUCCESS);
+            // If url is actually a JSON object.
+            if ($this->isJson($url)) {
+                $info = json_decode($url, true);
+                $url = $info['url'];
+            }
+        
+            $split_url = explode('&', $url)[0];
+            $item = Item::where([['user_id', '=', $user_id], ['listing_url', 'LIKE', '%' . $split_url . '%']])->first();
+
+            if ($item === NULL) {
+                return return_json_message(['exists' => FALSE], self::STATUS_SUCCESS);
+            } else {
+                return return_json_message(['exists' => TRUE], self::STATUS_SUCCESS);
+            }
         }
 
         return return_json_message('Something went wrong while trying to check for duplicate items', self::STATUS_UNPROCESSABLE);
@@ -417,6 +441,11 @@ class ItemController extends Controller
         $ini += strlen($start);
         $len = strpos($string, $end, $ini) - $ini;
         return trim(substr($string, $ini, $len));
+    }
+
+    private function isJson($string) {
+        json_decode($string);
+        return json_last_error() === JSON_ERROR_NONE;
     }
 
     private function get_page($url) {
