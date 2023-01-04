@@ -7,14 +7,14 @@ use Illuminate\Support\Str;
 
 class PublicLink extends Model
 {
-	protected $table = 'user_public_links';
+    protected $table = 'user_public_links';
     protected $fillable = ['id', 'user_id'];
     protected $keyType = 'string';
-
     public $timestamps = false;
     public $incrementing = false;
 
-    protected static function boot() {
+    protected static function boot()
+    {
         parent::boot();
 
         static::creating(function ($model) {

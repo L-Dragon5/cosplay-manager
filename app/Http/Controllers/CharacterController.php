@@ -58,10 +58,10 @@ class CharacterController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'string|required',
             'series_id' => 'integer|required',
-            'image' => 'string|nullable'
+            'image' => 'string|nullable',
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             return return_json_message($validator->errors(), self::STATUS_BAD_REQUEST);
         }
 
@@ -106,7 +106,7 @@ class CharacterController extends Controller
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return return_json_message('Invalid character id', self::STATUS_BAD_REQUEST);
         }
-        
+
         return $character;
     }
 
@@ -121,10 +121,10 @@ class CharacterController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'string|required',
-            'image' => 'string|nullable'
+            'image' => 'string|nullable',
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             return return_json_message($validator->errors(), self::STATUS_BAD_REQUEST);
         }
 
@@ -141,7 +141,7 @@ class CharacterController extends Controller
                     // Check if new name is same as old name
                     if ($trimmed_name === $character->name) {
                         // Do nothing
-                    } else if(check_for_duplicate($user_id, $request->name, 'characters', 'name')) {
+                    } elseif (check_for_duplicate($user_id, $request->name, 'characters', 'name')) {
                         return return_json_message('Character name already exists.', self::STATUS_BAD_REQUEST);
                     } else {
                         $character->name = $trimmed_name;
@@ -157,6 +157,7 @@ class CharacterController extends Controller
 
                 if ($success) {
                     $character->image = '/storage/' . $character->image;
+
                     return return_json_message('Updated character succesfully', self::STATUS_SUCCESS, ['character' => $character]);
                 } else {
                     return return_json_message('Something went wrong while trying to update character', self::STATUS_UNPROCESSABLE);
@@ -215,7 +216,7 @@ class CharacterController extends Controller
             } else {
                 return return_json_message('You do not have permission to delete this character', self::STATUS_UNAUTHORIZED);
             }
-    
+
             if ($success) {
                 return return_json_message('Deleted character succesfully', self::STATUS_SUCCESS);
             } else {

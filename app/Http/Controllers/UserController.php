@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
 use App\Mail\ResetPassword;
+use App\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -15,10 +15,11 @@ class UserController extends Controller
 {
     /**
      * Attempt to login user.
-     * 
+     *
      * @return \Illuminate\Http\Response
      */
-    public function login(Request $request) {
+    public function login(Request $request)
+    {
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $user = Auth::user();
 
@@ -30,10 +31,11 @@ class UserController extends Controller
 
     /**
      * Register a user account.
-     * 
+     *
      * @return \Illuminate\Http\Response
      */
-    public function register(Request $request) {
+    public function register(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
             'password' => 'required',
@@ -59,7 +61,7 @@ class UserController extends Controller
 
     /**
      * Updated user account password.
-     * 
+     *
      * @return \Illuminate\Http\Response
      */
     public function updatePassword(Request $request)
@@ -94,10 +96,11 @@ class UserController extends Controller
 
     /**
      * Email reset password to specified email address.
-     * 
+     *
      * @return \Illuminate\Http\Response
      */
-    public function forgotPassword(Request $request) {
+    public function forgotPassword(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
         ]);
@@ -130,10 +133,11 @@ class UserController extends Controller
 
     /**
      * Check if user is signed in and has access.
-     * 
+     *
      * @return \Illuminate\Http\Response
      */
-    public function checkUser(Request $request) {
+    public function checkUser(Request $request)
+    {
         $token = $request->token;
 
         if (empty($token) || $token === 'null') {

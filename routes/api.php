@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
-
 use App\Http\Controllers\AccountSettingsController;
 use App\Http\Controllers\CharacterController;
 use App\Http\Controllers\ItemController;

@@ -21,11 +21,11 @@ class TagController extends Controller
         $tags = Tag::where('user_id', $user_id)->orderBy('title', 'ASC')->get();
 
         $temp_tags = [];
-        foreach($tags as $tag) {
+        foreach ($tags as $tag) {
             $temp_tags[$tag['parent_id']][] = $tag;
         }
 
-        if(!empty($temp_tags)) {
+        if (!empty($temp_tags)) {
             $tags_tree = $this->createTree($temp_tags, $temp_tags[0]);
         } else {
             $tags_tree = [];
@@ -36,10 +36,11 @@ class TagController extends Controller
 
     /**
      * Display tags for Select.
-     * 
+     *
      * @return \Illuminate\Http\Response
      */
-    public function tagsForSelect() {
+    public function tagsForSelect()
+    {
         $user_id = Auth::user()->id;
         $all_tags = Tag::where('user_id', $user_id)->orderBy('title', 'ASC')->get();
 
@@ -47,8 +48,8 @@ class TagController extends Controller
         foreach ($all_tags as $tag) {
             $tag->label = $tag->title;
             $tag->value = $tag->id;
-            $tag->checked = TRUE;
-            
+            $tag->checked = true;
+
             $temp_tags[$tag['parent_id']][] = $tag;
         }
 
@@ -56,17 +57,18 @@ class TagController extends Controller
             $tags_tree = $this->createTree($temp_tags, $temp_tags[0]);
         } else {
             $tags_tree = [];
-        };
+        }
 
         return $tags_tree;
     }
 
     /**
      * Display tags for selected item for Select.
-     * 
+     *
      * @return \Illuminate\Http\Response
      */
-    public function tagsByItemSelect($id) {
+    public function tagsByItemSelect($id)
+    {
         $user_id = Auth::user()->id;
         $all_tags = Tag::where('user_id', $user_id)->orderBy('title', 'ASC')->get();
         $item_tags = DB::table('items_tags')->where('items_tags.item_id', $id)->pluck('tag_id')->toArray();
@@ -77,7 +79,7 @@ class TagController extends Controller
             $tag->value = $tag->id;
 
             if (in_array($tag->id, $item_tags)) {
-                $tag->checked = TRUE;
+                $tag->checked = true;
             }
 
             $temp_tags[$tag['parent_id']][] = $tag;
@@ -87,17 +89,18 @@ class TagController extends Controller
             $tags_tree = $this->createTree($temp_tags, $temp_tags[0]);
         } else {
             $tags_tree = [];
-        };
+        }
 
         return $tags_tree;
     }
 
     /**
      * Display tags for selected outfit for Select.
-     * 
+     *
      * @return \Illuminate\Http\Response
      */
-    public function tagsByOutfitSelect($id) {
+    public function tagsByOutfitSelect($id)
+    {
         $user_id = Auth::user()->id;
         $all_tags = Tag::where('user_id', $user_id)->orderBy('title', 'ASC')->get();
         $item_tags = DB::table('outfits_tags')->where('outfits_tags.outfit_id', $id)->pluck('tag_id')->toArray();
@@ -108,7 +111,7 @@ class TagController extends Controller
             $tag->value = $tag->id;
 
             if (in_array($tag->id, $item_tags)) {
-                $tag->checked = TRUE;
+                $tag->checked = true;
             }
 
             $temp_tags[$tag['parent_id']][] = $tag;
@@ -118,7 +121,7 @@ class TagController extends Controller
             $tags_tree = $this->createTree($temp_tags, $temp_tags[0]);
         } else {
             $tags_tree = [];
-        };
+        }
 
         return $tags_tree;
     }
@@ -138,7 +141,7 @@ class TagController extends Controller
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return return_json_message('Invalid tag id', self::STATUS_BAD_REQUEST);
         }
-        
+
         return $tag;
     }
 
@@ -155,7 +158,7 @@ class TagController extends Controller
             'parent_id' => 'numeric|required',
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             return return_json_message($validator->errors(), self::STATUS_BAD_REQUEST);
         }
 
@@ -192,7 +195,7 @@ class TagController extends Controller
             'title' => 'string|required',
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             return return_json_message($validator->errors(), self::STATUS_BAD_REQUEST);
         }
 
@@ -209,7 +212,7 @@ class TagController extends Controller
                     // Check if new title is same as old title
                     if ($trimmed_title === $tag->title) {
                         // Do nothing
-                    } else if(check_for_duplicate($user_id, $request->title, 'tags', 'title')) {
+                    } elseif (check_for_duplicate($user_id, $request->title, 'tags', 'title')) {
                         return return_json_message('Tag title already exists.', self::STATUS_BAD_REQUEST);
                     } else {
                         $tag->title = $trimmed_title;
@@ -250,7 +253,7 @@ class TagController extends Controller
             } else {
                 return return_json_message('You do not have permission to delete this tag', self::STATUS_UNAUTHORIZED);
             }
-    
+
             if ($success) {
                 return return_json_message('Deleted tag succesfully', self::STATUS_SUCCESS);
             } else {
@@ -266,9 +269,9 @@ class TagController extends Controller
      */
     private function createTree(&$list, $parent)
     {
-        $tree = array();
-        foreach($parent as $k => $v) {
-            if(isset($list[$v['id']])) {
+        $tree = [];
+        foreach ($parent as $k => $v) {
+            if (isset($list[$v['id']])) {
                 $v['children'] = $this->createTree($list, $list[$v['id']]);
             }
 

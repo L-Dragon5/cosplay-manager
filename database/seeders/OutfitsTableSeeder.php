@@ -20,7 +20,7 @@ class OutfitsTableSeeder extends Seeder
             'images' => '||300x400.png',
             'status' => 1,
             'obtained_on' => '2019-10-31',
-            'storage_location' => 'Box 1'
+            'storage_location' => 'Box 1',
         ]);
 
         DB::table('outfits')->insert([
@@ -30,7 +30,7 @@ class OutfitsTableSeeder extends Seeder
             'images' => '||300x400.png',
             'status' => 2,
             'obtained_on' => '2018-01-01',
-            'storage_location' => 'Box 2'
+            'storage_location' => 'Box 2',
         ]);
 
         DB::table('outfits')->insert([
@@ -38,7 +38,7 @@ class OutfitsTableSeeder extends Seeder
             'character_id' => 2,
             'title' => 'Ghost Story',
             'images' => '||300x400.png',
-            'status' => 0
+            'status' => 0,
         ]);
 
         DB::table('outfits')->insert([
@@ -46,7 +46,7 @@ class OutfitsTableSeeder extends Seeder
             'character_id' => 3,
             'title' => 'Default',
             'images' => '||300x400.png',
-            'status' => 0
+            'status' => 0,
         ]);
 
         DB::table('outfits')->insert([
@@ -54,7 +54,7 @@ class OutfitsTableSeeder extends Seeder
             'character_id' => 3,
             'title' => 'Swimsuit',
             'images' => '||300x400.png',
-            'status' => 1
+            'status' => 1,
         ]);
     }
 }

@@ -1,0 +1,82 @@
+service: cosmanage
+
+provider:
+    name: aws
+    # The AWS region in which to deploy (us-east-1 is the default)
+    region: us-east-1
+    # The stage of the application, e.g. dev, production, staging… ('dev' is the default)
+    stage: production
+    runtime: provided.al2
+    environment:
+      # ENV variable for Laravel
+      AWS_BUCKET: !Ref CosManageImages
+    iam:
+      role:
+        statements:
+          # Allow Lambda to read and write files in the S3 buckets
+          - Effect: Allow
+            Action: s3:*
+            Resource:
+              - !Sub '${CosManageImages.Arn}' # the storage bucket
+              - !Sub '${CosManageImages.Arn}/*' # and everything inside
+
+package:
+    # Directories to exclude from deployment
+    patterns:
+        - '!node_modules/**'
+        - '!public/storage'
+        - '!resources/assets/**'
+        - '!storage/**'
+        - '!tests/**'
+
+plugins:
+  - ./vendor/bref/bref
+  - serverless-lift
+  - ./vendor/bref/extra-php-extensions
+
+functions:
+    # This function runs the Laravel website/API
+    web:
+        handler: public/index.php
+        timeout: 28 # in seconds (API Gateway has a timeout of 29 seconds)
+        layers:
+            - ${bref:layer.php-80-fpm}
+            - ${bref-extra:mongodb-php-80}
+        events:
+            - httpApi: '*'
+    # This function lets us run artisan commands in Lambda
+    artisan:
+        handler: artisan
+        timeout: 120 # in seconds
+        layers:
+            - ${bref:layer.php-80} # PHP
+            - ${bref:layer.console} # The "console" layer
+
+constructs:
+  website:
+    type: server-side-website
+    #domain:
+      #- itasha.community
+      #- www.itasha.community
+    #redirectToMainDomain: true
+    #certificate: arn:aws:acm:us-east-1:725746735290:certificate/4e2cbcd1-75c6-4952-9351-9b3b84ced317
+    assets:
+      '/js/*': public/js
+      '/favicon.ico': public/favicon.ico
+      '/robots.txt': public/robots.txt
+    forwardedHeaders:
+      - Accept
+      - Accept-Language
+      - Content-Type
+      - Origin
+      - Referer
+      - User-Agent
+      - X-Forwarded-Host
+      - X-Requested-With
+      - X-Csrf-Token
+      - X-Inertia
+
+resources:
+  Resources:
+    CosManageImages:
+      Type: AWS::S3::Bucket

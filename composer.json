@@ -8,25 +8,31 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^7.3|^8.0",
-        "doctrine/dbal": "^2.10",
-        "fideloper/proxy": "^4.4",
-        "guzzlehttp/guzzle": "^7.0.1",
-        "intervention/image": "^2.5",
-        "laravel/framework": "^8.75",
-        "laravel/passport": "^10.0",
+        "php": "^8.0",
+        "bref/bref": "^1.7",
+        "bref/extra-php-extensions": "^0.12.1",
+        "bref/laravel-bridge": "^1.2",
+        "doctrine/dbal": "^3.3",
+        "fruitcake/laravel-cors": "^2.0",
+        "guzzlehttp/guzzle": "^7.4.0",
+        "inertiajs/inertia-laravel": "^0.6.0",
+        "intervention/image": "^2.7",
+        "jenssegers/mongodb": "^3.9",
+        "laravel/framework": "^9.0",
+        "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
-        "laravel/ui": "^3.0",
-        "spatie/laravel-backup": "^6.11",
-        "voku/portable-utf8": "^5.4",
-        "voku/simple_html_dom": "^4.7"
+        "laravel/ui": "^4.0",
+        "league/flysystem-aws-s3-v3": "^3.0",
+        "tomlerendu/laravel-convert-case-middleware": "^1.1"
     },
     "require-dev": {
-        "facade/ignition": "^2.5",
-        "fzaninotto/faker": "^1.9.1",
-        "mockery/mockery": "^1.4.2",
-        "nunomaduro/collision": "^5.0",
-        "phpunit/phpunit": "^9.3.3"
+        "fakerphp/faker": "^1.21.0",
+        "laravel/pint": "^1.3",
+        "laravel/sail": "^1.0.1",
+        "mockery/mockery": "^1.5.1",
+        "nunomaduro/collision": "^6.1",
+        "phpunit/phpunit": "^9.5.0",
+        "spatie/laravel-ignition": "^1.0"
     },
     "config": {
         "optimize-autoloader": true,
@@ -56,6 +62,9 @@
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi"
+        ],
+        "post-update-cmd": [
+            "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
         ],
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""

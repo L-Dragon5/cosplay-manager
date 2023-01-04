@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Series;
 use App\Character;
 use App\Outfit;
+use App\Series;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -39,10 +39,10 @@ class SeriesController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'title' => 'string|required',
-            'image' => 'string|nullable'
+            'image' => 'string|nullable',
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             return return_json_message($validator->errors(), self::STATUS_BAD_REQUEST);
         }
 
@@ -86,7 +86,7 @@ class SeriesController extends Controller
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return return_json_message('Invalid series id', self::STATUS_BAD_REQUEST);
         }
-        
+
         return $series;
     }
 
@@ -101,10 +101,10 @@ class SeriesController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'title' => 'string|required',
-            'image' => 'string|nullable'
+            'image' => 'string|nullable',
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             return return_json_message($validator->errors(), self::STATUS_BAD_REQUEST);
         }
 
@@ -121,7 +121,7 @@ class SeriesController extends Controller
                     // Check if new title is same as old title
                     if ($trimmed_title === $series->title) {
                         // Do nothing
-                    } else if(check_for_duplicate($user_id, $request->title, 'series', 'title')) {
+                    } elseif (check_for_duplicate($user_id, $request->title, 'series', 'title')) {
                         return return_json_message('Series title already exists.', self::STATUS_BAD_REQUEST);
                     } else {
                         $series->title = $trimmed_title;
@@ -137,6 +137,7 @@ class SeriesController extends Controller
 
                 if ($success) {
                     $series->image = '/storage/' . $series->image;
+
                     return return_json_message('Updated series succesfully', self::STATUS_SUCCESS, ['series' => $series]);
                 } else {
                     return return_json_message('Something went wrong while trying to update series', self::STATUS_UNPROCESSABLE);
@@ -176,7 +177,7 @@ class SeriesController extends Controller
                         foreach ($images as $image) {
                             if ($image !== '300x400.png') {
                                 $image_path = storage_path('app/public/' . $image);
-    
+
                                 if (file_exists($image_path)) {
                                     unlink($image_path);
                                 }
@@ -206,7 +207,7 @@ class SeriesController extends Controller
             } else {
                 return return_json_message('You do not have permission to delete this series', self::STATUS_UNAUTHORIZED);
             }
-    
+
             if ($success) {
                 return return_json_message('Deleted series succesfully', self::STATUS_SUCCESS);
             } else {

@@ -15,6 +15,6 @@ class Outfit extends Model
         'obtained_on',
         'creator',
         'storage_location',
-        'times_worn'
+        'times_worn',
     ];
 }

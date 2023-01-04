@@ -2,26 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use App\Outfit;
 use App\Character;
+use App\Outfit;
 use App\PublicLink;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
 
 class PublicController extends Controller
 {
     /**
-    * Get all outfits associated with User.
-    * 
-    * @return \Illuminate\Http\Response
-    */
-    public function index(Request $request, $uuid) {
+     * Get all outfits associated with User.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index(Request $request, $uuid)
+    {
         try {
             $public_link = PublicLink::findOrFail($uuid);
             $user_id = $public_link->user_id;
-    
+
             $outfits = Outfit::where('user_id', $user_id)->orderBy('title', 'ASC')->get();
 
             foreach ($outfits as $outfit) {
@@ -41,7 +39,7 @@ class PublicController extends Controller
             $outfits_array = $outfits->toArray();
 
             // Sort based on character name alphabetically.
-            usort($outfits_array, fn($a, $b) => strcmp($a['character_name'], $b['character_name']));
+            usort($outfits_array, fn ($a, $b) => strcmp($a['character_name'], $b['character_name']));
 
             return $outfits_array;
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {

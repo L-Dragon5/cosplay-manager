@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Outfit;
 use App\Character;
+use App\Outfit;
 use App\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -37,9 +37,9 @@ class OutfitController extends Controller
 
             // Setup format of tags
             $tags = DB::table('outfits_tags')->where('outfit_id', $outfit->id)->pluck('tag_id');
-            if(!empty($tags)) {
+            if (!empty($tags)) {
                 $final_tags = [];
-                foreach($tags as $tag_id) {
+                foreach ($tags as $tag_id) {
                     $tag = Tag::find($tag_id);
                     if (!empty($tag)) {
                         $final_tags[] = ['value' => $tag_id, 'label' => $tag->title];
@@ -82,9 +82,9 @@ class OutfitController extends Controller
 
             // Setup format of tags
             $tags = DB::table('outfits_tags')->where('outfit_id', $outfit->id)->pluck('tag_id');
-            if(!empty($tags)) {
+            if (!empty($tags)) {
                 $final_tags = [];
-                foreach($tags as $tag_id) {
+                foreach ($tags as $tag_id) {
                     $tag = Tag::find($tag_id);
                     if (!empty($tag)) {
                         $final_tags[] = ['value' => $tag_id, 'label' => $tag->title];
@@ -120,10 +120,10 @@ class OutfitController extends Controller
             'storage_location' => 'string|nullable',
             'times_worn' => 'string|nullable',
             'tags' => 'nullable',
-            'tags.*' => 'string|nullable'
+            'tags.*' => 'string|nullable',
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             return return_json_message($validator->errors(), self::STATUS_BAD_REQUEST);
         }
 
@@ -157,7 +157,7 @@ class OutfitController extends Controller
             $incoming_tags = (!is_array($request->tags)) ? [$request->tags] : $request->tags;
 
             foreach ($incoming_tags as $tag_id) {
-                if(!empty($tag_id)) {
+                if (!empty($tag_id)) {
                     $tag = Tag::find($tag_id);
 
                     // Tag doesn't exist
@@ -209,7 +209,7 @@ class OutfitController extends Controller
             'tags.*' => 'string|nullable',
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             return return_json_message($validator->errors(), self::STATUS_BAD_REQUEST);
         }
 
@@ -226,7 +226,7 @@ class OutfitController extends Controller
                     // Check if new title is same as old title
                     if ($trimmed_title === $outfit->title) {
                         // Do nothing
-                    } else if(check_for_duplicate($user_id, $request->title, 'outfits', 'title')) {
+                    } elseif (check_for_duplicate($user_id, $request->title, 'outfits', 'title')) {
                         return return_json_message('Outfit already exists with this title.', self::STATUS_BAD_REQUEST);
                     } else {
                         $outfit->title = $trimmed_title;
@@ -274,16 +274,16 @@ class OutfitController extends Controller
 
                     if (!empty($tags_to_insert)) {
                         foreach ($tags_to_insert as $tag_id) {
-                            if(!empty($tag_id)) {
+                            if (!empty($tag_id)) {
                                 $tag = Tag::find($tag_id);
-            
+
                                 // Tag doesn't exist
                                 if (empty($tag)) {
                                     $new_tag = new Tag;
                                     $new_tag->user_id = $user_id;
                                     $new_tag->title = $tag_id;
                                     $new_tag->save();
-                
+
                                     DB::table('outfits_tags')->insertOrIgnore(
                                         ['outfit_id' => $outfit->id, 'tag_id' => $new_tag->id]
                                     );
@@ -308,18 +308,18 @@ class OutfitController extends Controller
                 if ($success) {
                     $images = explode('||', $outfit->images);
                     array_shift($images);
-        
+
                     foreach ($images as &$image) {
                         $image = '/storage/' . $image;
                     }
                     unset($image);
-        
+
                     $outfit->images = $images;
 
                     $tags = DB::table('outfits_tags')->where('outfit_id', $outfit->id)->pluck('tag_id');
-                    if(!empty($tags)) {
+                    if (!empty($tags)) {
                         $final_tags = [];
-                        foreach($tags as $tag_id) {
+                        foreach ($tags as $tag_id) {
                             $tag = Tag::find($tag_id);
                             if (!empty($tag)) {
                                 $final_tags[] = ['value' => $tag_id, 'label' => $tag->title];
@@ -368,12 +368,12 @@ class OutfitController extends Controller
                         }
                     }
                 }
-                
+
                 $success = $outfit->delete();
             } else {
                 return return_json_message('You do not have permission to delete this outfit', self::STATUS_UNAUTHORIZED);
             }
-    
+
             if ($success) {
                 return return_json_message('Deleted outfit succesfully', self::STATUS_SUCCESS);
             } else {
@@ -386,12 +386,13 @@ class OutfitController extends Controller
 
     /**
      * Remove image from outfit.
-     * 
+     *
      * @param  int  $id
      * @param  int  $path
      * @return \Illuminate\Http\Response
      */
-    public function deleteImage($id, $index) {
+    public function deleteImage($id, $index)
+    {
         $user_id = Auth::user()->id;
         $success = false;
 
@@ -405,7 +406,7 @@ class OutfitController extends Controller
 
                 // Get path of image
                 $path = $stored_images[$index];
-                if($path == '300x400.png') {
+                if ($path == '300x400.png') {
                     return return_json_message('Cannot delete placeholder image.', self::STATUS_BAD_REQUEST);
                 }
 
@@ -439,6 +440,7 @@ class OutfitController extends Controller
                     $image = '/storage/' . $image;
                 }
                 unset($image);
+
                 return return_json_message('Deleted image from outfit succesfully', self::STATUS_SUCCESS, ['images' => $stored_images]);
             } else {
                 return return_json_message('Did not find an image to remove', self::STATUS_NOT_FOUND);
