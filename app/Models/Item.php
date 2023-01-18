@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\UserIdScope;
 use Jenssegers\Mongodb\Eloquent\Model;
 
 class Item extends Model
@@ -21,4 +22,9 @@ class Item extends Model
         'is_archived',
         'archived_at',
     ];
+
+    protected static function booted()
+    {
+        static::addGlobalScope(new UserIdScope);
+    }
 }

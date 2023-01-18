@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Services;
+namespace App\Traits;
 
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 
-class ImageService
+trait UploadedImageSave
 {
     /**
      * Save image from file uploaded.
@@ -16,7 +16,7 @@ class ImageService
      * @param  string  $old_image_path
      * @return string
      */
-    public function save_image_uploaded($file, $location, $height, $old_image_path = null)
+    public function saveUploadedImage($file, $location, $height, $old_image_path = null): string
     {
         // Set return value
         $return_path = '';
@@ -87,19 +87,15 @@ class ImageService
                 if ($location === 'series') {
                     // Remove if not using placeholder image
                     if ($old_image_path !== '300x200.png') {
-                        $full_path = storage_path('app/public/' . $old_image_path);
-
-                        if (file_exists($full_path)) {
-                            unlink($full_path);
+                        if (Storage::exists($old_image_path)) {
+                            Storage::delete($old_image_path);
                         }
                     }
                 } elseif ($location === 'character') {
                     // Remove if not using placeholder image
                     if ($old_image_path !== '200x400.png') {
-                        $full_path = storage_path('app/public/' . $old_image_path);
-
-                        if (file_exists($full_path)) {
-                            unlink($full_path);
+                        if (Storage::exists($old_image_path)) {
+                            Storage::delete($old_image_path);
                         }
                     }
                 } elseif ($location === 'outfit') {
@@ -122,7 +118,7 @@ class ImageService
      * @param  string  $old_image_path
      * @return string
      */
-    public function save_image_url($url, $location, $height, $old_image_path = null)
+    public function saveUrlImage($url, $location, $height, $old_image_path = null): string
     {
         // Set return value
         $return_path = '';
@@ -135,8 +131,8 @@ class ImageService
         // Create image, resize, and save
         $img = Image::make(file_get_contents($url))->resize(null, $height, function ($constraint) {
             $constraint->aspectRatio();
-        });
-        $img->save(storage_path("app/public/$location/$filename_to_store"), 80);
+        })->encode('jpg', 80);
+        Storage::put("$location/$filename_to_store", $img);
 
         // Add delimiter for outfit images
         if ($location === 'outfit') {
@@ -151,19 +147,15 @@ class ImageService
             if ($location === 'series') {
                 // Remove if not using placeholder image
                 if ($old_image_path !== '300x200.png') {
-                    $full_path = storage_path('app/public/' . $old_image_path);
-
-                    if (file_exists($full_path)) {
-                        unlink($full_path);
+                    if (Storage::exists($old_image_path)) {
+                        Storage::delete($old_image_path);
                     }
                 }
             } elseif ($location === 'character') {
                 // Remove if not using placeholder image
                 if ($old_image_path !== '200x400.png') {
-                    $full_path = storage_path('app/public/' . $old_image_path);
-
-                    if (file_exists($full_path)) {
-                        unlink($full_path);
+                    if (Storage::exists($old_image_path)) {
+                        Storage::delete($old_image_path);
                     }
                 }
             } elseif ($location === 'outfit') {
