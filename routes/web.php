@@ -28,7 +28,7 @@ Route::post('register', [UserController::class, 'register']);
 Route::post('forgot-password', [UserController::class, 'forgotPassword']);
 
 // Public Routes
-Route::inertia('/', 'Index');
+Route::inertia('/', 'Home');
 Route::inertia('/s/{any}', 'PublicShare');
 Route::inertia('404', '404');
 Route::redirect('/{any}', '/');

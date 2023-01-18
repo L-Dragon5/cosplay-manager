@@ -1,10 +1,15 @@
-import { createInertiaApp } from '@inertiajs/react'
-import { createRoot } from 'react-dom/client'
+import * as React from 'react';
+import { createInertiaApp } from '@inertiajs/react';
+import { createRoot } from 'react-dom/client';
+import { ChakraProvider } from '@chakra-ui/react';
 
 createInertiaApp({
-  titlee: (title) => `${title} - ${appName}`,
-  resolve: name => require(`./Pages/${name}.jsx`),
+  resolve: (name) => require(`./Pages/${name}.jsx`),
   setup({ el, App, props }) {
-    createRoot(el.render(<App {...props} />))
+    createRoot(el).render(
+      <ChakraProvider resetCSS>
+        <App {...props} />
+      </ChakraProvider>,
+    );
   },
-})
+});

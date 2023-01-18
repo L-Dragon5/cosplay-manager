@@ -1,12 +1,12 @@
 import React from 'react';
-import { Typography } from '@material-ui/core';
+import { Text } from '@chakra-ui/react';
 
-const Copyright = () => {
+function Copyright() {
   return (
-    <Typography variant="body2" align="center">
+    <Text fontSize="sm" textAlign="center">
       Copyright © CosManage {new Date().getFullYear()}
-    </Typography>
+    </Text>
   );
-};
+}
 
 export default Copyright;
