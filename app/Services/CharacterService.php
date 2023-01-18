@@ -36,21 +36,19 @@ class CharacterService
      * Create new Character.
      *
      * @param  int  $userId
-     * @param  array  $fields
+     * @param  array  $validated
      */
-    public function create(int $userId, array $fields)
+    public function create(int $userId, array $validated)
     {
-        if ($this->checkForDuplicate($userId, $fields['name'], 'name')) {
+        if ($this->checkForDuplicate($userId, $validated['name'], 'name')) {
             return back()->withErrors('Character already exists with this name');
         }
 
-        if (isset($fields['image'])) {
-            $image = $fields['image'];
-            unset($fields['image']);
-        }
+        ['image' => $image] = $validated;
+        unset($validated['image']);
 
         $character = new Character([
-            ...$fields,
+            ...$validated,
             'user_id' => $userId,
         ]);
 
@@ -74,14 +72,14 @@ class CharacterService
      *
      * @param  int  $userId
      * @param  \App\Models\Character  $character
-     * @param  array  $fields
+     * @param  array  $validated
      */
-    public function update(int $userId, Character $character, array $fields)
+    public function update(int $userId, Character $character, array $validated)
     {
         if ($character->user_id === $userId) {
             // If they want to change name
-            if (!empty($fields['name'])) {
-                $name = $fields['name'];
+            if (!empty($validated['name'])) {
+                $name = $validated['name'];
 
                 // Check if new name is same as old name
                 if ($name === $character->name) {
@@ -94,8 +92,8 @@ class CharacterService
             }
 
             // If they want to change image
-            if (!empty($fields['image'])) {
-                $character->image = $this->saveUploadedImage($fields['image'], 'character', 400, $character->image);
+            if (!empty($validated['image'])) {
+                $character->image = $this->saveUploadedImage($validated['image'], 'character', 400, $character->image);
             }
 
             $success = $character->save();

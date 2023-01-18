@@ -20,8 +20,7 @@ class Character extends Model
     {
         static::addGlobalScope(new UserIdScope);
 
-        static::retreived(fn (Character $character) => $character->image_url = Storage::url($character->image)
-        );
+        static::retreived(fn (Character $character) => $character->image_url = Storage::url($character->image));
     }
 
     public function outfits()

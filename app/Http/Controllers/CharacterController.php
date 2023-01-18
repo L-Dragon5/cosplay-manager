@@ -48,7 +48,7 @@ class CharacterController extends Controller
      */
     public function store(CharacterStoreRequest $request)
     {
-        return $this->characterService->create($request->validated());
+        return $this->characterService->create(Auth::user()->id, $request->validated());
     }
 
     /**

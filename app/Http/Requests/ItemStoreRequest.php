@@ -25,6 +25,7 @@ class ItemStoreRequest extends FormRequest
     {
         return [
             'url' => 'required|url',
+            'override' => 'sometimes|required|boolean',
         ];
     }
 }

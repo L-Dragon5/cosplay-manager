@@ -18,4 +18,14 @@ class Tag extends Model
     {
         static::addGlobalScope(new UserIdScope);
     }
+
+    public function items()
+    {
+        return $this->belongsToMany(Item::class, 'items_tags');
+    }
+
+    public function outfits()
+    {
+        return $this->belongsToMany(Outfit::class, 'outfits_tags');
+    }
 }
