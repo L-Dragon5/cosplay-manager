@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Character;
-use App\Outfit;
-use Illuminate\Http\Request;
+use App\Http\Requests\CharacterStoreRequest;
+use App\Http\Requests\CharacterUpdateRequest;
+use App\Models\Character;
+use App\Models\Outfit;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 
 class CharacterController extends Controller
 {
@@ -22,7 +23,7 @@ class CharacterController extends Controller
 
         foreach ($characters as $c) {
             $c->outfit_count = Outfit::where('character_id', '=', $c->id)->count();
-            $c->image = '/storage/' . $c->image;
+            $c->image_url = Storage::url($c->image);
         }
 
         return $characters;
@@ -39,9 +40,9 @@ class CharacterController extends Controller
         $user_id = Auth::user()->id;
         $characters = Character::where([['user_id', $user_id], ['series_id', $id]])->orderBy('name', 'ASC')->get();
 
-        foreach ($characters as $c) {
+        foreach ($characters as &$c) {
             $c->outfit_count = Outfit::where('character_id', '=', $c->id)->count();
-            $c->image = '/storage/' . $c->image;
+            $c->image_url = Storage::url($c->image);
         }
 
         return $characters;
@@ -50,34 +51,25 @@ class CharacterController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\CharacterStoreRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CharacterStoreRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'string|required',
-            'series_id' => 'integer|required',
-            'image' => 'string|nullable',
-        ]);
-
-        if ($validator->fails()) {
-            return return_json_message($validator->errors(), self::STATUS_BAD_REQUEST);
-        }
-
         $user_id = Auth::user()->id;
+        $validated = $request->validated();
 
-        if (check_for_duplicate($user_id, $request->name, 'characters', 'name')) {
+        if (check_for_duplicate($user_id, $validated['name'], 'characters', 'name')) {
             return return_json_message('Character already exists with this name', self::STATUS_BAD_REQUEST);
         }
 
-        $character = new Character;
-        $character->user_id = $user_id;
-        $character->series_id = $request->series_id;
-        $character->name = trim($request->name);
+        $character = new Character([
+            ...$request->safe()->except(['image']),
+            'user_id' => $user_id,
+        ]);
 
-        if ($request->has('image')) {
-            $character->image = save_image_uploaded($request->image, 'character', 400);
+        if ($request->filled('image')) {
+            $character->image = save_image_uploaded($validated['image'], 'character', 400);
         } else {
             $character->image = '200x400.png';
         }
@@ -113,50 +105,42 @@ class CharacterController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\CharacterUpdateRequest  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(CharacterUpdateRequest $request, $id)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'string|required',
-            'image' => 'string|nullable',
-        ]);
-
-        if ($validator->fails()) {
-            return return_json_message($validator->errors(), self::STATUS_BAD_REQUEST);
-        }
-
         $user_id = Auth::user()->id;
 
         try {
             $character = Character::findOrFail($id);
+            $validated = $request->validated();
 
             if ($character->user_id === $user_id) {
                 // If they want to change name
-                if ($request->has('name')) {
-                    $trimmed_name = trim($request->name);
+                if ($request->filled('name')) {
+                    $name = $validated['name'];
 
                     // Check if new name is same as old name
-                    if ($trimmed_name === $character->name) {
+                    if ($name === $character->name) {
                         // Do nothing
-                    } elseif (check_for_duplicate($user_id, $request->name, 'characters', 'name')) {
+                    } elseif (check_for_duplicate($user_id, $name, 'characters', 'name')) {
                         return return_json_message('Character name already exists.', self::STATUS_BAD_REQUEST);
                     } else {
-                        $character->name = $trimmed_name;
+                        $character->name = $name;
                     }
                 }
 
                 // If they want to change image
-                if ($request->has('image')) {
-                    $character->image = save_image_uploaded($request->image, 'character', 400, $character->image);
+                if ($request->filled('image')) {
+                    $character->image = save_image_uploaded($validated['image'], 'character', 400, $character->image);
                 }
 
                 $success = $character->save();
 
                 if ($success) {
-                    $character->image = '/storage/' . $character->image;
+                    $character->image_url = Storage::url($character->image);
 
                     return return_json_message('Updated character succesfully', self::STATUS_SUCCESS, ['character' => $character]);
                 } else {
@@ -194,10 +178,8 @@ class CharacterController extends Controller
 
                     foreach ($images as $image) {
                         if ($image !== '300x400.png') {
-                            $image_path = storage_path('app/public/' . $image);
-
-                            if (file_exists($image_path)) {
-                                unlink($image_path);
+                            if (Storage::exists($image)) {
+                                Storage::delete($image);
                             }
                         }
                     }
@@ -205,10 +187,8 @@ class CharacterController extends Controller
 
                 // Delete character image
                 if ($character->image !== '200x400.png') {
-                    $image_path = storage_path('app/public/' . $character->image);
-
-                    if (file_exists($image_path)) {
-                        unlink($image_path);
+                    if (Storage::exists($character->image)) {
+                        Storage::delete($character->$image);
                     }
                 }
 

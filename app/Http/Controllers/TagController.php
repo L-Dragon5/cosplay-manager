@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Tag;
-use Illuminate\Http\Request;
+use App\Http\Requests\TagStoreRequest;
+use App\Http\Requests\TagUpdateRequest;
+use App\Models\Tag;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
 
 class TagController extends Controller
 {
@@ -148,34 +148,23 @@ class TagController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\TagStoreRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(TagStoreRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'title' => 'string|required',
-            'parent_id' => 'numeric|required',
-        ]);
-
-        if ($validator->fails()) {
-            return return_json_message($validator->errors(), self::STATUS_BAD_REQUEST);
-        }
-
         $user_id = Auth::user()->id;
 
         if (check_for_duplicate($user_id, $request->title, 'tags', 'title')) {
             return return_json_message('Tag already exists with this title', self::STATUS_BAD_REQUEST);
         }
 
-        $tag = new Tag;
-        $tag->user_id = $user_id;
-        $tag->title = trim($request->title);
-        $tag->parent_id = $request->parent_id;
+        $tag = Tag::create([
+            ...$request->validated(),
+            'user_id' => $user_id,
+        ]);
 
-        $success = $tag->save();
-
-        if ($success) {
+        if (!empty($tag)) {
             return return_json_message('Created new tag succesfully', self::STATUS_SUCCESS);
         } else {
             return return_json_message('Something went wrong while trying to create a new tag', self::STATUS_UNPROCESSABLE);
@@ -185,37 +174,30 @@ class TagController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\TagUpdateRequest  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(TagUpdateRequest $request, $id)
     {
-        $validator = Validator::make($request->all(), [
-            'title' => 'string|required',
-        ]);
-
-        if ($validator->fails()) {
-            return return_json_message($validator->errors(), self::STATUS_BAD_REQUEST);
-        }
-
         $user_id = Auth::user()->id;
 
         try {
             $tag = Tag::findOrFail($id);
+            $validated = $request->validated();
 
             if ($tag->user_id === $user_id) {
                 // If they want to change title
-                if ($request->has('title')) {
-                    $trimmed_title = trim($request->title);
+                if ($request->filled('title')) {
+                    $title = $validated['title'];
 
                     // Check if new title is same as old title
                     if ($trimmed_title === $tag->title) {
                         // Do nothing
-                    } elseif (check_for_duplicate($user_id, $request->title, 'tags', 'title')) {
+                    } elseif (check_for_duplicate($user_id, $title, 'tags', 'title')) {
                         return return_json_message('Tag title already exists.', self::STATUS_BAD_REQUEST);
                     } else {
-                        $tag->title = $trimmed_title;
+                        $tag->title = $title;
                     }
                 }
 

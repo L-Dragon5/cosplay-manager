@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Character;
-use App\Outfit;
-use App\Series;
-use Illuminate\Http\Request;
+use App\Http\Requests\SeriesStoreRequest;
+use App\Http\Requests\SeriesUpdateRequest;
+use App\Models\Character;
+use App\Models\Outfit;
+use App\Models\Series;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 
 class SeriesController extends Controller
 {
@@ -32,29 +32,21 @@ class SeriesController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\SeriesStoreRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(SeriesStoreRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'title' => 'string|required',
-            'image' => 'string|nullable',
-        ]);
-
-        if ($validator->fails()) {
-            return return_json_message($validator->errors(), self::STATUS_BAD_REQUEST);
-        }
-
         $user_id = Auth::user()->id;
 
         if (check_for_duplicate($user_id, $request->title, 'series', 'title')) {
             return return_json_message('Series already exists with this title', self::STATUS_BAD_REQUEST);
         }
 
-        $series = new Series;
-        $series->user_id = $user_id;
-        $series->title = trim($request->title);
+        $series = new Series([
+            'user_id' => $user_id,
+            'title' => $request->get('title'),
+        ]);
 
         if ($request->has('image')) {
             $series->image = save_image_uploaded($request->image, 'series', 200);
@@ -93,21 +85,12 @@ class SeriesController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\SeriesUpdateRequest  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(SeriesUpdateRequest $request, $id)
     {
-        $validator = Validator::make($request->all(), [
-            'title' => 'string|required',
-            'image' => 'string|nullable',
-        ]);
-
-        if ($validator->fails()) {
-            return return_json_message($validator->errors(), self::STATUS_BAD_REQUEST);
-        }
-
         $user_id = Auth::user()->id;
 
         try {

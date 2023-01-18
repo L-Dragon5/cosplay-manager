@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Item;
-use App\Tag;
-use Illuminate\Http\Request;
+use App\Http\Requests\ItemStoreRequest;
+use App\Http\Requests\ItemUpdateRequest;
+use App\Models\Item;
+use App\Models\Tag;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 
 class ItemController extends Controller
 {
@@ -24,7 +25,7 @@ class ItemController extends Controller
         foreach ($items as $item) {
             // If local image, add / for root directory
             if (filter_var($item->image_url, FILTER_VALIDATE_URL) === false) {
-                $item->image_url = '/' . $item->image_url;
+                $item->image_url = Storage::url($item->image_url);
             }
 
             $tags = DB::table('items_tags')->where('items_tags.item_id', $item->id)->pluck('tag_id');
@@ -52,19 +53,12 @@ class ItemController extends Controller
     /**
      * Given a URL, scrape and store information into database.
      *
+     * @param  \App\Http\Requests\ItemStoreRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ItemStoreRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'url' => 'string|required',
-        ]);
-
-        if ($validator->fails()) {
-            return return_json_message($validator->errors(), self::STATUS_BAD_REQUEST);
-        }
-
-        $validated = $validator->validated();
+        $validated = $request->validated();
 
         $info = [];
 
@@ -101,13 +95,13 @@ class ItemController extends Controller
                     $product_array[$key] = $this->getValueInQuotes($value); // Get value without the quotes.
                 }
 
-                $info['image'] = 'http:' . $product_array['pic'];
-                $info['seller'] = $product_array['sellerNick'];
-                $info['price'] = (!empty($product_array['price']) ? $product_array['price'] : '-1.00');
-                $info['url'] = $url;
+                $info['image_url'] = 'http:' . $product_array['pic'];
+                $info['seller_name'] = $product_array['sellerNick'];
+                $info['original_price'] = (!empty($product_array['price']) ? $product_array['price'] : '-1.00');
+                $info['listing_url'] = $url;
 
                 $title = str_replace('\\', '', preg_replace('/u([0-9A-F]+)/', '&#x$1;', $product_array['title']));
-                $info['title'] = html_entity_decode($title, ENT_COMPAT, 'UTF-8');
+                $info['original_title'] = html_entity_decode($title, ENT_COMPAT, 'UTF-8');
             } elseif (strpos($url, 'tmall') !== false) {
                 $content = $this->get_page($url);
 
@@ -120,11 +114,11 @@ class ItemController extends Controller
                     $detail_json = $shop_setup_json->detail;
                     $property_pics_json = $shop_setup_json->propertyPics;
 
-                    $info['title'] = $item_json->title;
-                    $info['seller'] = $item_json->brand;
-                    $info['image'] = 'http:' . $property_pics_json->default[0];
-                    $info['price'] = (!empty($detail_json->defaultItemPrice) ? $detail_json->defaultItemPrice : '-1.00');
-                    $info['url'] = $url;
+                    $info['original_title'] = $item_json->title;
+                    $info['seller_name'] = $item_json->brand;
+                    $info['image_url'] = 'http:' . $property_pics_json->default[0];
+                    $info['original_price'] = (!empty($detail_json->defaultItemPrice) ? $detail_json->defaultItemPrice : '-1.00');
+                    $info['listing_url'] = $url;
                 } else {
                     return return_json_message('Could not retrieve information from TMall. Please try again later.', self::STATUS_UNPROCESSABLE);
                 }
@@ -136,14 +130,10 @@ class ItemController extends Controller
         if (empty($info)) {
             return return_json_message('Could not retrieve item information', self::STATUS_UNPROCESSABLE);
         } else {
-            $item = new Item;
-
-            $item->user_id = Auth::user()->id;
-            $item->image_url = $info['image'];
-            $item->original_title = $info['title'];
-            $item->seller_name = $info['seller'];
-            $item->listing_url = $info['url'];
-            $item->original_price = $info['price'];
+            $item = Item::create([
+                'user_id' => Auth::user()->id,
+                ...$info,
+            ]);
 
             $success = $item->save();
 
@@ -158,19 +148,12 @@ class ItemController extends Controller
     /**
      * Check for duplicate item before adding.
      *
-     * return \Illuminate\Http\Response
+     * @param  \App\Http\Requests\ItemStoreRequest  $request
+     * @return \Illuminate\Http\Response
      */
-    public function checkItem(Request $request)
+    public function checkItem(ItemStoreRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'url' => 'string|required',
-        ]);
-
-        if ($validator->fails()) {
-            return return_json_message($validator->errors(), self::STATUS_BAD_REQUEST);
-        }
-
-        $validated = $validator->validated();
+        $validated = $request->validated();
 
         $user_id = Auth::user()->id;
 
@@ -200,54 +183,32 @@ class ItemController extends Controller
     /**
      * Update the specified item in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\ItemUpdateRequest  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(ItemUpdateRequest $request, $id)
     {
-        $validator = Validator::make($request->all(), [
-            'custom_title' => 'string|nullable',
-            'quantity' => 'numeric|nullable',
-            'notes' => 'string|nullable',
-            'tags' => 'nullable',
-            'tags.*' => 'string|nullable',
-        ]);
-
-        if ($validator->fails()) {
-            return return_json_message($validator->errors(), self::STATUS_BAD_REQUEST);
-        }
-
         $user_id = Auth::user()->id;
 
         try {
             $item = Item::findOrFail($id);
+            $validated = $request->validated();
 
             // Check if user has access.
             if ($item->user_id !== $user_id) {
                 return return_json_message('You do not have permission to archive this item', self::STATUS_UNAUTHORIZED);
             }
 
-            // If they want to change custom title.
-            if ($request->has('custom_title')) {
-                $item->custom_title = $request->custom_title;
-            }
-
-            // If they want to change quantity.
-            if ($request->has('quantity')) {
-                $item->quantity = $request->quantity;
-            }
-
-            // If they want to change notes.
-            if ($request->has('notes')) {
-                $item->notes = $request->notes;
-            }
+            $item->fill([
+                ...$request->safe()->except(['tags']),
+            ]);
 
             // If they want to change tags.
-            if ($request->has('tags') && !empty($request->tags)) {
+            if ($request->filled('tags')) {
                 $old_tags = DB::table('items_tags')->where('item_id', $item->id)->pluck('tag_id')->toArray();
                 $old_tags = (!is_array($old_tags)) ? [$old_tags] : $old_tags;
-                $incoming_tags = (!is_array($request->tags)) ? [$request->tags] : $request->tags;
+                $incoming_tags = (!is_array($validated['tags'])) ? [$validated['tags']] : $validated['tags'];
 
                 $tags_to_remove = array_diff($old_tags, $incoming_tags);
                 $tags_to_insert = array_diff($incoming_tags, $old_tags);
@@ -259,10 +220,10 @@ class ItemController extends Controller
 
                             // Tag doesn't exist
                             if (empty($tag)) {
-                                $new_tag = new Tag;
-                                $new_tag->user_id = $user_id;
-                                $new_tag->title = $tag_id;
-                                $new_tag->save();
+                                $new_tag = Tag::create([
+                                    'user_id' => $user_id,
+                                    'title' => $tag_id,
+                                ]);
 
                                 DB::table('items_tags')->insertOrIgnore(
                                     ['item_id' => $item->id, 'tag_id' => $new_tag->id]

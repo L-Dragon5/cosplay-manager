@@ -1,80 +1,12 @@
 <?php
 
-use Illuminate\Support\Facades\DB;
+namespace App\Services;
+
+use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 
-/**
- * Strip special characters and lowercase string.
- */
-if (!function_exists('strip_and_lower')) {
-    /**
-     * Strip unnecessary character and set to lowercase.
-     *
-     * @param  string  $string
-     * @return string
-     */
-    function strip_and_lower($string)
-    {
-        return strtolower(preg_replace('/[^a-zA-Z0-9-_\.]/', '', $string));
-    }
-}
-
-/**
- * Return a json encoded message.
- */
-if (!function_exists('return_json_message')) {
-    /**
-     * Return Laravel Response that is JSON encoded with data
-     *
-     * @param  string  $message
-     * @param  string  $statusCode
-     * @param  array  $extraArray
-     * @return \Illuminate\Http\Response
-     */
-    function return_json_message($message, $statusCode, $extraArray = null)
-    {
-        $return = ['message' => $message];
-
-        if (!empty($extraArray)) {
-            $return = array_merge($return, $extraArray);
-        }
-
-        return response()->json($return, $statusCode);
-    }
-}
-
-/**
- * Check for duplicate entry.
- */
-if (!function_exists('check_for_duplicate')) {
-    /**
-     * Check for duplicate title in database table.
-     *
-     * @param  int  $user_id
-     * @param  string  $title
-     * @param  string  $db_table
-     * @param  string  $column_name
-     * @return bool
-     */
-    function check_for_duplicate($user_id, $title, $db_table, $column_name)
-    {
-        $t = trim(strip_and_lower($title));
-        $entries = DB::table($db_table)->where('user_id', $user_id)->pluck($column_name);
-
-        foreach ($entries as $entry) {
-            if ($t === strip_and_lower($entry)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-}
-
-/**
- * Save image from uploaded.
- */
-if (!function_exists('save_image_uploaded')) {
+class ImageService
+{
     /**
      * Save image from file uploaded.
      *
@@ -84,13 +16,8 @@ if (!function_exists('save_image_uploaded')) {
      * @param  string  $old_image_path
      * @return string
      */
-    function save_image_uploaded($file, $location, $height, $old_image_path = null)
+    public function save_image_uploaded($file, $location, $height, $old_image_path = null)
     {
-        // Create directory if it doesn't exist
-        if (!file_exists(storage_path("app/public/$location/"))) {
-            mkdir(storage_path("app/public/$location/"), 775, true);
-        }
-
         // Set return value
         $return_path = '';
 
@@ -115,8 +42,8 @@ if (!function_exists('save_image_uploaded')) {
                 // Create image, resize, and save
                 $final_img = Image::make($img)->resize(null, $height, function ($constraint) {
                     $constraint->aspectRatio();
-                });
-                $final_img->save(storage_path("app/public/$location/$filename_to_store"), 100);
+                })->encode('jpg', 90);
+                Storage::put("$location/$filename_to_store", $final_img);
 
                 // Add delimiter for outfit images
                 if ($location === 'outfit') {
@@ -144,8 +71,8 @@ if (!function_exists('save_image_uploaded')) {
             // Create image, resize, and save
             $img = Image::make($file)->resize(null, $height, function ($constraint) {
                 $constraint->aspectRatio();
-            });
-            $img->save(storage_path("app/public/$location/$filename_to_store"), 80);
+            })->encode('jpg', 80);
+            Storage::put("$location/$filename_to_store", $img);
 
             // Add delimiter for outfit images
             if ($location === 'outfit') {
@@ -185,12 +112,7 @@ if (!function_exists('save_image_uploaded')) {
         // Return image storage path
         return $return_path;
     }
-}
 
-/**
- * Save image from URL.
- */
-if (!function_exists('save_image_url')) {
     /**
      * Save image from remote URL.
      *
@@ -200,13 +122,8 @@ if (!function_exists('save_image_url')) {
      * @param  string  $old_image_path
      * @return string
      */
-    function save_image_url($url, $location, $height, $old_image_path = null)
+    public function save_image_url($url, $location, $height, $old_image_path = null)
     {
-        // Create directory if it doesn't exist
-        if (!file_exists(storage_path("app/public/$location/"))) {
-            mkdir(storage_path("app/public/$location/"), 775, true);
-        }
-
         // Set return value
         $return_path = '';
 
@@ -257,26 +174,5 @@ if (!function_exists('save_image_url')) {
 
         // Return image storage path
         return $return_path;
-    }
-}
-
-/**
- * Convert USD to CNY.
- */
-if (!function_exists('convert_currency')) {
-    function convert_currency($amount)
-    {
-        $origPrice = explode(' - ', $amount);
-        $priceString = '';
-
-        if (count($origPrice) == 1) {
-            $priceString = '¥' . $origPrice[0] . 'CNY ($' . number_format(round($origPrice[0] * .16), 2) . 'USD)';
-        } elseif (count($origPrice) == 2) {
-            $priceString = '¥' . $origPrice[0] . ' - ¥' . $origPrice[1] . 'CNY ($' . number_format(round($origPrice[0] * .16), 2) . ' - $' . number_format(round($origPrice[1] * .16), 2) . 'USD)';
-        } else {
-            $priceString = 'Error';
-        }
-
-        return $priceString;
     }
 }

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Item;
-use App\PublicLink;
+use App\Models\Item;
+use App\Models\PublicLink;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -73,7 +73,7 @@ class AccountSettingsController extends Controller
         try {
             $public_link = PublicLink::where('user_id', $user_id)->firstOrFail();
 
-            return return_json_message($this->createPublicLinkUrl($public_link->id), self::STATUS_SUCCESS);
+            return response()->json($this->createPublicLinkUrl($public_link->id));
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             // Public link was not found via UUID. Create one.
             $public_link = PublicLink::create([
@@ -82,9 +82,9 @@ class AccountSettingsController extends Controller
             $success = $public_link->save();
 
             if ($success) {
-                return return_json_message($this->createPublicLinkUrl($public_link->id), self::STATUS_SUCCESS);
+                return response()->json($this->createPublicLinkUrl($public_link->id));
             } else {
-                return return_json_message('Something went wrong while creating link', self::UNPROCESSABLE);
+                return response()->json('Something went wrong while creating link', 401);
             }
         }
     }

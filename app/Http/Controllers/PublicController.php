@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Character;
-use App\Outfit;
-use App\PublicLink;
+use App\Models\Character;
+use App\Models\Outfit;
+use App\Models\PublicLink;
 use Illuminate\Http\Request;
 
 class PublicController extends Controller

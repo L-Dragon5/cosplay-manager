@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Character;
-use App\Outfit;
-use App\Tag;
-use Illuminate\Http\Request;
+use App\Http\Requests\OutfitStoreRequest;
+use App\Http\Requests\OutfitUpdateRequest;
+use App\Models\Character;
+use App\Models\Outfit;
+use App\Models\Tag;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 
 class OutfitController extends Controller
 {
@@ -105,55 +106,28 @@ class OutfitController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\OutfitStoreRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(OutfitStoreRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'title' => 'string|required',
-            'character_id' => 'integer|required',
-            'image' => 'string|nullable',
-            'status' => 'integer|required',
-            'obtained_on' => 'date_format:Y-m-d|nullable',
-            'creator' => 'string|nullable',
-            'storage_location' => 'string|nullable',
-            'times_worn' => 'string|nullable',
-            'tags' => 'nullable',
-            'tags.*' => 'string|nullable',
-        ]);
-
-        if ($validator->fails()) {
-            return return_json_message($validator->errors(), self::STATUS_BAD_REQUEST);
-        }
-
         $user_id = Auth::user()->id;
 
         if (check_for_duplicate($user_id, $request->title, 'outfits', 'title')) {
             return return_json_message('Outfit already exists with this title', self::STATUS_BAD_REQUEST);
         }
 
-        $outfit = new Outfit;
-        $outfit->user_id = $user_id;
-        $outfit->character_id = $request->character_id;
-        $outfit->title = trim($request->title);
-        $outfit->status = $request->status;
-        $outfit->obtained_on = $request->obtained_on;
-        $outfit->creator = trim($request->creator);
-        $outfit->storage_location = trim($request->storage_location);
-        $outfit->times_worn = $request->times_worn;
+        $outfit = new Outfit($request->safe()->except(['image', 'tags']));
 
         // Store images
-        if ($request->has('image')) {
+        if ($request->filled('image')) {
             $outfit->images = save_image_uploaded($request->image, 'outfit', 400);
         } else {
             $outfit->images = '||300x400.png';
         }
 
-        $success = $outfit->save();
-
         // Store tags
-        if ($request->has('tags') && !empty($request->tags)) {
+        if ($request->filled('tags')) {
             $incoming_tags = (!is_array($request->tags)) ? [$request->tags] : $request->tags;
 
             foreach ($incoming_tags as $tag_id) {
@@ -162,9 +136,7 @@ class OutfitController extends Controller
 
                     // Tag doesn't exist
                     if (empty($tag)) {
-                        $new_tag = new Tag;
-                        $new_tag->user_id = $user_id;
-                        $new_tag->title = $tag_id;
+                        $new_tag = new Tag(['user_id' => $user_id, 'title' => $tag_id]);
                         $new_tag->save();
 
                         DB::table('outfits_tags')->insertOrIgnore(
@@ -191,83 +163,47 @@ class OutfitController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\OutfitUpdateRequest  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(OutfitUpdateRequest $request, $id)
     {
-        $validator = Validator::make($request->all(), [
-            'title' => 'string',
-            'images' => 'string|nullable',
-            'status' => 'integer',
-            'obtained_on' => 'date_format:Y-m-d|nullable',
-            'creator' => 'string|nullable',
-            'storage_location' => 'string|nullable',
-            'times_worn' => 'string|nullable',
-            'tags' => 'nullable',
-            'tags.*' => 'string|nullable',
-        ]);
-
-        if ($validator->fails()) {
-            return return_json_message($validator->errors(), self::STATUS_BAD_REQUEST);
-        }
-
         $user_id = Auth::user()->id;
 
         try {
             $outfit = Outfit::findOrFail($id);
 
             if ($outfit->user_id === $user_id) {
+                $validated = $request->validated();
+                $outfit->fill([
+                    ...$request->safe()->except(['title', 'image', 'tags']),
+                ]);
+
                 // If they want to change title
-                if ($request->has('title')) {
-                    $trimmed_title = trim($request->title);
+                if ($request->filled('title')) {
+                    $title = $validated['title'];
 
                     // Check if new title is same as old title
-                    if ($trimmed_title === $outfit->title) {
+                    if ($title === $outfit->title) {
                         // Do nothing
-                    } elseif (check_for_duplicate($user_id, $request->title, 'outfits', 'title')) {
+                    } elseif (check_for_duplicate($user_id, $title, 'outfits', 'title')) {
                         return return_json_message('Outfit already exists with this title.', self::STATUS_BAD_REQUEST);
                     } else {
-                        $outfit->title = $trimmed_title;
+                        $outfit->title = $title;
                     }
                 }
 
                 // If they want to change image
-                if ($request->has('image')) {
-                    $outfit->images = save_image_uploaded($request->image, 'outfit', 400, $outfit->images);
-                }
-
-                // If they want to change status
-                if ($request->has('status')) {
-                    $outfit->status = $request->status;
-                }
-
-                // If they want to change obtained_on
-                if ($request->has('obtained_on')) {
-                    $outfit->obtained_on = $request->obtained_on;
-                }
-
-                // If they want to change creator
-                if ($request->has('creator')) {
-                    $outfit->creator = trim($request->creator);
-                }
-
-                // If they want to change storage location
-                if ($request->has('storage_location')) {
-                    $outfit->storage_location = trim($request->storage_location);
-                }
-
-                // If they want to change times worn
-                if ($request->has('times_worn')) {
-                    $outfit->times_worn = $request->times_worn;
+                if ($request->filled('image')) {
+                    $outfit->images = save_image_uploaded($validated['image'], 'outfit', 400, $outfit->images);
                 }
 
                 // If they want to change tags
-                if ($request->has('tags') && !empty($request->tags)) {
+                if ($request->filled('tags')) {
                     $old_tags = DB::table('outfits_tags')->where('outfit_id', $outfit->id)->pluck('tag_id')->toArray();
                     $old_tags = (!is_array($old_tags)) ? [$old_tags] : $old_tags;
-                    $incoming_tags = (!is_array($request->tags)) ? [$request->tags] : $request->tags;
+                    $incoming_tags = (!is_array($validated['tags'])) ? [$validated['tags']] : $validated['tags'];
 
                     $tags_to_remove = array_diff($old_tags, $incoming_tags);
                     $tags_to_insert = array_diff($incoming_tags, $old_tags);
@@ -279,10 +215,10 @@ class OutfitController extends Controller
 
                                 // Tag doesn't exist
                                 if (empty($tag)) {
-                                    $new_tag = new Tag;
-                                    $new_tag->user_id = $user_id;
-                                    $new_tag->title = $tag_id;
-                                    $new_tag->save();
+                                    $new_tag = Tag::create([
+                                        'user_id' => $user_id,
+                                        'title' => $tag_id,
+                                    ]);
 
                                     DB::table('outfits_tags')->insertOrIgnore(
                                         ['outfit_id' => $outfit->id, 'tag_id' => $new_tag->id]
