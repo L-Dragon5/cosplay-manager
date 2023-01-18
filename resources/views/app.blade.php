@@ -5,9 +5,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- CSRF Token -->
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-
     <title>
         @if (trim($__env->yieldContent('title')))
             @yield('title') | {{ config('app.name', 'Laravel') }}
@@ -18,11 +15,13 @@
 
     <!-- Scripts -->
     <script src="{{ mix('js/app.js') }}" defer></script>
+    <script src='https://www.google.com/recaptcha/api.js' defer></script>
 
     <!-- Styles -->
     <link href="{{ mix('css/app.css') }}" rel="stylesheet" type="text/css">
+    @inertiaHead
 </head>
 <body>
-    @yield('content')
+@inertia
 </body>
 </html>
