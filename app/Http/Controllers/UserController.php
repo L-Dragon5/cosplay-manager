@@ -25,9 +25,9 @@ class UserController extends Controller
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $user = Auth::user();
 
-            return return_json_message($user->createToken('CosplayManagerToken')->accessToken, self::STATUS_SUCCESS);
+            return to_route('main');
         } else {
-            return return_json_message('Incorrect login credentials provided', self::STATUS_BAD_REQUEST);
+            return back()->withErrors('Incorrect login credentials provided');
         }
     }
 
@@ -42,7 +42,7 @@ class UserController extends Controller
         $validated = $request->validated();
         $existing_user = User::where('email', $validated['email'])->first();
         if (!empty($existing_user)) {
-            return return_json_message(['email' => 'E-mail is already registered'], self::STATUS_BAD_REQUEST);
+            return back()->withErrors('E-mail is already registered');
         }
 
         $user = User::create([
@@ -50,7 +50,7 @@ class UserController extends Controller
             'password' => Hash::make($validated['password']),
         ]);
 
-        return return_json_message($user->createToken('CosplayManagerToken')->accessToken, self::STATUS_CREATED);
+        return to_route('login');
     }
 
     /**
@@ -63,7 +63,7 @@ class UserController extends Controller
     {
         $existing_user = User::where('id', Auth::user()->id)->first();
         if (empty($existing_user)) {
-            return return_json_message('User doesn\'t exist', self::STATUS_BAD_REQUEST);
+            return back()->withErrors('User doesn\'t exist');
         } else {
             $validated = $request->validated();
             if (Hash::check($validated['old_password'], $existing_user->password)) {
@@ -71,12 +71,12 @@ class UserController extends Controller
                 $success = $existing_user->save();
 
                 if ($success) {
-                    return return_json_message('Password updated successfully', self::STATUS_SUCCESS);
+                    return to_route('main');
                 } else {
-                    return return_json_message('Something went wrong trying to update the password', self::STATUS_UNPROCESSABLE);
+                    return back()->withErrors('Something went wrong trying to update the password');
                 }
             } else {
-                return return_json_message('Old password doesn\'t match', self::STATUS_BAD_REQUEST);
+                return back()->withErrors('Old password doesn\'t match');
             }
         }
     }
@@ -103,12 +103,12 @@ class UserController extends Controller
                 // Send email to specified email address.
                 Mail::to($existing_user->email)->send(new ResetPassword($new_password));
 
-                return return_json_message('Email with reset password has been sent.', self::STATUS_SUCCESS);
+                return to_route('main');
             } else {
-                return return_json_message('Something went wrong trying to reset your password.', self::STATUS_UNPROCESSABLE);
+                return back()->withErrors('Something went wrong trying to reset your password.');
             }
         }
 
-        return return_json_message('Email with reset password has been sent.', self::STATUS_SUCCESS);
+        return back()->withErrors('Email with reset password has been sent.');
     }
 }

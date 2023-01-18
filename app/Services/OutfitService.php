@@ -16,8 +16,16 @@ class OutfitService
     /**
      * Retrieve all outfits associated with user.
      */
-    public function retrieveAll()
+    public function retrieveAll($userId = null)
     {
+        if (!empty($userId)) {
+            return Outfit::withoutGlobalScopes()
+                ->where('user_id', $userId)
+                ->with(['tags' => fn ($query) => $query->orderBy('title', 'ASC'), 'character'])
+                ->orderBy('title', 'ASC')
+                ->get();
+        }
+
         return Outfit::with(['tags' => fn ($query) => $query->orderBy('title', 'ASC'), 'character'])
             ->orderBy('title', 'ASC')
             ->get();

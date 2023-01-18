@@ -4,15 +4,11 @@ namespace App\Services;
 
 use App\Models\Item;
 use App\Models\Tag;
-use App\Traits\DuplicateCheck;
-use App\Traits\UploadedImageSave;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class ItemService
 {
-    use DuplicateCheck, UploadedImageSave;
-
     /**
      * Retrieve all items associated with user.
      */
