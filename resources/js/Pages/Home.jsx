@@ -87,7 +87,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const HomePage = () => {
+const Home = () => {
   const classes = useStyles();
 
   const [changelog, setChangelog] = useState(null);
@@ -283,4 +283,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default Home;

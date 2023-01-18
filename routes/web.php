@@ -29,12 +29,18 @@ Route::post('forgot-password', [UserController::class, 'forgotPassword']);
 
 // Public Routes
 Route::inertia('/', 'Index');
-Route::inertia('/s/{any}', 'PublicSchedule');
+Route::inertia('/s/{any}', 'PublicShare');
 Route::inertia('404', '404');
 Route::redirect('/{any}', '/');
 
 Route::middleware('auth.basic')->group(function () {
-    Route::inertia('dashboard', 'Authenticated/Index');
+    Route::inertia('dashboard', 'Authenticated/Dashboard');
+    Route::inertia('cosplay-management', 'Authenticated/CosplayManagement/SeriesGrid');
+    Route::inertia('cosplay-management/all-cosplays', 'Authenticated/CosplayManagement/AllCosplays');
+    Route::inertia('cosplay-management/s-{series}', 'Authenticated/CosplayManagement/CharactersGrid');
+    Route::inertia('cosplay-management/s-{series}/c-{character}', 'Authenticated/CosplayManagement/OutfitGrid');
+    Route::inertia('taobao-organizer', 'Authenticated/TaobaoItems');
+    Route::inertia('tag-manager', 'Authenticated/TagManager');
 
     // User Routes
     Route::post('update-password', [UserController::class, 'updatePassword']);

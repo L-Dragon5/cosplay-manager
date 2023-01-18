@@ -39,10 +39,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ForgotPasswordPage = () => {
+const Register = () => {
   const classes = useStyles();
 
-  const [successAlertMessage, setSuccessAlertMessage] = useState('');
   const [errorAlertMessage, setErrorAlertMessage] = useState('');
 
   const handleSubmit = useCallback((e) => {
@@ -51,15 +50,14 @@ const ForgotPasswordPage = () => {
     const formData = new FormData(e.target);
 
     axios
-      .post('/api/forgot-password', formData, {
+      .post('/api/register', formData, {
         header: {
           Accept: 'application/json',
           'content-type': 'multipart/form-data',
         },
       })
       .then((response) => {
-        if (response.status === 200) {
-          setSuccessAlertMessage(response.data.message);
+        if (response.status === 201) {
         }
       })
       .catch((error) => {
@@ -83,17 +81,13 @@ const ForgotPasswordPage = () => {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Forgot Password
+          Register
         </Typography>
 
         {errorAlertMessage && (
           <Alert severity="error" style={{ whiteSpace: 'pre' }}>
             {errorAlertMessage}
           </Alert>
-        )}
-
-        {successAlertMessage && (
-          <Alert severity="success">{successAlertMessage}</Alert>
         )}
 
         <form className={classes.form} onSubmit={handleSubmit}>
@@ -109,6 +103,35 @@ const ForgotPasswordPage = () => {
                 autoComplete="email"
               />
             </Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                name="c_password"
+                label="Confirm Password"
+                type="password"
+                id="c_password"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <div
+                className="g-recaptcha"
+                name="g-recaptcha-response"
+                data-sitekey={process.env.MIX_GOOGLE_RECAPTCHA_KEY}
+              />
+            </Grid>
           </Grid>
           <Button
             type="submit"
@@ -117,17 +140,12 @@ const ForgotPasswordPage = () => {
             color="primary"
             className={classes.submit}
           >
-            Retrieve Password
+            Sign Up
           </Button>
-          <Grid container>
-            <Grid item xs>
-              <Link href="/login" variant="body2">
-                Back to login
-              </Link>
-            </Grid>
+          <Grid container justify="flex-end">
             <Grid item>
-              <Link href="/home" variant="body2">
-                Back to home
+              <Link href="/login" variant="body2">
+                Already have an account? Sign in
               </Link>
             </Grid>
           </Grid>
@@ -140,4 +158,4 @@ const ForgotPasswordPage = () => {
   );
 };
 
-export default ForgotPasswordPage;
+export default Register;

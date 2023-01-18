@@ -17,7 +17,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Alert } from '@material-ui/lab';
 
 // Components
-import Helper from './components/Helper';
 import Copyright from './components/Copyright';
 
 const useStyles = makeStyles((theme) => ({
@@ -53,20 +52,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const LoginPage = () => {
+const Login = () => {
   const classes = useStyles();
 
   const [errorAlertMessage, setErrorAlertMessage] = useState('');
-
-  const passToken = (data) => {
-    if (Helper.setToken(data)) {
-      window.location.replace('/dashboard');
-    } else {
-      alert(
-        "Your browser doesn't support the login storage option. Please use an updated browser.",
-      );
-    }
-  };
 
   const handleSubmit = useCallback((e) => {
     e.preventDefault();
@@ -82,7 +71,6 @@ const LoginPage = () => {
       })
       .then((response) => {
         if (response.status === 200) {
-          passToken(response.data.message);
         }
       })
       .catch((error) => {
@@ -94,11 +82,6 @@ const LoginPage = () => {
 
   useEffect(() => {
     if (Helper.checkLocalStorage()) {
-      const token = Helper.getToken();
-
-      const formData = new FormData();
-      formData.set('token', token);
-
       // Check Logged in State
       axios
         .post('/api/checkUser', formData, {
@@ -187,4 +170,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default Login;

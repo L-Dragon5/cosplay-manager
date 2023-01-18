@@ -32,7 +32,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const PublicSharedPage = () => {
+const PublicShare = () => {
   const classes = useStyles();
 
   const [allOutfits, setAllOutfits] = useState(null); // All outfits available
@@ -140,4 +140,4 @@ const PublicSharedPage = () => {
   );
 };
 
-export default PublicSharedPage;
+export default PublicShare;

@@ -17,7 +17,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Alert } from '@material-ui/lab';
 
 // Components
-import Helper from './components/Helper';
 import Copyright from './components/Copyright';
 
 const useStyles = makeStyles((theme) => ({
@@ -40,20 +39,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const RegisterPage = () => {
+const ForgotPassword = () => {
   const classes = useStyles();
 
+  const [successAlertMessage, setSuccessAlertMessage] = useState('');
   const [errorAlertMessage, setErrorAlertMessage] = useState('');
-
-  const passToken = (data) => {
-    if (Helper.setToken(data)) {
-      window.location.replace('/dashboard');
-    } else {
-      alert(
-        "Your browser doesn't support the login storage option. Please use an updated browser.",
-      );
-    }
-  };
 
   const handleSubmit = useCallback((e) => {
     e.preventDefault();
@@ -61,15 +51,15 @@ const RegisterPage = () => {
     const formData = new FormData(e.target);
 
     axios
-      .post('/api/register', formData, {
+      .post('/api/forgot-password', formData, {
         header: {
           Accept: 'application/json',
           'content-type': 'multipart/form-data',
         },
       })
       .then((response) => {
-        if (response.status === 201) {
-          passToken(response.data.message);
+        if (response.status === 200) {
+          setSuccessAlertMessage(response.data.message);
         }
       })
       .catch((error) => {
@@ -93,13 +83,17 @@ const RegisterPage = () => {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Register
+          Forgot Password
         </Typography>
 
         {errorAlertMessage && (
           <Alert severity="error" style={{ whiteSpace: 'pre' }}>
             {errorAlertMessage}
           </Alert>
+        )}
+
+        {successAlertMessage && (
+          <Alert severity="success">{successAlertMessage}</Alert>
         )}
 
         <form className={classes.form} onSubmit={handleSubmit}>
@@ -115,35 +109,6 @@ const RegisterPage = () => {
                 autoComplete="email"
               />
             </Grid>
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                name="c_password"
-                label="Confirm Password"
-                type="password"
-                id="c_password"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <div
-                className="g-recaptcha"
-                name="g-recaptcha-response"
-                data-sitekey={process.env.MIX_GOOGLE_RECAPTCHA_KEY}
-              />
-            </Grid>
           </Grid>
           <Button
             type="submit"
@@ -152,12 +117,17 @@ const RegisterPage = () => {
             color="primary"
             className={classes.submit}
           >
-            Sign Up
+            Retrieve Password
           </Button>
-          <Grid container justify="flex-end">
-            <Grid item>
+          <Grid container>
+            <Grid item xs>
               <Link href="/login" variant="body2">
-                Already have an account? Sign in
+                Back to login
+              </Link>
+            </Grid>
+            <Grid item>
+              <Link href="/home" variant="body2">
+                Back to home
               </Link>
             </Grid>
           </Grid>
@@ -170,4 +140,4 @@ const RegisterPage = () => {
   );
 };
 
-export default RegisterPage;
+export default ForgotPassword;
