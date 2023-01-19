@@ -2,16 +2,20 @@
 
 namespace App\Models;
 
+use App\Traits\AutoIncrementModel;
 use App\Models\Scopes\UserIdScope;
 use Jenssegers\Mongodb\Eloquent\Model;
 
 class Tag extends Model
 {
+    use AutoIncrementModel;
+
     protected $fillable = [
         'user_id',
         'title',
         'parent_id',
     ];
+    protected $keyType = 'int';
     public $timestamps = false;
 
     protected static function booted()

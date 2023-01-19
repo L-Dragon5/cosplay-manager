@@ -30,7 +30,7 @@ class UserController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            return to_route('main');
+            return to_route('taobao-organizer');
         } else {
             return back()->withErrors('Incorrect login credentials provided');
         }
@@ -50,10 +50,12 @@ class UserController extends Controller
             return back()->withErrors('E-mail is already registered');
         }
 
-        $user = User::create([
+        $user = new User([
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
         ]);
+        $user->nextid();
+        $user->save();
 
         return to_route('login');
     }
@@ -76,7 +78,7 @@ class UserController extends Controller
                 $success = $existing_user->save();
 
                 if ($success) {
-                    return to_route('main');
+                    return to_route('taobao-organizer');
                 } else {
                     return back()->withErrors('Something went wrong trying to update the password');
                 }
@@ -108,7 +110,7 @@ class UserController extends Controller
                 // Send email to specified email address.
                 Mail::to($existing_user->email)->send(new ResetPassword($new_password));
 
-                return to_route('main');
+                return to_route('taobao-organizer');
             } else {
                 return back()->withErrors('Something went wrong trying to reset your password.');
             }

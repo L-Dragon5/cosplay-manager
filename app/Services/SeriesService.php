@@ -42,6 +42,7 @@ class SeriesService
             ...$validated,
             'user_id' => $userId,
         ]);
+        $series->nextid();
 
         // Store image.
         if (!empty($image)) {

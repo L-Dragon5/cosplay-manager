@@ -34,16 +34,8 @@ function Navbar() {
   };
 
   return (
-    <Box
-      as={HStack}
-      backgroundColor="orange.400"
-      py={2}
-      px={3}
-      boxShadow="md"
-      zIndex={1}
-      position="sticky"
-    >
-      <Heading>CosManage</Heading>
+    <Box as={HStack} backgroundColor="orange.400" p={3} boxShadow="md">
+      <Heading size="lg">CosManage</Heading>
       <Spacer />
       <HStack spacing={3}>
         <Link as={InertiaLink} href="/cosplay-management">

@@ -101,12 +101,14 @@ class TagService
             return back()->withErrors('Tag already exists with this title');
         }
 
-        $tag = Tag::create([
+        $tag = new Tag([
             ...$validated,
             'user_id' => $userId,
         ]);
+        $tag->nextid();
+        $success = $tag->save();
 
-        if (!empty($tag)) {
+        if ($success) {
             return to_route('tags.index');
         } else {
             return back()->withErrors('Something went wrong while trying to create a new tag');

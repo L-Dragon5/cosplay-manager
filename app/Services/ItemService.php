@@ -111,7 +111,7 @@ class ItemService
             if ($exists) {
                 return back()->withErrors('Item already exists');
             } else {
-                $item = Item::create([
+                $item = new Item([
                     'user_id' => $userId,
                     'image_url' => $info['image'],
                     'original_title' => $info['title'],
@@ -119,9 +119,11 @@ class ItemService
                     'listing_url' => $info['url'],
                     'original_price' => $info['price'],
                 ]);
+                $item->nextid();
+                $success = $item->save();
 
-                if (!empty($item)) {
-                    return to_route('items.index');
+                if ($success) {
+                    return to_route('taobao-organizer');
                 } else {
                     return back()->withErrors('Something went wrong while adding item');
                 }
@@ -162,10 +164,12 @@ class ItemService
 
                             // Tag doesn't exist
                             if (empty($tag)) {
-                                $new_tag = Tag::create([
+                                $new_tag = new Tag([
                                     'user_id' => $user_id,
                                     'title' => $tag_id,
                                 ]);
+                                $new_tag->nextid();
+                                $new_tag->save();
 
                                 DB::table('items_tags')->insertOrIgnore(
                                     ['item_id' => $item->id, 'tag_id' => $new_tag->id]
@@ -189,7 +193,7 @@ class ItemService
             $success = $item->save();
 
             if ($success) {
-                return to_route('items.index');
+                return to_route('taobao-organizer');
             } else {
                 return back()->withErrors('Something went wrong while trying to update item');
             }
@@ -220,7 +224,7 @@ class ItemService
         }
 
         if ($success) {
-            return to_route('items.index');
+            return to_route('taobao-organizer');
         } else {
             return back()->withErrors('Something went wrong while trying to remove item');
         }
@@ -240,7 +244,7 @@ class ItemService
             $success = $item->save();
 
             if ($success) {
-                return to_route('items.index');
+                return to_route('taobao-organizer');
             } else {
                 return back()->withErrors('Something went wrong while trying to archive item');
             }
@@ -263,7 +267,7 @@ class ItemService
             $success = $item->save();
 
             if ($success) {
-                return to_route('items.index');
+                return to_route('taobao-organizer');
             } else {
                 return back()->withErrors('Something went wrong while trying to unarchive item');
             }

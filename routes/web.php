@@ -37,7 +37,7 @@ Route::middleware('auth')->group(function () {
     Route::inertia('cosplay-management/all-cosplays', 'Authenticated/CosplayManagement/AllCosplays');
     Route::inertia('cosplay-management/s-{series}', 'Authenticated/CosplayManagement/CharactersGrid');
     Route::inertia('cosplay-management/s-{series}/c-{character}', 'Authenticated/CosplayManagement/OutfitGrid');
-    Route::get('taobao-organizer', [ItemController::class, 'index'])->name('main');
+    Route::get('taobao-organizer', [ItemController::class, 'index'])->name('taobao-organizer');
     Route::inertia('tag-manager', 'Authenticated/TagManager');
 
     // User Routes
@@ -56,7 +56,7 @@ Route::middleware('auth')->group(function () {
     Route::get('outfits/character/{characterId}', [OutfitController::class, 'indexByCharacter']);
     Route::delete('outfits/{outfit}/deleteImage/{index}', [OutfitController::class, 'deleteImage']);
     Route::get('tags/item/{itemId}', [TagController::class, 'tagsByItemSelect']);
-    Route::get('tagss/outfit{outfitId}', [TagController::class, 'tagsByOutfitSelect']);
+    Route::get('tags/outfit{outfitId}', [TagController::class, 'tagsByOutfitSelect']);
     Route::put('items/{item}/archive', [ItemController::class, 'archive']);
     Route::put('items/{item}/unarchive', [ItemController::class, 'unarchive']);
 

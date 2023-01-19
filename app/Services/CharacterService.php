@@ -51,6 +51,7 @@ class CharacterService
             ...$validated,
             'user_id' => $userId,
         ]);
+        $character->nextid();
 
         if (!empty($image)) {
             $character->image = $this->saveUploadedImage($image, 'character', 400);

@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use App\Traits\AutoIncrementModel;
 use App\Models\Scopes\UserIdScope;
 use Illuminate\Support\Facades\Storage;
 use Jenssegers\Mongodb\Eloquent\Model;
 
 class Item extends Model
 {
+    use AutoIncrementModel;
+
     protected $table = 'items';
     protected $fillable = [
         'user_id',
@@ -23,6 +26,7 @@ class Item extends Model
         'is_archived',
         'archived_at',
     ];
+    protected $keyType = 'int';
 
     protected static function booted()
     {

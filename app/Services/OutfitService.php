@@ -62,6 +62,7 @@ class OutfitService
             ...$validated,
             'user_id' => $userId,
         ]);
+        $outfit->nextid();
 
         // Store image.
         if (!empty($image)) {
@@ -81,6 +82,7 @@ class OutfitService
                     // Tag doesn't exist
                     if (empty($tag)) {
                         $new_tag = new Tag(['user_id' => $userId, 'title' => $tag_id]);
+                        $new_tag->nextid();
                         $new_tag->save();
 
                         DB::table('outfits_tags')->insertOrIgnore(
@@ -154,10 +156,12 @@ class OutfitService
 
                             // Tag doesn't exist
                             if (empty($tag)) {
-                                $new_tag = Tag::create([
+                                $new_tag = new Tag([
                                     'user_id' => $user_id,
                                     'title' => $tag_id,
                                 ]);
+                                $new_tag->nextid();
+                                $new_tag->save();
 
                                 DB::table('outfits_tags')->insertOrIgnore(
                                     ['outfit_id' => $outfit->id, 'tag_id' => $new_tag->id]

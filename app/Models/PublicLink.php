@@ -8,7 +8,7 @@ use Jenssegers\Mongodb\Eloquent\Model;
 class PublicLink extends Model
 {
     protected $table = 'user_public_links';
-    protected $fillable = ['id', 'user_id'];
+    protected $fillable = ['_id', 'user_id'];
     protected $keyType = 'string';
     public $timestamps = false;
     public $incrementing = false;

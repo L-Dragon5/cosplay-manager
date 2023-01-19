@@ -42,43 +42,48 @@ class ItemController extends Controller
      * Update the specified item in storage.
      *
      * @param  \App\Http\Requests\ItemUpdateRequest  $request
-     * @param  \App\Models\Item  $item
+     * @param  int  $item
      * @return \Illuminate\Http\Response
      */
-    public function update(ItemUpdateRequest $request, Item $item)
+    public function update(ItemUpdateRequest $request, int $item)
     {
+        $item = Item::findOrFail($item);
         return $this->itemService->update(Auth::user()->id, $item, $request->validated());
     }
 
     /**
      * Archive selected item.
      *
-     * @param  \App\Models\Item  $item
+     * @param  int  $item
      * @return \Illuminate\Http\Response
      */
-    public function archive(Item $item)
+    public function archive(int $item)
     {
+        $item = Item::findOrFail($item);
         return $this->itemService->archive(Auth::user()->id, $item);
     }
 
     /**
      * Unarchived selected item.
      *
+     * @param  int  $item
      * @return \Illuminate\Http\Response
      */
-    public function unarchive($id)
+    public function unarchive(int $item)
     {
+        $item = Item::findOrFail($item);
         return $this->itemService->unarchive(Auth::user()->id, $item);
     }
 
     /**
      * Remove selected item.
      *
-     * @param  \App\Models\Item  $item
+     * @param  int  $item
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Item $item)
+    public function destroy(int $item)
     {
+        $item = Item::findOrFail($item);
         return $this->itemService->delete(Auth::user()->id, $item);
     }
 }
