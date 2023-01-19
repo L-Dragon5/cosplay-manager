@@ -23,8 +23,8 @@ class ItemController extends Controller
     public function index()
     {
         $items = $this->itemService->retrieveAll();
-
-        return Inertia::render('Items/Index', ['items' => $items]);
+        
+        return Inertia::render('Authenticated/TaobaoOrganizer/TaobaoItems', ['items' => $items]);
     }
 
     /**

@@ -19,7 +19,7 @@ class Series extends Model
     {
         static::addGlobalScope(new UserIdScope);
 
-        static::retreived(function (Series $series) {
+        static::retrieved(function (Series $series) {
             // If local image, add / for root directory
             if (filter_var($series->image, FILTER_VALIDATE_URL) === false) {
                 $series->image_url = Storage::url($series->image);

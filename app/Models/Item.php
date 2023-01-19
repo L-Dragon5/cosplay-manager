@@ -28,7 +28,7 @@ class Item extends Model
     {
         static::addGlobalScope(new UserIdScope);
 
-        static::retreived(function (Item $item) {
+        static::retrieved(function (Item $item) {
             // If local image, add / for root directory
             if (filter_var($item->image_url, FILTER_VALIDATE_URL) === false) {
                 $item->image_url = Storage::url($item->image_url);

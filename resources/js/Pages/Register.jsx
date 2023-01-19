@@ -1,31 +1,34 @@
-import React from 'react';
-
+import { LockIcon } from '@chakra-ui/icons';
 import {
   Box,
-  Flex,
-  Container,
-  Heading,
-  FormControl,
-  FormLabel,
-  FormErrorMessage,
-  Input,
   Button,
-  Spacer,
+  Container,
+  Flex,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  Heading,
   HStack,
+  Input,
+  Spacer,
 } from '@chakra-ui/react';
-import { LockIcon } from '@chakra-ui/icons';
 import { Link as InertiaLink, useForm } from '@inertiajs/react';
+import React from 'react';
+import ReCAPTCHA from 'react-google-recaptcha';
+
 import Copyright from './components/Copyright';
 
-function Login() {
+function Register() {
   const { data, setData, post, processing, errors } = useForm({
     email: '',
     password: '',
+    c_password: '',
+    'g-recaptcha-response': '',
   });
 
   function submit(e) {
     e.preventDefault();
-    post('/login');
+    post('/register');
   }
 
   return (
@@ -34,7 +37,7 @@ function Login() {
         <Flex flexDirection="column" justifyContent="center" borderRadius="md" border="1px solid #ccc" p={3} width="full" boxShadow="lg" backgroundColor="white">
           <Flex as="form" flexDirection="column" alignItems="center" onSubmit={submit}>
             <LockIcon boxSize={8} />
-            <Heading textAlign="center">Sign in</Heading>
+            <Heading textAlign="center">Register</Heading>
             <FormControl id="email" mt={4} isInvalid={!!errors?.email} isRequired>
               <FormLabel>Email address</FormLabel>
               <Input
@@ -55,12 +58,21 @@ function Login() {
               />
               <FormErrorMessage>{errors?.password}</FormErrorMessage>
             </FormControl>
-            <Button type="submit" colorScheme="teal" width="full" my={4} isLoading={processing}>Sign in</Button>
+            <FormControl id="c_password" mt={3} isInvalid={!!errors?.c_password} isRequired>
+              <FormLabel>Confirm Password</FormLabel>
+              <Input type="password" value={data.c_password}
+              onChange={e => setData('c_password', e.target.value)}
+              placeholder="Confirm password" />
+              <FormErrorMessage>{errors?.c_password}</FormErrorMessage>
+            </FormControl>
+            <FormControl>
+              <ReCAPTCHA sitekey={process.env.MIX_GOOGLE_RECAPTCHA_KEY} onChange={(value) => setData('g-recaptcha-response', value)} />
+            </FormControl>
+            <Button type="submit" colorScheme="teal" width="full" my={4} isLoading={processing}>Register</Button>
           </Flex>
           <HStack>
-            <InertiaLink href="/forgot-password">Forgot password?</InertiaLink>
             <Spacer />
-            <InertiaLink href="/register">Don&apos;t have an account? Sign Up!</InertiaLink>
+            <InertiaLink href="/login">Already have an account? Sign in!</InertiaLink>
           </HStack>
           <Box mt={6}>
             <Copyright />
@@ -71,4 +83,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default Register;

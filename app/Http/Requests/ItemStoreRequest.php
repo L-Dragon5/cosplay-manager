@@ -24,7 +24,7 @@ class ItemStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'url' => 'required|url',
+            'url' => 'required|string',
             'override' => 'sometimes|required|boolean',
         ];
     }

@@ -24,7 +24,7 @@ class Outfit extends Model
     {
         static::addGlobalScope(new UserIdScope);
 
-        static::retreived(function (Outfit $outfit) {
+        static::retrieved(function (Outfit $outfit) {
             $images = explode('||', $outfit->images);
             array_shift($images);
             $images_urls = array_reduce($images, function ($carry, $item) {

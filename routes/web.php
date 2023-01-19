@@ -28,18 +28,16 @@ Route::post('register', [UserController::class, 'register']);
 Route::post('forgot-password', [UserController::class, 'forgotPassword']);
 
 // Public Routes
-Route::inertia('/', 'Home');
+Route::inertia('/', 'Home')->name('home');
 Route::inertia('/s/{any}', 'PublicShare');
 Route::inertia('404', '404');
-Route::redirect('/{any}', '/');
 
-Route::middleware('auth.basic')->group(function () {
-    Route::inertia('dashboard', 'Authenticated/Dashboard');
+Route::middleware('auth')->group(function () {
     Route::inertia('cosplay-management', 'Authenticated/CosplayManagement/SeriesGrid');
     Route::inertia('cosplay-management/all-cosplays', 'Authenticated/CosplayManagement/AllCosplays');
     Route::inertia('cosplay-management/s-{series}', 'Authenticated/CosplayManagement/CharactersGrid');
     Route::inertia('cosplay-management/s-{series}/c-{character}', 'Authenticated/CosplayManagement/OutfitGrid');
-    Route::inertia('taobao-organizer', 'Authenticated/TaobaoItems');
+    Route::get('taobao-organizer', [ItemController::class, 'index'])->name('main');
     Route::inertia('tag-manager', 'Authenticated/TagManager');
 
     // User Routes
@@ -67,4 +65,5 @@ Route::middleware('auth.basic')->group(function () {
     Route::get('account/getPublicLink', [AccountSettingsController::class, 'getPublicLink']);
 });
 
+Route::redirect('/{any}', '/');
 Route::fallback(fn () => to_route('404'));

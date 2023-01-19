@@ -1,6 +1,15 @@
 module.exports = {
-  plugins: ['prettier'],
-  extends: ['airbnb', 'plugin:prettier/recommended'],
+  parserOptions: {
+    sourceType: 'module',
+  },
+  plugins: ['prettier', 'simple-import-sort', 'import'],
+  extends: [
+    'airbnb',
+    'eslint:recommended',
+    'plugin:import/recommended',
+    'plugin:react/recommended',
+    'plugin:prettier/recommended',
+  ],
   env: {
     browser: true,
     commonjs: true,
@@ -25,5 +34,7 @@ module.exports = {
         ignoreRegExpLiterals: true,
       },
     ],
+    'simple-import-sort/imports': 'error',
+    'simple-import-sort/exports': 'error',
   },
 };

@@ -37,10 +37,20 @@
         "prop-types": "^15.8.1",
         "react": "^18.0.8",
         "react-cropper": "^2.1.8",
+        "react-debounce-input": "^3.3.0",
         "react-dom": "^18.0.8",
+        "react-dropdown-tree-select": "^2.8.0",
+        "react-google-recaptcha": "^2.1.0",
         "react-icons": "^4.7.1",
         "react-lazy-load-image-component": "^1.5.6",
+        "react-lazyload": "^3.2.0",
         "react-markdown": "^8.0.0",
         "react-select": "^5.7.0"
+    },
+    "overrides": {
+        "react-lazyload": {
+            "react": "^18.2.0",
+            "react-dom": "^18.2.0"
+        }
     }
 }

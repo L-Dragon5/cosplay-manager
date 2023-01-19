@@ -27,7 +27,7 @@ class UserRegisterRequest extends FormRequest
             'email' => 'required|email',
             'password' => 'required',
             'c_password' => 'required|same:password',
-            'g-recaptcha-response' => 'required|recaptcha',
+            'g-recaptcha-response' => 'sometimes|required|recaptcha',
         ];
     }
 }
