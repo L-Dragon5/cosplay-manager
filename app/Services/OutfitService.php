@@ -37,7 +37,7 @@ class OutfitService
                 ->get();
         }
 
-        return Outfit::with(['tags' => fn ($query) => $query->orderBy('title', 'ASC')])
+        return Outfit::with(['tags' => fn ($query) => $query->orderBy('title', 'ASC'), 'character'])
             ->orderBy('title', 'ASC')
             ->get();
     }
