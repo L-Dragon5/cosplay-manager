@@ -16,6 +16,8 @@ import {
   FormControl,
   FormErrorMessage,
   FormHelperText,
+  Grid,
+  GridItem,
   Heading,
   HStack,
   Image,
@@ -253,16 +255,21 @@ function TaobaoItems({ items }) {
         </HStack>
       </Box>
 
-      <SimpleGrid minChildWidth="250px" spacing={4} p={4}>
+      <Grid
+        gridTemplateColumns="repeat(auto-fill, minmax(250px, 1fr))"
+        gap={4}
+        p={4}
+      >
         {activeItems &&
           activeItems.map((item) => (
-            <ItemCard
+            <GridItem
+              as={ItemCard}
               key={`i-${item._id}`}
               item={item}
               setDrawerType={setDrawerType}
             />
           ))}
-      </SimpleGrid>
+      </Grid>
 
       <Drawer size="md" isOpen={isOpen} placement="right" onClose={onClose}>
         <DrawerOverlay />

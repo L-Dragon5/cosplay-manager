@@ -1,3 +1,5 @@
+import 'react-responsive-carousel/lib/styles/carousel.min.css';
+
 import { AddIcon, SearchIcon } from '@chakra-ui/icons';
 import {
   Box,
@@ -16,6 +18,8 @@ import {
   FormControl,
   FormErrorMessage,
   FormHelperText,
+  Grid,
+  GridItem,
   Heading,
   HStack,
   Image,
@@ -24,6 +28,7 @@ import {
   InputLeftElement,
   InputRightElement,
   Link,
+  Select,
   SimpleGrid,
   Tag,
   Text,
@@ -33,11 +38,12 @@ import {
 import { Head, router } from '@inertiajs/react';
 import React, { useEffect, useState } from 'react';
 import { DebounceInput } from 'react-debounce-input';
+import { Carousel } from 'react-responsive-carousel';
 
 import Navbar from '../../components/Navbar';
 import OutfitCard from './OutfitCard';
 
-function CosplayList({ outfits, characters, series }) {
+function CosplayList({ outfits, series }) {
   /**
    * Filter
    * 0 = none
@@ -45,11 +51,10 @@ function CosplayList({ outfits, characters, series }) {
    * 2 = owned & unworn
    * 4 = worn
    */
-  console.log(outfits);
-  console.log(characters);
-  console.log(series);
 
   const [activeOutfit, setActiveOutfit] = useState({});
+  const [filterSeries, setFilterSeries] = useState(0);
+  const [filterCharacter, setFilterCharacter] = useState(0);
   const [drawerType, setDrawerType] = useState('');
   const [activeOutfits, setActiveOutfits] = useState(outfits); // All outfits available
   const [search, setSearch] = useState(''); // Search input
@@ -60,6 +65,31 @@ function CosplayList({ outfits, characters, series }) {
 
   function filterOutfits() {
     const lowerSearch = String(search).toLowerCase();
+    const searchBool = (item) => {
+      return (
+        String(item.title).toLowerCase().indexOf(lowerSearch) !== -1 ||
+        String(item?.character?.name).toLowerCase().indexOf(lowerSearch) !==
+          -1 ||
+        item.tags.filter((tag) => {
+          return tag.label.toLowerCase().indexOf(lowerSearch) !== -1;
+        }).length > 0
+      );
+    };
+
+    const filterBool = (item) => {
+      if (filterSeries === 0 || filterSeries === '') {
+        return true;
+      }
+
+      if (filterCharacter === 0 || filterCharacter === '') {
+        return item?.character?.series_id == filterSeries;
+      }
+
+      return (
+        item?.character?.series_id === filterSeries &&
+        item?.character_id === filterCharacter
+      );
+    };
 
     switch (filter) {
       case 0: // None
@@ -68,30 +98,14 @@ function CosplayList({ outfits, characters, series }) {
       case 1: // Future Only
         setActiveOutfits(
           outfits.filter(
-            (item) =>
-              item.status === 0 &&
-              (String(item.title).toLowerCase().indexOf(lowerSearch) !== -1 ||
-                String(item.character_name)
-                  .toLowerCase()
-                  .indexOf(lowerSearch) !== -1 ||
-                item.tags.filter((tag) => {
-                  return tag.label.toLowerCase().indexOf(lowerSearch) !== -1;
-                }).length > 0),
+            (item) => item.status == 0 && searchBool(item) && filterBool(item),
           ),
         );
         break;
       case 2: // Unworn Only
         setActiveOutfits(
           outfits.filter(
-            (item) =>
-              item.status === 1 &&
-              (String(item.title).toLowerCase().indexOf(lowerSearch) !== -1 ||
-                String(item.character_name)
-                  .toLowerCase()
-                  .indexOf(lowerSearch) !== -1 ||
-                item.tags.filter((tag) => {
-                  return tag.label.toLowerCase().indexOf(lowerSearch) !== -1;
-                }).length > 0),
+            (item) => item.status == 1 && searchBool(item) && filterBool(item),
           ),
         );
         break;
@@ -99,29 +113,16 @@ function CosplayList({ outfits, characters, series }) {
         setActiveOutfits(
           outfits.filter(
             (item) =>
-              (item.status === 0 || item.status === 1) &&
-              (String(item.title).toLowerCase().indexOf(lowerSearch) !== -1 ||
-                String(item.character_name)
-                  .toLowerCase()
-                  .indexOf(lowerSearch) !== -1 ||
-                item.tags.filter((tag) => {
-                  return tag.label.toLowerCase().indexOf(lowerSearch) !== -1;
-                }).length > 0),
+              (item.status == 0 || item.status == 1) &&
+              searchBool(item) &&
+              filterBool(item),
           ),
         );
         break;
       case 4: // Worn Only
         setActiveOutfits(
           outfits.filter(
-            (item) =>
-              item.status === 2 &&
-              (String(item.title).toLowerCase().indexOf(lowerSearch) !== -1 ||
-                String(item.character_name)
-                  .toLowerCase()
-                  .indexOf(lowerSearch) !== -1 ||
-                item.tags.filter((tag) => {
-                  return tag.label.toLowerCase().indexOf(lowerSearch) !== -1;
-                }).length > 0),
+            (item) => item.status == 2 && searchBool(item) && filterBool(item),
           ),
         );
         break;
@@ -129,14 +130,9 @@ function CosplayList({ outfits, characters, series }) {
         setActiveOutfits(
           outfits.filter(
             (item) =>
-              (item.status === 0 || item.status === 2) &&
-              (String(item.title).toLowerCase().indexOf(lowerSearch) !== -1 ||
-                String(item.character_name)
-                  .toLowerCase()
-                  .indexOf(lowerSearch) !== -1 ||
-                item.tags.filter((tag) => {
-                  return tag.label.toLowerCase().indexOf(lowerSearch) !== -1;
-                }).length > 0),
+              (item.status == 0 || item.status == 2) &&
+              searchBool(item) &&
+              filterBool(item),
           ),
         );
         break;
@@ -144,28 +140,15 @@ function CosplayList({ outfits, characters, series }) {
         setActiveOutfits(
           outfits.filter(
             (item) =>
-              (item.status === 1 || item.status === 2) &&
-              (String(item.title).toLowerCase().indexOf(lowerSearch) !== -1 ||
-                String(item.character_name)
-                  .toLowerCase()
-                  .indexOf(lowerSearch) !== -1 ||
-                item.tags.filter((tag) => {
-                  return tag.label.toLowerCase().indexOf(lowerSearch) !== -1;
-                }).length > 0),
+              (item.status == 1 || item.status == 2) &&
+              searchBool(item) &&
+              filterBool(item),
           ),
         );
         break;
       case 7: // Future + Unworn + Worn
         setActiveOutfits(
-          outfits.filter(
-            (item) =>
-              String(item.title).toLowerCase().indexOf(lowerSearch) !== -1 ||
-              String(item.character_name).toLowerCase().indexOf(lowerSearch) !==
-                -1 ||
-              item.tags.filter((tag) => {
-                return tag.label.toLowerCase().indexOf(lowerSearch) !== -1;
-              }).length > 0,
-          ),
+          outfits.filter((item) => searchBool(item) && filterBool(item)),
         );
         break;
       default:
@@ -201,7 +184,7 @@ function CosplayList({ outfits, characters, series }) {
   // Set outfits based on search and filters.
   useEffect(() => {
     filterOutfits();
-  }, [filter, search, outfits]);
+  }, [filter, filterSeries, filterCharacter, search, outfits]);
 
   useEffect(() => {
     if (drawerType !== '') {
@@ -215,7 +198,11 @@ function CosplayList({ outfits, characters, series }) {
     if (!isOpen) setDrawerType('');
   }, [isOpen]);
 
-  console.log(activeOutfit);
+  useEffect(() => {
+    if (filterSeries !== 0) {
+      setFilterCharacter(0);
+    }
+  }, [filterSeries]);
 
   return (
     <>
@@ -226,6 +213,13 @@ function CosplayList({ outfits, characters, series }) {
           <Heading mr={12} flexBasis="280px">
             Cosplay List
           </Heading>
+          <Button
+            colorScheme="orange"
+            leftIcon={<AddIcon />}
+            onClick={() => setDrawerType('Add')}
+          >
+            Add
+          </Button>
           <SimpleGrid columns={2} spacing={2} width="full" maxWidth="1600px">
             <FormControl
               id="search"
@@ -268,33 +262,71 @@ function CosplayList({ outfits, characters, series }) {
                 </HStack>
               </CheckboxGroup>
             </FormControl>
+
+            <HStack>
+              <Select
+                placeholder="Select series"
+                onChange={(e) => setFilterSeries(e.target.value)}
+              >
+                {series.map((item) => (
+                  <option key={item._id} value={item._id}>
+                    {item.title}
+                  </option>
+                ))}
+              </Select>
+              <Select
+                placeholder="Select character"
+                onChange={(e) => setFilterCharacter(e.target.value)}
+              >
+                {series
+                  ?.find((item) => item._id === filterSeries)
+                  ?.characters?.map((character) => (
+                    <option key={character._id} value={character._id}>
+                      {character.name}
+                    </option>
+                  ))}
+              </Select>
+            </HStack>
           </SimpleGrid>
         </HStack>
       </Box>
 
-      <SimpleGrid minChildWidth="250px" spacing={4} p={4}>
+      <Grid
+        gridTemplateColumns="repeat(auto-fill, minmax(250px, 1fr))"
+        gap={4}
+        p={4}
+      >
         {activeOutfits &&
           activeOutfits.map((outfit) => {
             return (
-              <OutfitCard
+              <GridItem
+                as={OutfitCard}
                 key={`o-${outfit._id}`}
                 outfit={outfit}
                 setDrawerType={setDrawerType}
               />
             );
           })}
-      </SimpleGrid>
+      </Grid>
 
       <Drawer size="md" isOpen={isOpen} placement="right" onClose={onClose}>
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
           <DrawerHeader>
-            {drawerType.split('-').shift()} - {activeOutfit.title}
+            {drawerType.split('-').shift()} -{' '}
+            {activeOutfit?.title ?? 'New Outfit'}
           </DrawerHeader>
           <DrawerBody>
+            {drawerType.includes('Add') && <Text>Insert add form here</Text>}
+
             {drawerType.includes('View') && (
               <VStack alignItems="flex-start">
+                <Carousel autoPlay={false} showThumbs={false}>
+                  {activeOutfit?.images_urls?.map((image) => (
+                    <Image key={image} src={image} />
+                  ))}
+                </Carousel>
                 <Text>
                   <strong>Status:</strong>{' '}
                   {activeOutfit.status == 0
@@ -332,6 +364,8 @@ function CosplayList({ outfits, characters, series }) {
                 </Text>
               </VStack>
             )}
+
+            {drawerType.includes('Edit') && <Text>Insert edit form here</Text>}
 
             {drawerType.includes('Delete') && (
               <VStack>

@@ -1,3 +1,5 @@
+import 'react-responsive-carousel/lib/styles/carousel.min.css';
+
 import { DeleteIcon, EditIcon, ViewIcon } from '@chakra-ui/icons';
 import {
   ButtonGroup,
@@ -12,6 +14,7 @@ import {
 } from '@chakra-ui/react';
 import React from 'react';
 import LazyLoad from 'react-lazyload';
+import { Carousel } from 'react-responsive-carousel';
 
 function OutfitCard({ outfit, setDrawerType }) {
   const { _id, tags, images_urls, character, title, status } = outfit;
@@ -57,12 +60,6 @@ function OutfitCard({ outfit, setDrawerType }) {
         }
       });
   };
-
-  useEffect(() => {
-    if (images.length > 0) {
-      setRenderCarousel(true);
-    }
-  }, [images]);
   */
 
   // 0 = Future Cosplay, 1 = Owned & Unworn, 2 = Worn
@@ -95,6 +92,12 @@ function OutfitCard({ outfit, setDrawerType }) {
             ))}
           </HStack>
         </CardHeader>
+
+        <Carousel autoPlay={false} showThumbs={false}>
+          {images_urls.map((image) => (
+            <Image key={image} src={image} />
+          ))}
+        </Carousel>
 
         <CardFooter p={0}>
           <ButtonGroup size="lg" variant="outline" width="full" isAttached>
