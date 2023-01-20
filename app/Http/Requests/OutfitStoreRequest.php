@@ -32,8 +32,7 @@ class OutfitStoreRequest extends FormRequest
             'creator' => 'nullable|string',
             'storage_location' => 'nullable|string',
             'times_worn' => 'nullable|string',
-            'tags' => 'nullable',
-            'tags.*' => 'nullable|string',
+            'tags' => 'nullable|array',
         ];
     }
 }

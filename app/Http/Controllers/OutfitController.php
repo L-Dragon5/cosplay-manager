@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\OutfitStoreRequest;
 use App\Http\Requests\OutfitUpdateRequest;
 use App\Models\Outfit;
-use App\Services\CharacterService;
 use App\Services\OutfitService;
 use App\Services\SeriesService;
+use App\Services\TagService;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
@@ -16,7 +16,7 @@ class OutfitController extends Controller
     public function __construct(
         public OutfitService $outfitService,
         public SeriesService $seriesService,
-        public CharacterService $characterService
+        public TagService $tagService,
     ) {
     }
 
@@ -30,12 +30,12 @@ class OutfitController extends Controller
     {
         $outfits = $this->outfitService->retrieveAll();
         $series = $this->seriesService->retrieveAll();
-        $characters = $this->characterService->retrieveAll();
+        $tags = $this->tagService->retrieveAll();
 
         return Inertia::render('Authenticated/CosplayManagement/CosplayList', [
             'outfits' => $outfits,
             'series' => $series,
-            'characters' => $characters,
+            'tags' => $tags,
         ]);
     }
 

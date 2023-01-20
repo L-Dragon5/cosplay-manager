@@ -16,8 +16,6 @@ import {
   DrawerOverlay,
   Flex,
   FormControl,
-  FormErrorMessage,
-  FormHelperText,
   Grid,
   GridItem,
   Heading,
@@ -26,8 +24,6 @@ import {
   Input,
   InputGroup,
   InputLeftElement,
-  InputRightElement,
-  Link,
   Select,
   SimpleGrid,
   Tag,
@@ -41,9 +37,10 @@ import { DebounceInput } from 'react-debounce-input';
 import { Carousel } from 'react-responsive-carousel';
 
 import Navbar from '../../components/Navbar';
+import OutfitAddForm from './forms/OutfitAddForm';
 import OutfitCard from './OutfitCard';
 
-function CosplayList({ outfits, series }) {
+function CosplayList({ outfits, series, tags }) {
   /**
    * Filter
    * 0 = none
@@ -200,7 +197,7 @@ function CosplayList({ outfits, series }) {
 
   useEffect(() => {
     if (filterSeries !== 0) {
-      setFilterCharacter(0);
+      setFilterCharacter('');
     }
   }, [filterSeries]);
 
@@ -235,6 +232,7 @@ function CosplayList({ outfits, series }) {
                 <Input
                   as={DebounceInput}
                   debounceTimeout={300}
+                  backgroundColor="white"
                   placeholder="Search"
                   onChange={handleSearch}
                 />
@@ -265,6 +263,7 @@ function CosplayList({ outfits, series }) {
 
             <HStack>
               <Select
+                backgroundColor="white"
                 placeholder="Select series"
                 onChange={(e) => setFilterSeries(e.target.value)}
               >
@@ -275,6 +274,7 @@ function CosplayList({ outfits, series }) {
                 ))}
               </Select>
               <Select
+                backgroundColor="white"
                 placeholder="Select character"
                 onChange={(e) => setFilterCharacter(e.target.value)}
               >
@@ -318,7 +318,9 @@ function CosplayList({ outfits, series }) {
             {activeOutfit?.title ?? 'New Outfit'}
           </DrawerHeader>
           <DrawerBody>
-            {drawerType.includes('Add') && <Text>Insert add form here</Text>}
+            {drawerType.includes('Add') && (
+              <OutfitAddForm tags={tags} series={series} onClose={onClose} />
+            )}
 
             {drawerType.includes('View') && (
               <VStack alignItems="flex-start">
@@ -329,11 +331,11 @@ function CosplayList({ outfits, series }) {
                 </Carousel>
                 <Text>
                   <strong>Status:</strong>{' '}
-                  {activeOutfit.status == 0
+                  {activeOutfit?.status == 0
                     ? 'Future'
-                    : activeOutfit.status == 1
+                    : activeOutfit?.status == 1
                     ? 'Owned & Unworn'
-                    : activeOutfit.status == 2
+                    : activeOutfit?.status == 2
                     ? 'Worn'
                     : ''}
                 </Text>
@@ -342,7 +344,7 @@ function CosplayList({ outfits, series }) {
                     <strong>Character:</strong> {activeOutfit.character.name}
                   </Text>
                 )}
-                {activeOutfit.tags && (
+                {activeOutfit?.tags && (
                   <Text>
                     <strong>Tags:</strong>{' '}
                     {activeOutfit.tags.map((tag, i) => (
@@ -354,13 +356,13 @@ function CosplayList({ outfits, series }) {
                 )}
                 <Text>
                   <strong>Storage Location:</strong>{' '}
-                  {activeOutfit.storage_location}
+                  {activeOutfit?.storage_location}
                 </Text>
                 <Text>
-                  <strong>Times Worn:</strong> {activeOutfit.times_worn}
+                  <strong>Times Worn:</strong> {activeOutfit?.times_worn}
                 </Text>
                 <Text>
-                  <strong>Creator:</strong> {activeOutfit.creator}
+                  <strong>Creator:</strong> {activeOutfit?.creator}
                 </Text>
               </VStack>
             )}

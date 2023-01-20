@@ -115,7 +115,8 @@ function TagManager({ tags }) {
               <FormControl id="add-tag" isInvalid={!!errors?.title}>
                 <InputGroup>
                   <Input
-                    placeholder="Add new tag"
+                    backgroundColor="white"
+                    placeholder="Enter tag name"
                     value={data.title}
                     onChange={(e) => setData('title', e.target.value)}
                   />

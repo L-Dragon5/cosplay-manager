@@ -54,7 +54,7 @@ function ItemEditForm({ item, onClose }) {
       <FormControl id="tags" isInvalid={!!errors?.tags}>
         <FormLabel>Tags</FormLabel>
         <TagSelect tags={tags} setData={setData} />
-        <FormErrorMessage>{errors?.tags}</FormErrorMessage>
+        <FormErrorMessage>{errors?.tagaaas}</FormErrorMessage>
       </FormControl>
       <FormControl id="quantity" isInvalid={!!errors?.quantity}>
         <FormLabel>Quantity</FormLabel>

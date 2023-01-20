@@ -187,6 +187,7 @@ function TaobaoItems({ items }) {
               >
                 <InputGroup size="md">
                   <Input
+                    backgroundColor="white"
                     placeholder="Add item"
                     value={data.url}
                     onChange={(e) => setData('url', e.target.value)}
@@ -225,6 +226,7 @@ function TaobaoItems({ items }) {
                 <Input
                   as={DebounceInput}
                   debounceTimeout={300}
+                  backgroundColor="white"
                   placeholder="Search"
                   onChange={handleSearch}
                 />
