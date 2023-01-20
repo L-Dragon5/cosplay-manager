@@ -41,12 +41,13 @@ class SeriesController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $series
+     * @param  string  $series
      * @return \Illuminate\Http\Response
      */
-    public function show(int $series)
+    public function show($series)
     {
         $series = Series::findOrFail($series);
+
         return $series;
     }
 
@@ -54,24 +55,26 @@ class SeriesController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \App\Http\Requests\SeriesUpdateRequest  $request
-     * @param  int  $series
+     * @param  string  $series
      * @return \Illuminate\Http\Response
      */
-    public function update(SeriesUpdateRequest $request, int $series)
+    public function update(SeriesUpdateRequest $request, $series)
     {
         $series = Series::findOrFail($series);
+
         return $this->seriesService->update(Auth::user()->id, $series, $request->validated());
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $series
+     * @param  string  $series
      * @return \Illuminate\Http\Response
      */
-    public function destroy(int $series)
+    public function destroy($series)
     {
         $series = Series::findOrFail($series);
+
         return $this->seriesService->delete(Auth::user()->id, $series);
     }
 }

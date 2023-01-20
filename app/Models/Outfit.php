@@ -2,15 +2,12 @@
 
 namespace App\Models;
 
-use App\Traits\AutoIncrementModel;
 use App\Models\Scopes\UserIdScope;
 use Illuminate\Support\Facades\Storage;
 use Jenssegers\Mongodb\Eloquent\Model;
 
 class Outfit extends Model
 {
-    use AutoIncrementModel;
-
     protected $fillable = [
         'user_id',
         'character_id',
@@ -22,7 +19,6 @@ class Outfit extends Model
         'storage_location',
         'times_worn',
     ];
-    protected $keyType = 'int';
 
     protected static function booted()
     {
@@ -46,6 +42,6 @@ class Outfit extends Model
 
     public function tags()
     {
-        return $this->belongsToMany(Tag::class, 'items_tags');
+        return $this->belongsToMany(Tag::class, null, 'outfit_ids', 'tag_ids');
     }
 }

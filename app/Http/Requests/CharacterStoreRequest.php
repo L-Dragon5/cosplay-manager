@@ -25,7 +25,7 @@ class CharacterStoreRequest extends FormRequest
     {
         return [
             'name' => 'required|string',
-            'series_id' => 'required|integer',
+            'series_id' => 'required|string',
             'image' => 'nullable|string',
         ];
     }

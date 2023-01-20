@@ -24,7 +24,7 @@ class UserController extends Controller
     {
         $credentials = $request->validate([
             'email' => ['required', 'email'],
-            'password' => ['required',]
+            'password' => ['required'],
         ]);
 
         if (Auth::attempt($credentials)) {
@@ -50,12 +50,10 @@ class UserController extends Controller
             return back()->withErrors('E-mail is already registered');
         }
 
-        $user = new User([
+        $user = User::create([
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
         ]);
-        $user->nextid();
-        $user->save();
 
         return to_route('login');
     }

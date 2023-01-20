@@ -25,7 +25,7 @@ class TagStoreRequest extends FormRequest
     {
         return [
             'title' => 'required|string',
-            'parent_id' => 'required|numeric',
+            'parent_id' => 'required|string',
         ];
     }
 }

@@ -2,20 +2,16 @@
 
 namespace App\Models;
 
-use App\Traits\AutoIncrementModel;
 use App\Models\Scopes\UserIdScope;
 use Jenssegers\Mongodb\Eloquent\Model;
 
 class Tag extends Model
 {
-    use AutoIncrementModel;
-
     protected $fillable = [
         'user_id',
         'title',
         'parent_id',
     ];
-    protected $keyType = 'int';
     public $timestamps = false;
 
     protected static function booted()
@@ -25,11 +21,11 @@ class Tag extends Model
 
     public function items()
     {
-        return $this->belongsToMany(Item::class, 'items_tags');
+        return $this->belongsToMany(Item::class, null, 'tag_ids', 'item_ids');
     }
 
     public function outfits()
     {
-        return $this->belongsToMany(Outfit::class, 'outfits_tags');
+        return $this->belongsToMany(Outfit::class, null, 'tag_ids', 'outfit_ids');
     }
 }

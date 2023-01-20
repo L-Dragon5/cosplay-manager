@@ -24,40 +24,24 @@ class TagController extends Controller
     {
         $tags = $this->tagService->retrieveAll();
 
-        return Inertia::render('Tags/Index', ['tags' => $tags]);
+        return Inertia::render('Authenticated/TagManager/TagManager', ['tags' => $tags]);
     }
 
-    /**
-     * Display tags for selected item for Select.
-     *
-     * @param  int  $itemId
-     * @return \Illuminate\Http\Response
-     */
-    public function tagsByItemSelect($itemId)
+    public function retrieveAll(string $itemId = null, string $outfitId = null)
     {
-        return $this->tagService->retrieveByItemSelect($itemId);
-    }
-
-    /**
-     * Display tags for selected outfit for Select.
-     *
-     * @param  int  $outfitId
-     * @return \Illuminate\Http\Response
-     */
-    public function tagsByOutfitSelect($outfitId)
-    {
-        return $this->tagService->retrieveByOutfitSelect($outfitId);
+        return $this->tagService->retrieveAll($itemId, $outfitId);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $tag
+     * @param  string  $tag
      * @return \Illuminate\Http\Response
      */
-    public function show(int $tag)
+    public function show($tag)
     {
         $tag = Tag::findOrFail($tag);
+
         return $tag;
     }
 
@@ -76,24 +60,26 @@ class TagController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \App\Http\Requests\TagUpdateRequest  $request
-     * @param  int  $tag
+     * @param  string  $tag
      * @return \Illuminate\Http\Response
      */
-    public function update(TagUpdateRequest $request, int $tag)
+    public function update(TagUpdateRequest $request, $tag)
     {
         $tag = Tag::findOrFail($tag);
+
         return $this->tagService->update(Auth::user()->id, $tag, $request->validated());
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $tag
+     * @param  string  $tag
      * @return \Illuminate\Http\Response
      */
-    public function destroy(int $tag)
+    public function destroy($tag)
     {
         $tag = Tag::findOrFail($tag);
+
         return $this->tagService->delete(Auth::user()->id, $tag);
     }
 }

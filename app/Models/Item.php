@@ -2,19 +2,15 @@
 
 namespace App\Models;
 
-use App\Traits\AutoIncrementModel;
 use App\Models\Scopes\UserIdScope;
 use Illuminate\Support\Facades\Storage;
 use Jenssegers\Mongodb\Eloquent\Model;
 
 class Item extends Model
 {
-    use AutoIncrementModel;
-
     protected $table = 'items';
     protected $fillable = [
         'user_id',
-        'tag_id',
         'image_url',
         'original_title',
         'custom_title',
@@ -26,7 +22,6 @@ class Item extends Model
         'is_archived',
         'archived_at',
     ];
-    protected $keyType = 'int';
 
     protected static function booted()
     {
@@ -42,6 +37,6 @@ class Item extends Model
 
     public function tags()
     {
-        return $this->belongsToMany(Tag::class, 'outfits_tags');
+        return $this->belongsToMany(Tag::class, null, 'item_ids', 'tag_ids');
     }
 }

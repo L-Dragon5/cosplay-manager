@@ -1,6 +1,7 @@
 module.exports = {
   parserOptions: {
     sourceType: 'module',
+    ecmaVersion: 2020,
   },
   plugins: ['prettier', 'simple-import-sort', 'import'],
   extends: [

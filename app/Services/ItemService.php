@@ -22,10 +22,10 @@ class ItemService
     /**
      * Create new Item.
      *
-     * @param  int  $userId
+     * @param  string  $userId
      * @param  array  $validated
      */
-    public function create(int $userId, array $validated)
+    public function create(string $userId, array $validated)
     {
         $info = [];
 
@@ -111,7 +111,7 @@ class ItemService
             if ($exists) {
                 return back()->withErrors('Item already exists');
             } else {
-                $item = new Item([
+                $item = Item::create([
                     'user_id' => $userId,
                     'image_url' => $info['image'],
                     'original_title' => $info['title'],
@@ -119,10 +119,8 @@ class ItemService
                     'listing_url' => $info['url'],
                     'original_price' => $info['price'],
                 ]);
-                $item->nextid();
-                $success = $item->save();
 
-                if ($success) {
+                if (!empty($item)) {
                     return to_route('taobao-organizer');
                 } else {
                     return back()->withErrors('Something went wrong while adding item');
@@ -134,59 +132,30 @@ class ItemService
     /**
      * Update existing item.
      *
-     * @param  int  $userId
+     * @param  string  $userId
      * @param  \App\Models\Item  $item
      * @param  array  $validated
      */
-    public function update(int $userId, Item $item, array $validated)
+    public function update(string $userId, Item $item, array $validated)
     {
         if ($item->user_id === $userId) {
-            if (isset($validated['tags'])) {
-                $tags = $validated['tags'];
-                unset($validated['tags']);
-            }
+            ['tags' => $incoming_tags] = $validated;
+            unset($validated['tags']);
 
             $item->fill($validated);
 
             // If they want to change tags.
-            if (!empty($tags)) {
-                $old_tags = DB::table('items_tags')->where('item_id', $item->id)->pluck('tag_id')->toArray();
-                $old_tags = (!is_array($old_tags)) ? [$old_tags] : $old_tags;
-                $incoming_tags = (!is_array($validated['tags'])) ? [$validated['tags']] : $validated['tags'];
-
+            if (!empty($incoming_tags)) {
+                $old_tags = $item->tags()->pluck('_id')->toArray();
                 $tags_to_remove = array_diff($old_tags, $incoming_tags);
                 $tags_to_insert = array_diff($incoming_tags, $old_tags);
 
                 if (!empty($tags_to_insert)) {
-                    foreach ($tags_to_insert as $tag_id) {
-                        if (!empty($tag_id)) {
-                            $tag = Tag::find($tag_id);
-
-                            // Tag doesn't exist
-                            if (empty($tag)) {
-                                $new_tag = new Tag([
-                                    'user_id' => $user_id,
-                                    'title' => $tag_id,
-                                ]);
-                                $new_tag->nextid();
-                                $new_tag->save();
-
-                                DB::table('items_tags')->insertOrIgnore(
-                                    ['item_id' => $item->id, 'tag_id' => $new_tag->id]
-                                );
-                            } else {
-                                DB::table('items_tags')->insertOrIgnore(
-                                    ['item_id' => $item->id, 'tag_id' => $tag->id]
-                                );
-                            }
-                        }
-                    }
+                    $item->tags()->attach($tags_to_insert);
                 }
 
                 if (!empty($tags_to_remove)) {
-                    foreach ($tags_to_remove as $tag_id) {
-                        DB::table('items_tags')->where(['item_id' => $item->id, 'tag_id' => $tag_id])->delete();
-                    }
+                    $item->tags()->detach($tags_to_remove);
                 }
             }
 
@@ -205,10 +174,10 @@ class ItemService
     /**
      * Remove existing item.
      *
-     * @param  int  $userId
+     * @param  string  $userId
      * @param  \App\Models\Item  $item
      */
-    public function delete(int $userId, Item $item)
+    public function delete(string $userId, Item $item)
     {
         if ($item->user_id === $userId) {
             // Delete image associated with item
@@ -233,10 +202,10 @@ class ItemService
     /**
      * Archive item.
      *
-     * @param  int  $userId
+     * @param  string  $userId
      * @param  \App\Models\Item  $item
      */
-    public function archive(int $userId, Item $item)
+    public function archive(string $userId, Item $item)
     {
         if ($item->user_id === $userId) {
             $item->is_archived = true;
@@ -256,10 +225,10 @@ class ItemService
     /**
      * Unarchive item.
      *
-     * @param  int  $userId
+     * @param  string  $userId
      * @param  \App\Models\Item  $item
      */
-    public function unarchive(int $userId, Item $item)
+    public function unarchive(string $userId, Item $item)
     {
         if ($item->user_id === $userId) {
             $item->is_archived = false;

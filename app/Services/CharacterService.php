@@ -3,20 +3,31 @@
 namespace App\Services;
 
 use App\Models\Character;
-use App\Traits\DuplicateCheck;
 use App\Traits\UploadedImageSave;
 use Illuminate\Support\Facades\Storage;
 
 class CharacterService
 {
-    use DuplicateCheck, UploadedImageSave;
+    use UploadedImageSave;
+
+    /**
+     * Check current service's assigned class for duplicates.
+     *
+     * @param  string  $search
+     * @param  string  $column
+     * @return  bool
+     */
+    public function checkForDuplicate($search, $column): bool
+    {
+        return Character::where($column, '=', $search)->exists();
+    }
 
     /**
      * Retrieve all characters associated with user.
      */
     public function retrieveAll()
     {
-        return Character::withCount('outfits')
+        return Character::with('outfits')
             ->orderBy('name', 'ASC')
             ->get();
     }
@@ -35,10 +46,10 @@ class CharacterService
     /**
      * Create new Character.
      *
-     * @param  int  $userId
+     * @param  string  $userId
      * @param  array  $validated
      */
-    public function create(int $userId, array $validated)
+    public function create(string $userId, array $validated)
     {
         if ($this->checkForDuplicate($userId, $validated['name'], 'name')) {
             return back()->withErrors('Character already exists with this name');
@@ -51,7 +62,6 @@ class CharacterService
             ...$validated,
             'user_id' => $userId,
         ]);
-        $character->nextid();
 
         if (!empty($image)) {
             $character->image = $this->saveUploadedImage($image, 'character', 400);
@@ -71,11 +81,11 @@ class CharacterService
     /**
      * Update existing character.
      *
-     * @param  int  $userId
+     * @param  string  $userId
      * @param  \App\Models\Character  $character
      * @param  array  $validated
      */
-    public function update(int $userId, Character $character, array $validated)
+    public function update(string $userId, Character $character, array $validated)
     {
         if ($character->user_id === $userId) {
             // If they want to change name
@@ -112,10 +122,10 @@ class CharacterService
     /**
      * Remove existing character.
      *
-     * @param  int  $userId
+     * @param  string  $userId
      * @param  \App\Models\Character  $character
      */
-    public function delete(int $userId, Character $character)
+    public function delete(string $userId, Character $character)
     {
         if ($character->user_id === $userId) {
             // Delete all images from related outfits

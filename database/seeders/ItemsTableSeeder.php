@@ -13,7 +13,7 @@ class ItemsTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('items')->insert([
+        DB::collection('items')->insert([
             'user_id' => 1,
             'image_url' => 'storage/thumbs/0.86956200 1534464471.jpg',
             'original_title' => '2604 cosplay服装 Fate/Grand Order 迷之女主角X 新品',
@@ -22,7 +22,7 @@ class ItemsTableSeeder extends Seeder
             'original_price' => '658.00',
         ]);
 
-        DB::table('items')->insert([
+        DB::collection('items')->insert([
             'user_id' => 1,
             'image_url' => 'storage/thumbs/0.11164700 1534464473.jpg',
             'original_title' => '美萌工坊薇尔莉特cosplay京紫罗兰永恒花园女连衣裙动漫服预售',
@@ -31,7 +31,7 @@ class ItemsTableSeeder extends Seeder
             'original_price' => '638.00 - 898.00',
         ]);
 
-        DB::table('items')->insert([
+        DB::collection('items')->insert([
             'user_id' => 1,
             'image_url' => 'storage/thumbs/0.86095500 1534464657.jpg',
             'original_title' => '现货【ICOS】罪恶王冠 ?G祈 红色战斗服 金鱼装高档cos服装',
@@ -40,7 +40,7 @@ class ItemsTableSeeder extends Seeder
             'original_price' => '820.00',
         ]);
 
-        DB::table('items')->insert([
+        DB::collection('items')->insert([
             'user_id' => 1,
             'image_url' => 'storage/thumbs/0.85982900 1534464659.jpg',
             'original_title' => '现货ICOS Egoist 歌姬 chelly 精选辑 白色封面礼服 cos服 ?G祈',
@@ -49,7 +49,7 @@ class ItemsTableSeeder extends Seeder
             'original_price' => '478.00 - 488.00',
         ]);
 
-        DB::table('items')->insert([
+        DB::collection('items')->insert([
             'user_id' => 1,
             'image_url' => 'storage/thumbs/0.95907400 1534464661.jpg',
             'original_title' => '【兔爸道具】fate/FGO贞德黑贞德初始满破盔甲旗矛佩剑cos道具',
@@ -58,7 +58,7 @@ class ItemsTableSeeder extends Seeder
             'original_price' => '79.00 - 800.00',
         ]);
 
-        DB::table('items')->insert([
+        DB::collection('items')->insert([
             'user_id' => 1,
             'image_url' => 'http://img.alicdn.com/imgextra/i1/3681083810/O1CN01u8jMza1e11aO2UKGQ_!!3681083810-0-pixelsss.jpg_430x430q90.jpg',
             'original_title' => '【秀琴家 蝴蝶忍cos假发】鬼灭之刃cosplay假毛 渐变蓝紫 发饰 ?',

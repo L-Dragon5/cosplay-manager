@@ -46,7 +46,7 @@ function ItemCard({ item, setDrawerType }) {
           <HStack>
             {tags.map((tag, i) => (
               <Tag key={tag._id} colorScheme="orange" variant="outline">
-                {tag.label}
+                {tag.title}
               </Tag>
             ))}
           </HStack>

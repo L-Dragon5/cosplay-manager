@@ -13,13 +13,13 @@ class SeriesTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('series')->insert([
+        DB::collection('series')->insert([
             'user_id' => 1,
             'title' => 'Love Live!',
             'image' => '300x200.png',
         ]);
 
-        DB::table('series')->insert([
+        DB::collection('series')->insert([
             'user_id' => 1,
             'title' => 'Fate',
             'image' => '300x200.png',

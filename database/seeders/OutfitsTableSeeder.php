@@ -13,7 +13,7 @@ class OutfitsTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('outfits')->insert([
+        DB::collection('outfits')->insert([
             'user_id' => 1,
             'character_id' => 1,
             'title' => 'White Day',
@@ -23,7 +23,7 @@ class OutfitsTableSeeder extends Seeder
             'storage_location' => 'Box 1',
         ]);
 
-        DB::table('outfits')->insert([
+        DB::collection('outfits')->insert([
             'user_id' => 1,
             'character_id' => 1,
             'title' => 'Cheer',
@@ -33,7 +33,7 @@ class OutfitsTableSeeder extends Seeder
             'storage_location' => 'Box 2',
         ]);
 
-        DB::table('outfits')->insert([
+        DB::collection('outfits')->insert([
             'user_id' => 1,
             'character_id' => 2,
             'title' => 'Ghost Story',
@@ -41,7 +41,7 @@ class OutfitsTableSeeder extends Seeder
             'status' => 0,
         ]);
 
-        DB::table('outfits')->insert([
+        DB::collection('outfits')->insert([
             'user_id' => 1,
             'character_id' => 3,
             'title' => 'Default',
@@ -49,7 +49,7 @@ class OutfitsTableSeeder extends Seeder
             'status' => 0,
         ]);
 
-        DB::table('outfits')->insert([
+        DB::collection('outfits')->insert([
             'user_id' => 1,
             'character_id' => 3,
             'title' => 'Swimsuit',

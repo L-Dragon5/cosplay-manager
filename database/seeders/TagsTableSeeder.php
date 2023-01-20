@@ -13,19 +13,19 @@ class TagsTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('tags')->insert([
+        DB::collection('tags')->insert([
             'user_id' => 1,
             'parent_id' => 0,
             'title' => 'Test Tag 1',
         ]);
 
-        DB::table('tags')->insert([
+        DB::collection('tags')->insert([
             'user_id' => 1,
             'parent_id' => 0,
             'title' => 'Test Tag 2',
         ]);
 
-        DB::table('tags')->insert([
+        DB::collection('tags')->insert([
             'user_id' => 1,
             'parent_id' => 1,
             'title' => 'Test Tag 1 Child 1',

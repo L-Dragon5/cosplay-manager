@@ -1,11 +1,12 @@
 import { Box, Heading, HStack, Link, Spacer } from '@chakra-ui/react';
-import { Link as InertiaLink } from '@inertiajs/react';
+import { Link as InertiaLink, usePage } from '@inertiajs/react';
 import FileDownload from 'js-file-download';
 import React, { useState } from 'react';
 
 function Navbar() {
   const [renderForm, setRenderForm] = useState(false);
   const [modalStatus, setModalStatus] = useState(false);
+  const { url } = usePage();
 
   const downloadTBOCSV = () => {
     axios
@@ -38,13 +39,40 @@ function Navbar() {
       <Heading size="lg">CosManage</Heading>
       <Spacer />
       <HStack spacing={3}>
-        <Link as={InertiaLink} href="/cosplay-management">
+        <Link
+          as={InertiaLink}
+          href="/cosplay-management"
+          className={url.startsWith('/cosplay-management') ? 'active' : ''}
+          sx={{
+            '&.active': {
+              borderBottom: '1px solid black',
+            },
+          }}
+        >
           Cosplay Management
         </Link>
-        <Link as={InertiaLink} href="/taobao-organizer">
+        <Link
+          as={InertiaLink}
+          href="/taobao-organizer"
+          className={url.startsWith('/taobao-organizer') ? 'active' : ''}
+          sx={{
+            '&.active': {
+              borderBottom: '1px solid black',
+            },
+          }}
+        >
           Taobao Organizer
         </Link>
-        <Link as={InertiaLink} href="/tag-manager">
+        <Link
+          as={InertiaLink}
+          href="/tag-manager"
+          className={url.startsWith('/tag-manager') ? 'active' : ''}
+          sx={{
+            '&.active': {
+              borderBottom: '1px solid black',
+            },
+          }}
+        >
           Tag Manager
         </Link>
       </HStack>

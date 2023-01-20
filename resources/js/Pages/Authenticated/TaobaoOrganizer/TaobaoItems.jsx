@@ -7,11 +7,11 @@ import {
   CheckboxGroup,
   Drawer,
   DrawerBody,
+  DrawerCloseButton,
+  DrawerContent,
   DrawerFooter,
   DrawerHeader,
   DrawerOverlay,
-  DrawerContent,
-  DrawerCloseButton,
   Flex,
   FormControl,
   FormErrorMessage,
@@ -20,18 +20,20 @@ import {
   HStack,
   Image,
   Input,
-  Link,
   InputGroup,
   InputLeftElement,
   InputRightElement,
+  Link,
   SimpleGrid,
+  Tag,
   Text,
+  useDisclosure,
   VStack,
-  useDisclosure
 } from '@chakra-ui/react';
 import { Head, router, useForm } from '@inertiajs/react';
 import React, { useEffect, useState } from 'react';
 import { DebounceInput } from 'react-debounce-input';
+
 import Navbar from '../../components/Navbar';
 import ItemCard from './ItemCard';
 import ItemEditForm from './ItemEditForm';
@@ -51,7 +53,7 @@ function TaobaoItems({ items }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   function submit(e) {
-    e.preventDefault;
+    e.preventDefault();
     post('/items', {
       preserveScroll: true,
       onSuccess: () => reset('url'),
@@ -126,7 +128,7 @@ function TaobaoItems({ items }) {
   const handleDelete = (e) => {
     router.delete(`/items/${activeItem._id}`);
     onClose();
-  }
+  };
 
   // Set filter mask based on checkboxes.
   useEffect(() => {
@@ -155,7 +157,7 @@ function TaobaoItems({ items }) {
       } else if (drawerType.includes('Unarchive')) {
         router.put(`/items/${id}/unarchive`);
       } else {
-        setActiveItem(items.find(item => item._id == id));
+        setActiveItem(items.find((item) => item._id == id));
         onOpen();
       }
     }
@@ -214,13 +216,16 @@ function TaobaoItems({ items }) {
               p={1}
             >
               <InputGroup>
-              <InputLeftElement pointerEvents="none" children={<SearchIcon color="gray.300" />} />
-              <Input
-                as={DebounceInput}
-                debounceTimeout={300}
-                placeholder="Search"
-                onChange={handleSearch}
-              />
+                <InputLeftElement
+                  pointerEvents="none"
+                  children={<SearchIcon color="gray.300" />}
+                />
+                <Input
+                  as={DebounceInput}
+                  debounceTimeout={300}
+                  placeholder="Search"
+                  onChange={handleSearch}
+                />
               </InputGroup>
             </FormControl>
 
@@ -250,25 +255,44 @@ function TaobaoItems({ items }) {
 
       <SimpleGrid minChildWidth="250px" spacing={4} p={4}>
         {activeItems &&
-          activeItems.map((item) => <ItemCard key={`i-${item._id}`} item={item} setDrawerType={setDrawerType} />)
-        }
+          activeItems.map((item) => (
+            <ItemCard
+              key={`i-${item._id}`}
+              item={item}
+              setDrawerType={setDrawerType}
+            />
+          ))}
       </SimpleGrid>
 
       <Drawer size="md" isOpen={isOpen} placement="right" onClose={onClose}>
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>{drawerType.split('-').shift()} - {activeItem.custom_title ? activeItem.custom_title : activeItem.original_title}</DrawerHeader>
+          <DrawerHeader>
+            {drawerType.split('-').shift()} -{' '}
+            {activeItem.custom_title
+              ? activeItem.custom_title
+              : activeItem.original_title}
+          </DrawerHeader>
           <DrawerBody>
             {drawerType.includes('View') && (
               <VStack alignItems="flex-start">
                 <Image src={activeItem.image_url} />
-                {activeItem.tags && 
-                  <Text><strong>Tags:</strong> {activeItem.tags.join(', ')}</Text>
-                }
-                {activeItem.custom_title && 
-                  <Text><strong>Custom Title:</strong> {activeItem.custom_title}</Text>
-                }
+                {activeItem.tags && (
+                  <Text>
+                    <strong>Tags:</strong>{' '}
+                    {activeItem.tags.map((tag, i) => (
+                      <Tag key={tag._id} colorScheme="orange" variant="outline">
+                        {tag.title}
+                      </Tag>
+                    ))}
+                  </Text>
+                )}
+                {activeItem.custom_title && (
+                  <Text>
+                    <strong>Custom Title:</strong> {activeItem.custom_title}
+                  </Text>
+                )}
                 <Text>
                   <strong>Original Title:</strong> {activeItem.original_title}
                 </Text>
@@ -281,11 +305,11 @@ function TaobaoItems({ items }) {
                 <Text>
                   <strong>Quantity:</strong> {activeItem.quantity}
                 </Text>
-                {activeItem.notes &&
+                {activeItem.notes && (
                   <Text>
                     <strong>Notes:</strong> {activeItem.notes}
                   </Text>
-                }
+                )}
                 <Text>
                   <strong>Created At:</strong>{' '}
                   {new Date(activeItem.created_at).toLocaleDateString()}
@@ -294,7 +318,13 @@ function TaobaoItems({ items }) {
                   <strong>Updated At:</strong>{' '}
                   {new Date(activeItem.updated_at).toLocaleDateString()}
                 </Text>
-                <Button as={Link} colorScheme="orange" width="full" href={activeItem.listing_url} isExternal>
+                <Button
+                  as={Link}
+                  colorScheme="orange"
+                  width="full"
+                  href={activeItem.listing_url}
+                  isExternal
+                >
                   Original Listing
                 </Button>
               </VStack>
@@ -304,18 +334,30 @@ function TaobaoItems({ items }) {
               <ItemEditForm item={activeItem} onClose={onClose} />
             )}
 
-            {drawerType.includes('Delete') &&  (
+            {drawerType.includes('Delete') && (
               <VStack>
-                <Text>Are you sure you want to permanently delete [{activeItem.custom_title ? activeItem.custom_title : activeItem.original_title}]? This action is irreversible.</Text>
+                <Text>
+                  Are you sure you want to permanently delete [
+                  {activeItem.custom_title
+                    ? activeItem.custom_title
+                    : activeItem.original_title}
+                  ]? This action is irreversible.
+                </Text>
                 <ButtonGroup>
-                  <Button colorScheme="red" variant="outline" onClick={onClose}>No</Button>
-                  <Button colorScheme="red" onClick={handleDelete}>Yes</Button>
+                  <Button colorScheme="red" variant="outline" onClick={onClose}>
+                    No
+                  </Button>
+                  <Button colorScheme="red" onClick={handleDelete}>
+                    Yes
+                  </Button>
                 </ButtonGroup>
               </VStack>
             )}
           </DrawerBody>
           <DrawerFooter>
-            <Button variant="outline" mr={3} onClick={onClose}>Close</Button>
+            <Button variant="outline" mr={3} onClick={onClose}>
+              Close
+            </Button>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>

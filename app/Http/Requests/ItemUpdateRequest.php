@@ -27,8 +27,7 @@ class ItemUpdateRequest extends FormRequest
             'custom_title' => 'nullable|string',
             'quantity' => 'nullable|numeric',
             'notes' => 'nullable|string',
-            'tags' => 'nullable',
-            'tags.*' => 'nullable|string',
+            'tags' => 'nullable|array',
         ];
     }
 }

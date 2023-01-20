@@ -13,17 +13,17 @@ class ItemsTagTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('items_tags')->insert([
+        DB::collection('items_tags')->insert([
             'item_id' => 1,
             'tag_id' => 1,
         ]);
 
-        DB::table('items_tags')->insert([
+        DB::collection('items_tags')->insert([
             'item_id' => 2,
             'tag_id' => 2,
         ]);
 
-        DB::table('items_tags')->insert([
+        DB::collection('items_tags')->insert([
             'item_id' => 3,
             'tag_id' => 3,
         ]);

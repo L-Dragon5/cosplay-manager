@@ -25,7 +25,7 @@ class OutfitStoreRequest extends FormRequest
     {
         return [
             'title' => 'required|string',
-            'character_id' => 'required|integer',
+            'character_id' => 'required|string',
             'image' => 'nullable|string',
             'status' => 'required|integer',
             'obtained_on' => 'nullable|date_format:Y-m-d',

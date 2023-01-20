@@ -5,20 +5,31 @@ namespace App\Services;
 use App\Models\Character;
 use App\Models\Outfit;
 use App\Models\Series;
-use App\Traits\DuplicateCheck;
 use App\Traits\UploadedImageSave;
 use Illuminate\Support\Facades\Storage;
 
 class SeriesService
 {
-    use DuplicateCheck, UploadedImageSave;
+    use UploadedImageSave;
+
+    /**
+     * Check current service's assigned class for duplicates.
+     *
+     * @param  string  $search
+     * @param  string  $column
+     * @return  bool
+     */
+    public function checkForDuplicate($search, $column): bool
+    {
+        return Series::where($column, '=', $search)->exists();
+    }
 
     /**
      * Retrieve all series associated with user.
      */
     public function retrieveAll()
     {
-        return Series::withCount('characters')
+        return Series::with('characters')
             ->orderBy('title', 'ASC')
             ->get();
     }
@@ -26,10 +37,10 @@ class SeriesService
     /**
      * Create new Series.
      *
-     * @param  int  $userId
+     * @param  string  $userId
      * @param  array  $validated
      */
-    public function create(int $userId, array $validated)
+    public function create(string $userId, array $validated)
     {
         if ($this->checkForDuplicate($userId, $validated['title'], 'title')) {
             return back()->withErrors('Series already exists with this title');
@@ -42,7 +53,6 @@ class SeriesService
             ...$validated,
             'user_id' => $userId,
         ]);
-        $series->nextid();
 
         // Store image.
         if (!empty($image)) {
@@ -63,11 +73,11 @@ class SeriesService
     /**
      * Update existing series.
      *
-     * @param  int  $userId
+     * @param  string  $userId
      * @param  \App\Models\Series  $series
      * @param  array  $validated
      */
-    public function update(int $userId, Series $series, array $validated)
+    public function update(string $userId, Series $series, array $validated)
     {
         if ($series->user_id === $userId) {
             ['title' => $title, 'image' => $image] = $validated;
@@ -108,10 +118,10 @@ class SeriesService
     /**
      * Remove existing series.
      *
-     * @param  int  $userId
+     * @param  string  $userId
      * @param  \App\Models\Series  $series
      */
-    public function delete(int $userId, Series $series)
+    public function delete(string $userId, Series $series)
     {
         if ($series->user_id === $userId) {
             // Delete all images from related characters and outfits

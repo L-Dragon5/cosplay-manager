@@ -4,14 +4,25 @@ namespace App\Services;
 
 use App\Models\Outfit;
 use App\Models\Tag;
-use App\Traits\DuplicateCheck;
 use App\Traits\UploadedImageSave;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class OutfitService
 {
-    use DuplicateCheck, UploadedImageSave;
+    use UploadedImageSave;
+
+    /**
+     * Check current service's assigned class for duplicates.
+     *
+     * @param  string  $search
+     * @param  string  $column
+     * @return  bool
+     */
+    public function checkForDuplicate($search, $column): bool
+    {
+        return Outfit::where($column, '=', $search)->exists();
+    }
 
     /**
      * Retrieve all outfits associated with user.
@@ -26,7 +37,7 @@ class OutfitService
                 ->get();
         }
 
-        return Outfit::with(['tags' => fn ($query) => $query->orderBy('title', 'ASC'), 'character'])
+        return Outfit::with(['tags' => fn ($query) => $query->orderBy('title', 'ASC')])
             ->orderBy('title', 'ASC')
             ->get();
     }
@@ -45,10 +56,10 @@ class OutfitService
     /**
      * Create new Outfit.
      *
-     * @param  int  $userId
+     * @param  string  $userId
      * @param  array  $validated
      */
-    public function create(int $userId, array $validated)
+    public function create(string $userId, array $validated)
     {
         if ($this->checkForDuplicate($userId, $validated['title'], 'title')) {
             return back()->withErrors('Outfit already exists with this title');
@@ -62,7 +73,6 @@ class OutfitService
             ...$validated,
             'user_id' => $userId,
         ]);
-        $outfit->nextid();
 
         // Store image.
         if (!empty($image)) {
@@ -81,16 +91,16 @@ class OutfitService
 
                     // Tag doesn't exist
                     if (empty($tag)) {
-                        $new_tag = new Tag(['user_id' => $userId, 'title' => $tag_id]);
-                        $new_tag->nextid();
-                        $new_tag->save();
+                        $new_tag = Tag::create(['user_id' => $userId, 'title' => $tag_id]);
 
-                        DB::table('outfits_tags')->insertOrIgnore(
-                            ['outfit_id' => $outfit->id, 'tag_id' => $new_tag->id]
+                        DB::collection('outfits_tags')->update(
+                            ['outfit_id' => $outfit->id, 'tag_id' => $new_tag->id],
+                            ['upsert' => true]
                         );
                     } else {
-                        DB::table('outfits_tags')->insertOrIgnore(
-                            ['outfit_id' => $outfit->id, 'tag_id' => $tag->id]
+                        DB::collection('outfits_tags')->update(
+                            ['outfit_id' => $outfit->id, 'tag_id' => $tag->id],
+                            ['upsert' => true]
                         );
                     }
                 }
@@ -109,11 +119,11 @@ class OutfitService
     /**
      * Update existing outfit.
      *
-     * @param  int  $userId
+     * @param  string  $userId
      * @param  \App\Models\Outfit  $outfit
      * @param  array  $validated
      */
-    public function update(int $userId, Outfit $outfit, array $validated)
+    public function update(string $userId, Outfit $outfit, array $validated)
     {
         if ($outfit->user_id === $userId) {
             ['title' => $title, 'image' => $image, 'tags' => $tags] = $validated;
@@ -142,7 +152,7 @@ class OutfitService
 
             // If they want to change tags
             if (!empty($tags)) {
-                $old_tags = DB::table('outfits_tags')->where('outfit_id', $outfit->id)->pluck('tag_id')->toArray();
+                $old_tags = DB::collection('outfits_tags')->where('outfit_id', $outfit->id)->pluck('tag_id')->toArray();
                 $old_tags = (!is_array($old_tags)) ? [$old_tags] : $old_tags;
                 $incoming_tags = (!is_array($tags)) ? [$tags] : $tags;
 
@@ -156,19 +166,19 @@ class OutfitService
 
                             // Tag doesn't exist
                             if (empty($tag)) {
-                                $new_tag = new Tag([
+                                $new_tag = Tag::create([
                                     'user_id' => $user_id,
                                     'title' => $tag_id,
                                 ]);
-                                $new_tag->nextid();
-                                $new_tag->save();
 
-                                DB::table('outfits_tags')->insertOrIgnore(
-                                    ['outfit_id' => $outfit->id, 'tag_id' => $new_tag->id]
+                                DB::collection('outfits_tags')->update(
+                                    ['outfit_id' => $outfit->id, 'tag_id' => $new_tag->id],
+                                    ['upsert' => true]
                                 );
                             } else {
-                                DB::table('outfits_tags')->insertOrIgnore(
-                                    ['outfit_id' => $outfit->id, 'tag_id' => $tag->id]
+                                DB::collection('outfits_tags')->update(
+                                    ['outfit_id' => $outfit->id, 'tag_id' => $tag->id],
+                                    ['upsert' => true]
                                 );
                             }
                         }
@@ -177,7 +187,7 @@ class OutfitService
 
                 if (!empty($tags_to_remove)) {
                     foreach ($tags_to_remove as $tag_id) {
-                        DB::table('outfits_tags')->where(['outfit_id' => $outfit->id, 'tag_id' => $tag_id])->delete();
+                        DB::collection('outfits_tags')->where(['outfit_id' => $outfit->id, 'tag_id' => $tag_id])->delete();
                     }
                 }
             }
@@ -197,10 +207,10 @@ class OutfitService
     /**
      * Remove existing outfit.
      *
-     * @param  int  $userId
+     * @param  string  $userId
      * @param  \App\Models\Outfit  $outfit
      */
-    public function delete(int $userId, Outfit $outfit)
+    public function delete(string $userId, Outfit $outfit)
     {
         if ($outfit->user_id === $userId) {
             // Delete outfit images
@@ -230,11 +240,11 @@ class OutfitService
     /**
      * Delete image associated to outfit.
      *
-     * @param  int  $userId
+     * @param  string  $userId
      * @param  \App\Models\Outfit  $outfit
      * @param  int  $index
      */
-    public function deleteImage(int $userId, Outfit $outfit, int $index)
+    public function deleteImage(string $userId, Outfit $outfit, int $index)
     {
         if ($outfit->user_id === $userId) {
             // Get stored images as an array

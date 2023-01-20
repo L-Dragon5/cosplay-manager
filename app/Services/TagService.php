@@ -2,78 +2,49 @@
 
 namespace App\Services;
 
+use App\Models\Item;
+use App\Models\Outfit;
 use App\Models\Tag;
-use App\Traits\DuplicateCheck;
-use Illuminate\Support\Facades\DB;
 
 class TagService
 {
-    use DuplicateCheck;
+    /**
+     * Check current service's assigned class for duplicates.
+     *
+     * @param  string  $search
+     * @param  string  $column
+     * @return  bool
+     */
+    public function checkForDuplicate($search, $column): bool
+    {
+        return Tag::where($column, '=', $search)->exists();
+    }
 
     /**
      * Retrieve all tags associated with user.
      */
-    public function retrieveAll()
+    public function retrieveAll($itemId = null, $outfitId = null)
     {
         $tags = Tag::orderBy('title', 'ASC')
             ->get();
 
+        if (!empty($itemId)) {
+            $item_tags = Item::findOrFail($itemId)->tags()->pluck('_id')->toArray();
+        }
+        if (!empty($outfitId)) {
+            $outfit_tags = Outfit::findOrFail($outfitId)->tags()->pluck('_id')->toArray();
+        }
+
         $temp_tags = [];
         foreach ($tags as $tag) {
+            $tag->name = $tag->title;
             $tag->label = $tag->title;
-            $tag->value = $tag->id;
-            $tag->checked = true;
-            $temp_tags[$tag['parent_id']][] = $tag;
-        }
+            $tag->value = $tag->_id;
 
-        if (!empty($temp_tags)) {
-            $tags_tree = $this->createTree($temp_tags, $temp_tags[0]);
-        } else {
-            $tags_tree = [];
-        }
-
-        return $tags_tree;
-    }
-
-    public function retrieveByItemSelect($itemId)
-    {
-        $all_tags = Tag::orderBy('title', 'ASC')
-            ->get();
-        $item_tags = DB::table('items_tags')->where('items_tags.item_id', $itemId)->pluck('tag_id')->toArray();
-
-        $temp_tags = [];
-        foreach ($all_tags as $tag) {
-            $tag->label = $tag->title;
-            $tag->value = $tag->id;
-
-            if (in_array($tag->id, $item_tags)) {
+            if (!empty($item_tags) && in_array($tag->_id, $item_tags)) {
                 $tag->checked = true;
             }
-
-            $temp_tags[$tag['parent_id']][] = $tag;
-        }
-
-        if (!empty($temp_tags)) {
-            $tags_tree = $this->createTree($temp_tags, $temp_tags[0]);
-        } else {
-            $tags_tree = [];
-        }
-
-        return $tags_tree;
-    }
-
-    public function retrieveByOutfitSelect($outfitId)
-    {
-        $all_tags = Tag::orderBy('title', 'ASC')
-            ->get();
-        $outfit_tags = DB::table('outfits_tags')->where('outfits_tags.outfit_id', $outfitId)->pluck('tag_id')->toArray();
-
-        $temp_tags = [];
-        foreach ($all_tags as $tag) {
-            $tag->label = $tag->title;
-            $tag->value = $tag->id;
-
-            if (in_array($tag->id, $outfit_tags)) {
+            if (!empty($outfit_tags) && in_array($tag->_id, $outfit_tags)) {
                 $tag->checked = true;
             }
 
@@ -92,23 +63,21 @@ class TagService
     /**
      * Create new Tag.
      *
-     * @param  int  $userId
+     * @param  string  $userId
      * @param  array  $validated
      */
-    public function create(int $userId, array $validated)
+    public function create(string $userId, array $validated)
     {
-        if ($this->checkForDuplicate($userId, $validated['title'], 'title')) {
+        if ($this->checkForDuplicate($validated['title'], 'title')) {
             return back()->withErrors('Tag already exists with this title');
         }
 
-        $tag = new Tag([
+        $tag = Tag::create([
             ...$validated,
             'user_id' => $userId,
         ]);
-        $tag->nextid();
-        $success = $tag->save();
 
-        if ($success) {
+        if (!empty($tag)) {
             return to_route('tags.index');
         } else {
             return back()->withErrors('Something went wrong while trying to create a new tag');
@@ -118,11 +87,11 @@ class TagService
     /**
      * Update existing tag.
      *
-     * @param  int  $userId
+     * @param  string  $userId
      * @param  \App\Models\Tag  $tag
      * @param  array  $validated
      */
-    public function update(int $userId, Tag $tag, array $validated)
+    public function update(string $userId, Tag $tag, array $validated)
     {
         if ($tag->user_id === $userId) {
             ['title' => $title] = $validated;
@@ -130,7 +99,7 @@ class TagService
             // If they want to change title
             if (!empty($title)) {
                 // Check if new title is same as old title
-                if ($this->checkForDuplicate($userId, $title, 'title')) {
+                if ($this->checkForDuplicate($title, 'title')) {
                     return back()->withErrors('Tag already exists with this title');
                 } else {
                     $tag->title = $title;
@@ -152,10 +121,10 @@ class TagService
     /**
      * Remove existing tag.
      *
-     * @param  int  $userId
+     * @param  string  $userId
      * @param  \App\Models\Tag  $tag
      */
-    public function delete(int $userId, Tag $tag)
+    public function delete(string $userId, Tag $tag)
     {
         if ($tag->user_id === $userId) {
             $success = $tag->delete();
@@ -179,6 +148,8 @@ class TagService
         foreach ($parent as $k => $v) {
             if (isset($list[$v['id']])) {
                 $v['children'] = $this->createTree($list, $list[$v['id']]);
+            } else {
+                $v['children'] = [];
             }
 
             $tree[] = $v;

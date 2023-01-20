@@ -5,14 +5,19 @@ namespace App\Http\Controllers;
 use App\Http\Requests\OutfitStoreRequest;
 use App\Http\Requests\OutfitUpdateRequest;
 use App\Models\Outfit;
+use App\Services\CharacterService;
 use App\Services\OutfitService;
+use App\Services\SeriesService;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class OutfitController extends Controller
 {
-    public function __construct(public OutfitService $outfitService)
-    {
+    public function __construct(
+        public OutfitService $outfitService,
+        public SeriesService $seriesService,
+        public CharacterService $characterService
+    ) {
     }
 
     /**
@@ -24,8 +29,14 @@ class OutfitController extends Controller
     public function index()
     {
         $outfits = $this->outfitService->retrieveAll();
+        $series = $this->seriesService->retrieveAll();
+        $characters = $this->characterService->retrieveAll();
 
-        return Inertia::render('Outfits/Index', ['outfits' => $outfits]);
+        return Inertia::render('Authenticated/CosplayManagement/CosplayList', [
+            'outfits' => $outfits,
+            'series' => $series,
+            'characters' => $characters,
+        ]);
     }
 
     /**
@@ -57,37 +68,40 @@ class OutfitController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \App\Http\Requests\OutfitUpdateRequest  $request
-     * @param  int  $outfit
+     * @param  string  $outfit
      * @return \Illuminate\Http\Response
      */
-    public function update(OutfitUpdateRequest $request, int $outfit)
+    public function update(OutfitUpdateRequest $request, $outfit)
     {
         $outfit = Outfit::findOrFail($outfit);
+
         return $this->outfitService->update(Auth::user()->id, $outfit, $request->validated());
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $outfit
+     * @param  string  $outfit
      * @return \Illuminate\Http\Response
      */
-    public function destroy(int $outfit)
+    public function destroy($outfit)
     {
         $outfit = Outfit::findOrFail($outfit);
+
         return $this->outfitService->delete(Auth::user()->id, $outfit);
     }
 
     /**
      * Remove image from outfit.
      *
-     * @param  int  $outfit
+     * @param  string  $outfit
      * @param  int  $index
      * @return \Illuminate\Http\Response
      */
-    public function deleteImage(int $outfit, $index)
+    public function deleteImage($outfit, int $index)
     {
         $outfit = Outfit::findOrFail($outfit);
+
         return $this->outfitService->deleteImage(Auth::user()->id, $outfit, $index);
     }
 }
