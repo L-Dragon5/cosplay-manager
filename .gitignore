@@ -6,7 +6,10 @@
 /public/js
 /storage/*.key
 /vendor
+/.serverless
 .env
+.env.local
+.env.production
 .env.backup
 .phpunit.result.cache
 Homestead.json
