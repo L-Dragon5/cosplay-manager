@@ -20,7 +20,7 @@ function ItemCard({ item, setDrawerType }) {
   const handleView = (id) => setDrawerType(`View-${id}`);
   const handleEdit = (id) => setDrawerType(`Edit-${id}`);
   const handleArchive = (id) => {
-    if (is_archived) {
+    if (is_archived == 1) {
       setDrawerType(`Unarchive-${id}`);
     } else {
       setDrawerType(`Archive-${id}`);
@@ -33,8 +33,8 @@ function ItemCard({ item, setDrawerType }) {
       <Card
         height="full"
         maxW={400}
-        opacity={is_archived ? '75%' : '100%'}
-        border={is_archived ? '2px solid red' : 'none'}
+        opacity={is_archived == 1 ? '75%' : '100%'}
+        border={is_archived == 1 ? '2px solid red' : 'none'}
         boxShadow="md"
       >
         <CardHeader flexGrow={1}>
@@ -71,7 +71,7 @@ function ItemCard({ item, setDrawerType }) {
             />
             <IconButton
               colorScheme="orange"
-              aria-label={is_archived ? 'Unarchive' : 'Archive'}
+              aria-label={is_archived == 1 ? 'Unarchive' : 'Archive'}
               icon={<CalendarIcon />}
               onClick={() => handleArchive(item._id)}
             />

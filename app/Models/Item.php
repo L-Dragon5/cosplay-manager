@@ -29,7 +29,7 @@ class Item extends Model
 
         static::retrieved(function (Item $item) {
             // If local image, add / for root directory
-            if (filter_var($item->image_url, FILTER_VALIDATE_URL) === false) {
+            if (str_contains('alicdn', $item->image_url)) {
                 $item->image_url = Storage::url($item->image_url);
             }
         });

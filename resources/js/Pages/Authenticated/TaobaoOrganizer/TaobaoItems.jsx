@@ -75,7 +75,7 @@ function TaobaoItems({ items }) {
           setActiveItems(
             items.filter(
               (item) =>
-                !!item.is_archived === false &&
+                !!item.is_archived == false &&
                 (String(item.custom_title)
                   .toLowerCase()
                   .indexOf(lowerSearch) !== -1 ||
@@ -92,7 +92,7 @@ function TaobaoItems({ items }) {
           setActiveItems(
             items.filter(
               (item) =>
-                !!item.is_archived === true &&
+                !!item.is_archived == true &&
                 (String(item.custom_title)
                   .toLowerCase()
                   .indexOf(lowerSearch) !== -1 ||
