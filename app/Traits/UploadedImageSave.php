@@ -42,7 +42,7 @@ trait UploadedImageSave
                 // Create image, resize, and save
                 $final_img = Image::make($img)->resize(null, $height, function ($constraint) {
                     $constraint->aspectRatio();
-                })->encode('jpg', 90);
+                })->encode('jpg', 100);
                 Storage::put("$location/$filename_to_store", $final_img);
 
                 // Add delimiter for outfit images
@@ -71,7 +71,7 @@ trait UploadedImageSave
             // Create image, resize, and save
             $img = Image::make($file)->resize(null, $height, function ($constraint) {
                 $constraint->aspectRatio();
-            })->encode('jpg', 80);
+            })->encode('jpg', 100);
             Storage::put("$location/$filename_to_store", $img);
 
             // Add delimiter for outfit images

@@ -69,7 +69,7 @@ class TagService
     public function create(string $userId, array $validated)
     {
         if ($this->checkForDuplicate($validated['title'], 'title')) {
-            return back()->withErrors('Tag already exists with this title');
+            return back()->withErrors(['title' => 'Tag already exists with this title']);
         }
 
         $tag = Tag::create([
@@ -94,13 +94,13 @@ class TagService
     public function update(string $userId, Tag $tag, array $validated)
     {
         if ($tag->user_id === $userId) {
-            ['title' => $title] = $validated;
+            @['title' => $title] = $validated;
 
             // If they want to change title
             if (!empty($title)) {
                 // Check if new title is same as old title
                 if ($this->checkForDuplicate($title, 'title')) {
-                    return back()->withErrors('Tag already exists with this title');
+                    return back()->withErrors(['title' => 'Tag already exists with this title']);
                 } else {
                     $tag->title = $title;
                 }

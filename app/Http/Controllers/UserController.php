@@ -32,7 +32,7 @@ class UserController extends Controller
 
             return to_route('taobao-organizer');
         } else {
-            return back()->withErrors('Incorrect login credentials provided');
+            return back()->withErrors(['email' => 'Incorrect login credentials provided']);
         }
     }
 
@@ -47,7 +47,7 @@ class UserController extends Controller
         $validated = $request->validated();
         $existing_user = User::where('email', $validated['email'])->first();
         if (!empty($existing_user)) {
-            return back()->withErrors('E-mail is already registered');
+            return back()->withErrors(['email' => 'E-mail is already registered']);
         }
 
         $user = User::create([
@@ -68,7 +68,7 @@ class UserController extends Controller
     {
         $existing_user = User::where('id', Auth::user()->id)->first();
         if (empty($existing_user)) {
-            return back()->withErrors('User doesn\'t exist');
+            return back()->withErrors(['old_password' => 'User doesn\'t exist']);
         } else {
             $validated = $request->validated();
             if (Hash::check($validated['old_password'], $existing_user->password)) {
@@ -81,7 +81,7 @@ class UserController extends Controller
                     return back()->withErrors('Something went wrong trying to update the password');
                 }
             } else {
-                return back()->withErrors('Old password doesn\'t match');
+                return back()->withErrors(['old_password' => 'Old password doesn\'t match']);
             }
         }
     }
@@ -114,6 +114,6 @@ class UserController extends Controller
             }
         }
 
-        return back()->withErrors('Email with reset password has been sent.');
+        return back()->withErrors(['email' => 'Couldn\'t find user']);
     }
 }

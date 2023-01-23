@@ -87,15 +87,15 @@ class ItemService
                     $info['price'] = (!empty($detail_json->defaultItemPrice) ? $detail_json->defaultItemPrice : '-1.00');
                     $info['url'] = $url;
                 } else {
-                    return back()->withErrors('Could not retrieve information from TMall. Please try again later.');
+                    return back()->withErrors(['url' => 'Could not retrieve information from TMall. Please try again later.']);
                 }
             } else {
-                return back()->withErrors('URL not recognized');
+                return back()->withErrors(['url' => 'URL not recognized']);
             }
         }
 
         if (empty($info)) {
-            return back()->withErrors('Could not retrieve item information');
+            return back()->withErrors(['url' => 'Could not retrieve item information']);
         } else {
             $exists = false;
 
@@ -109,7 +109,7 @@ class ItemService
 
             // Item exists. Add if it doesn't.
             if ($exists) {
-                return back()->withErrors('Item already exists');
+                return back()->withErrors(['url' => 'Item already exists']);
             } else {
                 $item = Item::create([
                     'user_id' => $userId,
@@ -123,7 +123,7 @@ class ItemService
                 if (!empty($item)) {
                     return to_route('taobao-organizer');
                 } else {
-                    return back()->withErrors('Something went wrong while adding item');
+                    return back()->withErrors(['url' => 'Something went wrong while adding item']);
                 }
             }
         }
@@ -139,7 +139,7 @@ class ItemService
     public function update(string $userId, Item $item, array $validated)
     {
         if ($item->user_id === $userId) {
-            ['tags' => $incoming_tags] = $validated;
+            @['tags' => $incoming_tags] = $validated;
             unset($validated['tags']);
 
             $item->fill($validated);

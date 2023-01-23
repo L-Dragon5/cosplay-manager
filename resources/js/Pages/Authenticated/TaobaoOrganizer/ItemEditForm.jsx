@@ -16,10 +16,10 @@ import TagSelect from '../../components/TagSelect';
 function ItemEditForm({ item, onClose }) {
   const [tags, setTags] = useState([]);
   const { data, setData, put, processing, errors } = useForm({
-    custom_title: item.custom_title || '',
-    tags: item.tags?.reduce((carry, item) => [...carry, item._id], []) || [],
-    quantity: item.quantity || 0,
-    notes: item.notes || '',
+    custom_title: item.custom_title ?? '',
+    tags: item.tags?.reduce((carry, item) => [...carry, item._id], []) ?? [],
+    quantity: item.quantity ?? 0,
+    notes: item.notes ?? '',
   });
 
   function submit(e) {

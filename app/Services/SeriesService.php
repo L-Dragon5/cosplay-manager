@@ -42,11 +42,11 @@ class SeriesService
      */
     public function create(string $userId, array $validated)
     {
-        if ($this->checkForDuplicate($userId, $validated['title'], 'title')) {
-            return back()->withErrors('Series already exists with this title');
+        if ($this->checkForDuplicate($validated['title'], 'title')) {
+            return back()->withErrors(['title' => 'Series already exists with this title']);
         }
 
-        ['image' => $image] = $validated;
+        @['image' => $image] = $validated;
         unset($validated['image']);
 
         $series = new Series([
@@ -80,7 +80,7 @@ class SeriesService
     public function update(string $userId, Series $series, array $validated)
     {
         if ($series->user_id === $userId) {
-            ['title' => $title, 'image' => $image] = $validated;
+            @['title' => $title, 'image' => $image] = $validated;
             unset($validated['title']);
             unset($validated['image']);
 
@@ -91,8 +91,8 @@ class SeriesService
                 // Check if new title is same as old title
                 if ($title === $series->title) {
                     // Do nothing
-                } elseif ($this->checkForDuplicate($userId, $title, 'title')) {
-                    return back()->withErrors('Series already exists with this title');
+                } elseif ($this->checkForDuplicate($title, 'title')) {
+                    return back()->withErrors(['title' => 'Series already exists with this title']);
                 } else {
                     $series->title = $title;
                 }

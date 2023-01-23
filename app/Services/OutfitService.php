@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Models\Outfit;
 use App\Models\Tag;
 use App\Traits\UploadedImageSave;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class OutfitService
@@ -61,11 +60,11 @@ class OutfitService
      */
     public function create(string $userId, array $validated)
     {
-        if ($this->checkForDuplicate($userId, $validated['title'], 'title')) {
-            return back()->withErrors('Outfit already exists with this title');
+        if ($this->checkForDuplicate($validated['title'], 'title')) {
+            return back()->withErrors(['title' => 'Outfit already exists with this title']);
         }
 
-        ['image' => $image, 'tags' => $tags] = $validated;
+        @['image' => $image, 'tags' => $incoming_tags] = $validated;
         unset($validated['image']);
         unset($validated['tags']);
 
@@ -82,9 +81,8 @@ class OutfitService
         }
 
         // Store tags
-        if (!empty($tags)) {
-            $incoming_tags = (!is_array($tags)) ? [$tags] : $tags;
-
+        if (!empty($incoming_tags)) {
+            $tags_to_insert = [];
             foreach ($incoming_tags as $tag_id) {
                 if (!empty($tag_id)) {
                     $tag = Tag::find($tag_id);
@@ -93,24 +91,22 @@ class OutfitService
                     if (empty($tag)) {
                         $new_tag = Tag::create(['user_id' => $userId, 'title' => $tag_id]);
 
-                        DB::collection('outfits_tags')->update(
-                            ['outfit_id' => $outfit->id, 'tag_id' => $new_tag->id],
-                            ['upsert' => true]
-                        );
+                        $tags_to_insert[] = $new_tas->id;
                     } else {
-                        DB::collection('outfits_tags')->update(
-                            ['outfit_id' => $outfit->id, 'tag_id' => $tag->id],
-                            ['upsert' => true]
-                        );
+                        $tags_to_insert[] = $tag->id;
                     }
                 }
+            }
+
+            if (!empty($tags_to_insert)) {
+                $outfit->tags()->attach($tags_to_insert);
             }
         }
 
         $success = $outfit->save();
 
         if ($success) {
-            return to_route('outfits.index');
+            return to_route('cosplay-management');
         } else {
             return back()->withErrors('Something went wrong while trying to create a new outfit');
         }
@@ -126,7 +122,7 @@ class OutfitService
     public function update(string $userId, Outfit $outfit, array $validated)
     {
         if ($outfit->user_id === $userId) {
-            ['title' => $title, 'image' => $image, 'tags' => $tags] = $validated;
+            @['title' => $title, 'image' => $image, 'tags' => $incoming_tags] = $validated;
             unset($validated['title']);
             unset($validated['image']);
             unset($validated['tags']);
@@ -138,8 +134,8 @@ class OutfitService
                 // Check if new title is same as old title
                 if ($title === $outfit->title) {
                     // Do nothing
-                } elseif ($this->checkForDuplicate($userId, $title, 'title')) {
-                    return back()->withErrors('Outfit already exists with this title');
+                } elseif ($this->checkForDuplicate($title, 'title')) {
+                    return back()->withErrors(['title' => 'Outfit already exists with this title']);
                 } else {
                     $outfit->title = $title;
                 }
@@ -151,15 +147,13 @@ class OutfitService
             }
 
             // If they want to change tags
-            if (!empty($tags)) {
-                $old_tags = DB::collection('outfits_tags')->where('outfit_id', $outfit->id)->pluck('tag_id')->toArray();
-                $old_tags = (!is_array($old_tags)) ? [$old_tags] : $old_tags;
-                $incoming_tags = (!is_array($tags)) ? [$tags] : $tags;
-
+            if (!empty($incoming_tags)) {
+                $old_tags = $outfit->tags()->pluck('_id')->toArray();
                 $tags_to_remove = array_diff($old_tags, $incoming_tags);
                 $tags_to_insert = array_diff($incoming_tags, $old_tags);
 
                 if (!empty($tags_to_insert)) {
+                    $tags_to_insert_new = [];
                     foreach ($tags_to_insert as $tag_id) {
                         if (!empty($tag_id)) {
                             $tag = Tag::find($tag_id);
@@ -171,31 +165,27 @@ class OutfitService
                                     'title' => $tag_id,
                                 ]);
 
-                                DB::collection('outfits_tags')->update(
-                                    ['outfit_id' => $outfit->id, 'tag_id' => $new_tag->id],
-                                    ['upsert' => true]
-                                );
+                                $tags_to_insert_new[] = $new_tag->id;
                             } else {
-                                DB::collection('outfits_tags')->update(
-                                    ['outfit_id' => $outfit->id, 'tag_id' => $tag->id],
-                                    ['upsert' => true]
-                                );
+                                $tags_to_insert_new[] = $tag->id;
                             }
                         }
                     }
                 }
 
+                if (!empty($tags_to_insert_new)) {
+                    $outfit->tags()->attach($tags_to_insert_new);
+                }
+
                 if (!empty($tags_to_remove)) {
-                    foreach ($tags_to_remove as $tag_id) {
-                        DB::collection('outfits_tags')->where(['outfit_id' => $outfit->id, 'tag_id' => $tag_id])->delete();
-                    }
+                    $outfit->tags()->detach($tags_to_remove);
                 }
             }
 
             $success = $outfit->save();
 
             if ($success) {
-                return to_route('outfits.index');
+                return to_route('cosplay-management');
             } else {
                 return back()->withErrors('Something went wrong while trying to update outfit');
             }
@@ -231,7 +221,7 @@ class OutfitService
         }
 
         if ($success) {
-            return to_route('outfits.index');
+            return to_route('cosplay-management');
         } else {
             return back()->withErrors('Something went wrong while trying to remove outfit');
         }
@@ -277,7 +267,7 @@ class OutfitService
             $success = $outfit->save();
 
             if ($success) {
-                return to_route('outfits.index');
+                return to_route('cosplay-management');
             } else {
                 return back()->withErrors('Did not find an image to remove');
             }

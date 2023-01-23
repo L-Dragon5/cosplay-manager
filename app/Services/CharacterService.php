@@ -51,11 +51,11 @@ class CharacterService
      */
     public function create(string $userId, array $validated)
     {
-        if ($this->checkForDuplicate($userId, $validated['name'], 'name')) {
-            return back()->withErrors('Character already exists with this name');
+        if ($this->checkForDuplicate($validated['name'], 'name')) {
+            return back()->withErrors(['name' => 'Character already exists with this name']);
         }
 
-        ['image' => $image] = $validated;
+        @['image' => $image] = $validated;
         unset($validated['image']);
 
         $character = new Character([
@@ -95,8 +95,8 @@ class CharacterService
                 // Check if new name is same as old name
                 if ($name === $character->name) {
                     // Do nothing
-                } elseif ($this->checkForDuplicate($userId, $name, 'name')) {
-                    return back()->withErrors('Character name already exists');
+                } elseif ($this->checkForDuplicate($name, 'name')) {
+                    return back()->withErrors(['name' => 'Character name already exists']);
                 } else {
                     $character->name = $name;
                 }

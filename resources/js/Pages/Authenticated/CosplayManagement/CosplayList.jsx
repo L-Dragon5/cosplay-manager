@@ -38,6 +38,7 @@ import { Carousel } from 'react-responsive-carousel';
 
 import Navbar from '../../components/Navbar';
 import OutfitAddForm from './forms/OutfitAddForm';
+import OutfitEditForm from './forms/OutfitEditForm';
 import OutfitCard from './OutfitCard';
 
 function CosplayList({ outfits, series, tags }) {
@@ -309,7 +310,7 @@ function CosplayList({ outfits, series, tags }) {
           })}
       </Grid>
 
-      <Drawer size="md" isOpen={isOpen} placement="right" onClose={onClose}>
+      <Drawer size="lg" isOpen={isOpen} placement="right" onClose={onClose}>
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
@@ -367,7 +368,14 @@ function CosplayList({ outfits, series, tags }) {
               </VStack>
             )}
 
-            {drawerType.includes('Edit') && <Text>Insert edit form here</Text>}
+            {drawerType.includes('Edit') && (
+              <OutfitEditForm
+                outfit={activeOutfit}
+                tags={tags}
+                series={series}
+                onClose={onClose}
+              />
+            )}
 
             {drawerType.includes('Delete') && (
               <VStack>

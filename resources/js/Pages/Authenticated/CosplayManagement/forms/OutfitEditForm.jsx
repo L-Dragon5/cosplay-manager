@@ -18,26 +18,27 @@ import Cropper from 'react-cropper';
 
 import TagSelect from '../../../components/TagSelect';
 
-function OutfitAddForm({ tags, series, onClose }) {
+function OutfitEditForm({ outfit, tags, series, onClose }) {
   const [image, setImage] = useState(null);
   const [seriesChoice, setSeriesChoice] = useState(0);
 
-  const { data, setData, post, processing, errors } = useForm({
-    title: '',
-    status: '',
-    tags: [],
-    creator: '',
-    storage_location: '',
-    times_worn: '',
-    character_id: '0',
-    image: '',
+  const { data, setData, put, processing, errors } = useForm({
+    title: outfit.title ?? '',
+    status: outfit.status ?? '',
+    tags:
+      outfit.tags?.reduce((carry, outfit) => [...carry, outfit._id], []) ?? [],
+    creator: outfit.creator ?? '',
+    storage_location: outfit.storage_location ?? '',
+    times_worn: outfit.times_worn ?? '',
+    character_id: outfit.character_id ?? '0',
+    image: outfit.image ?? '',
   });
 
   const cropperRef = useRef();
 
   function submit(e) {
     e.preventDefault();
-    post('/outfits', {
+    put(`/outfits/${outfit._id}`, {
       onSuccess: () => onClose(),
     });
   }
@@ -255,4 +256,4 @@ function OutfitAddForm({ tags, series, onClose }) {
   );
 }
 
-export default OutfitAddForm;
+export default OutfitEditForm;
