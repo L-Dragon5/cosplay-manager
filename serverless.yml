@@ -55,11 +55,11 @@ functions:
 constructs:
   website:
     type: server-side-website
-    #domain:
-      #- icosmanage.com
-      #- www.cosmanage.com
-    #redirectToMainDomain: true
-    #certificate: arn:aws:acm:us-east-1:725746735290:certificate/4e2cbcd1-75c6-4952-9351-9b3b84ced317
+    domain:
+      - cosmanage.com
+      - www.cosmanage.com
+    redirectToMainDomain: true
+    certificate: arn:aws:acm:us-east-1:725746735290:certificate/f97838cc-e273-4a10-9ed9-20421a66cdb0
     assets:
       '/js/*': public/js
       '/favicon.ico': public/favicon.ico
