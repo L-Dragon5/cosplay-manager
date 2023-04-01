@@ -29,7 +29,7 @@ class Item extends Model
 
         static::retrieved(function (Item $item) {
             // If local image, add / for root directory
-            if (!str_contains('thumbs', $item->image_url)) {
+            if (str_contains($item->image_url, 'thumbs')) {
                 $item->image_url = Storage::url($item->image_url);
             }
         });

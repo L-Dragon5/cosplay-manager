@@ -64,7 +64,7 @@ class SeriesService
         $success = $series->save();
 
         if ($success) {
-            return to_route('series.index');
+            return to_route('cosplay-management');
         } else {
             return back()->withErrors('Something went wrong while trying to create a new series');
         }
@@ -106,7 +106,7 @@ class SeriesService
             $success = $series->save();
 
             if ($success) {
-                return to_route('series.index');
+                return to_route('cosplay-management');
             } else {
                 return back()->withErrors('Something went wrong while trying to update series');
             }
@@ -156,7 +156,7 @@ class SeriesService
         }
 
         if ($success) {
-            return to_route('series.index');
+            return to_route('cosplay-management');
         } else {
             return back()->withErrors('Something went wrong while trying to remove series');
         }

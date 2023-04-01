@@ -204,7 +204,8 @@ function TaobaoItems({ items }) {
                   </InputRightElement>
                 </InputGroup>
                 <FormHelperText>
-                  Enter http links or json data here
+                  Enter json data here (links don't work anymore due to TB
+                  requiring login)
                 </FormHelperText>
                 <FormErrorMessage>{errors?.url}</FormErrorMessage>
               </FormControl>

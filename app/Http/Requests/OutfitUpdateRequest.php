@@ -25,6 +25,7 @@ class OutfitUpdateRequest extends FormRequest
     {
         return [
             'title' => 'required|string',
+            'character_id' => 'required|string',
             'images' => 'nullable|string',
             'status' => 'nullable|integer',
             'obtained_on' => 'nullable|date_format:Y-m-d',

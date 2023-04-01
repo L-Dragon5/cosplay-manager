@@ -39,7 +39,7 @@ function ItemCard({ item, setDrawerType }) {
       >
         <CardHeader flexGrow={1}>
           <Text fontSize="lg">
-            {custom_title !== null && custom_title !== ''
+            {custom_title && custom_title !== null && custom_title !== ''
               ? custom_title
               : original_title}
           </Text>

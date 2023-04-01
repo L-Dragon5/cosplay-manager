@@ -20,7 +20,10 @@ import TagSelect from '../../../components/TagSelect';
 
 function OutfitEditForm({ outfit, tags, series, onClose }) {
   const [image, setImage] = useState(null);
-  const [seriesChoice, setSeriesChoice] = useState(0);
+  const [seriesChoice, setSeriesChoice] = useState(
+    series.find((s) => s.characters.find((c) => c._id == outfit.character_id))
+      ?._id ?? '',
+  );
 
   const { data, setData, put, processing, errors } = useForm({
     title: outfit.title ?? '',
@@ -30,7 +33,7 @@ function OutfitEditForm({ outfit, tags, series, onClose }) {
     creator: outfit.creator ?? '',
     storage_location: outfit.storage_location ?? '',
     times_worn: outfit.times_worn ?? '',
-    character_id: outfit.character_id ?? '0',
+    character_id: outfit.character_id ?? '',
     image: outfit.image ?? '',
   });
 
@@ -89,7 +92,7 @@ function OutfitEditForm({ outfit, tags, series, onClose }) {
   }
 
   useEffect(() => {
-    if (seriesChoice !== 0) {
+    if (seriesChoice !== '') {
       setData('character_id', '');
     }
   }, [seriesChoice]);
@@ -103,6 +106,7 @@ function OutfitEditForm({ outfit, tags, series, onClose }) {
             backgroundColor="white"
             placeholder="Select series"
             onChange={(e) => setSeriesChoice(e.target.value)}
+            value={seriesChoice}
           >
             {series.map((item) => (
               <option key={item._id} value={item._id}>
@@ -117,6 +121,8 @@ function OutfitEditForm({ outfit, tags, series, onClose }) {
             backgroundColor="white"
             placeholder="Select character"
             onChange={(e) => setData('character_id', e.target.value)}
+            defaultValue={outfit.character_id}
+            isDisabled={seriesChoice === ''}
           >
             {series
               ?.find((item) => item._id === seriesChoice)
@@ -250,7 +256,7 @@ function OutfitEditForm({ outfit, tags, series, onClose }) {
         width="full"
         isLoading={processing}
       >
-        Add Outfit
+        Update Outfit
       </Button>
     </VStack>
   );

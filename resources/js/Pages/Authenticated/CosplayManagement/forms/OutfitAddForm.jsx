@@ -20,7 +20,7 @@ import TagSelect from '../../../components/TagSelect';
 
 function OutfitAddForm({ tags, series, onClose }) {
   const [image, setImage] = useState(null);
-  const [seriesChoice, setSeriesChoice] = useState(0);
+  const [seriesChoice, setSeriesChoice] = useState('');
 
   const { data, setData, post, processing, errors } = useForm({
     title: '',
@@ -29,7 +29,7 @@ function OutfitAddForm({ tags, series, onClose }) {
     creator: '',
     storage_location: '',
     times_worn: '',
-    character_id: '0',
+    character_id: '',
     image: '',
   });
 
@@ -88,7 +88,7 @@ function OutfitAddForm({ tags, series, onClose }) {
   }
 
   useEffect(() => {
-    if (seriesChoice !== 0) {
+    if (seriesChoice !== '') {
       setData('character_id', '');
     }
   }, [seriesChoice]);
@@ -102,6 +102,7 @@ function OutfitAddForm({ tags, series, onClose }) {
             backgroundColor="white"
             placeholder="Select series"
             onChange={(e) => setSeriesChoice(e.target.value)}
+            value={seriesChoice}
           >
             {series.map((item) => (
               <option key={item._id} value={item._id}>
@@ -116,6 +117,7 @@ function OutfitAddForm({ tags, series, onClose }) {
             backgroundColor="white"
             placeholder="Select character"
             onChange={(e) => setData('character_id', e.target.value)}
+            isDisabled={seriesChoice === ''}
           >
             {series
               ?.find((item) => item._id === seriesChoice)

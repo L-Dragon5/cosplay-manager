@@ -37,8 +37,10 @@ import { DebounceInput } from 'react-debounce-input';
 import { Carousel } from 'react-responsive-carousel';
 
 import Navbar from '../../components/Navbar';
+import CharacterAddForm from './forms/CharacterAddForm';
 import OutfitAddForm from './forms/OutfitAddForm';
 import OutfitEditForm from './forms/OutfitEditForm';
+import SeriesAddForm from './forms/SeriesAddForm';
 import OutfitCard from './OutfitCard';
 
 function CosplayList({ outfits, series, tags }) {
@@ -51,8 +53,8 @@ function CosplayList({ outfits, series, tags }) {
    */
 
   const [activeOutfit, setActiveOutfit] = useState({});
-  const [filterSeries, setFilterSeries] = useState(0);
-  const [filterCharacter, setFilterCharacter] = useState(0);
+  const [filterSeries, setFilterSeries] = useState('');
+  const [filterCharacter, setFilterCharacter] = useState('');
   const [drawerType, setDrawerType] = useState('');
   const [activeOutfits, setActiveOutfits] = useState(outfits); // All outfits available
   const [search, setSearch] = useState(''); // Search input
@@ -197,7 +199,7 @@ function CosplayList({ outfits, series, tags }) {
   }, [isOpen]);
 
   useEffect(() => {
-    if (filterSeries !== 0) {
+    if (filterSeries !== '') {
       setFilterCharacter('');
     }
   }, [filterSeries]);
@@ -278,6 +280,7 @@ function CosplayList({ outfits, series, tags }) {
                 backgroundColor="white"
                 placeholder="Select character"
                 onChange={(e) => setFilterCharacter(e.target.value)}
+                isDisabled={filterSeries === ''}
               >
                 {series
                   ?.find((item) => item._id === filterSeries)
@@ -287,6 +290,22 @@ function CosplayList({ outfits, series, tags }) {
                     </option>
                   ))}
               </Select>
+            </HStack>
+            <HStack>
+              <Button
+                colorScheme="teal"
+                leftIcon={<AddIcon />}
+                onClick={() => setDrawerType('Series')}
+              >
+                Add Series
+              </Button>
+              <Button
+                colorScheme="teal"
+                leftIcon={<AddIcon />}
+                onClick={() => setDrawerType('Character')}
+              >
+                Add Character
+              </Button>
             </HStack>
           </SimpleGrid>
         </HStack>
@@ -321,6 +340,14 @@ function CosplayList({ outfits, series, tags }) {
           <DrawerBody>
             {drawerType.includes('Add') && (
               <OutfitAddForm tags={tags} series={series} onClose={onClose} />
+            )}
+
+            {drawerType.includes('Series') && (
+              <SeriesAddForm onClose={onClose} />
+            )}
+
+            {drawerType.includes('Character') && (
+              <CharacterAddForm series={series} onClose={onClose} />
             )}
 
             {drawerType.includes('View') && (

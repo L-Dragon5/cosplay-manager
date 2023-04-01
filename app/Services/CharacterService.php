@@ -72,7 +72,7 @@ class CharacterService
         $success = $character->save();
 
         if ($success) {
-            return to_route('characters.index');
+            return to_route('cosplay-management');
         } else {
             return back()->withErrors('Something went wrong while trying to create a new character');
         }
@@ -110,7 +110,7 @@ class CharacterService
             $success = $character->save();
 
             if ($success) {
-                return to_route('characters.index');
+                return to_route('cosplay-management');
             } else {
                 return back()->withErrors('Something went wrong while trying to update character');
             }
@@ -157,7 +157,7 @@ class CharacterService
         }
 
         if ($success) {
-            return to_route('characters.index');
+            return to_route('cosplay-management');
         } else {
             return back()->withErrors('Something went wrong while trying to remove character');
         }
