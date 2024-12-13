@@ -1,1 +1,0 @@
-import{f as i,F as r,o as c,j as l,c as k,d as m}from"./app-CjPbCjTl.js";const f=i(function(s,n){const e=r("Link",s),{className:o,isExternal:a,...t}=c(s);return l.jsx(k.a,{target:a?"_blank":void 0,rel:a?"noopener":void 0,ref:n,className:m("chakra-link",o),...t,__css:e})});f.displayName="Link";export{f as L};

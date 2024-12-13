@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use App\Models\Item;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
-use Intervention\Image\Facades\Image;
+use Intervention\Image\Laravel\Facades\Image;
 use Intervention\Image\Encoders\JpegEncoder;
 use Illuminate\Support\Str;
 
@@ -58,9 +58,7 @@ class DownloadThumbs extends Command
             $context = stream_context_create(['http' => ['timeout' => 10]]);
             $file = file_get_contents('https:'.$url, false, $context);
             if (!empty($file)) {
-                $img = Image::read($file)->resize(400, null, function ($constraint) {
-                    $constraint->aspectRatio();
-                })->encode(new JpegEncoder(quality: 100));
+                $img = Image::read($file)->scaleDown(width: 400)->encode(new JpegEncoder(quality: 100));
                 $uuid = Str::orderedUuid();
                 $location = 'thumbs/' . $uuid . '.jpg';
                 $status = Storage::put($location, $img);

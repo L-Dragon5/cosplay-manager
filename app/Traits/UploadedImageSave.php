@@ -3,7 +3,7 @@
 namespace App\Traits;
 
 use Illuminate\Support\Facades\Storage;
-use Intervention\Image\Facades\Image;
+use Intervention\Image\Laravel\Facades\Image;
 use Intervention\Image\Encoders\JpegEncoder;
 
 trait UploadedImageSave
@@ -41,9 +41,7 @@ trait UploadedImageSave
                 }
 
                 // Create image, resize, and save
-                $final_img = Image::read($img)->resize(null, $height, function ($constraint) {
-                    $constraint->aspectRatio();
-                })->encode(new JpegEncoder(quality: 100));
+                $final_img = Image::read($file)->scaleDown(width: 400)->encode(new JpegEncoder(quality: 100));
                 Storage::put("$location/$filename_to_store", $final_img);
 
                 // Add delimiter for outfit images

@@ -4,6 +4,7 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
 
 createInertiaApp({
+  title: (title) => `${title} | CosManage`,
   resolve: (name) =>
     resolvePageComponent(
       `./Pages/${name}.jsx`,

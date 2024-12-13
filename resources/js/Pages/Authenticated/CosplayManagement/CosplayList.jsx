@@ -71,7 +71,7 @@ function CosplayList({ outfits, series, tags }) {
         String(item?.character?.name).toLowerCase().indexOf(lowerSearch) !==
           -1 ||
         item.tags.filter((tag) => {
-          return tag.label.toLowerCase().indexOf(lowerSearch) !== -1;
+          return tag.title.toLowerCase().indexOf(lowerSearch) !== -1;
         }).length > 0
       );
     };

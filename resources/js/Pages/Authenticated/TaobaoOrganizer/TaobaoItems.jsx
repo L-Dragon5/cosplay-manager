@@ -64,7 +64,7 @@ function TaobaoItems({ items }) {
 
   // Set outfits based on search and filters.
   function filterItems() {
-    const lowerSearch = String(search).toLowerCase();
+    const lowerSearch = String(search);
 
     if (items !== null) {
       switch (filter) {
@@ -76,14 +76,10 @@ function TaobaoItems({ items }) {
             items.filter(
               (item) =>
                 !!item.is_archived === false &&
-                (String(item.custom_title)
-                  .toLowerCase()
-                  .indexOf(lowerSearch) !== -1 ||
-                  String(item.original_title)
-                    .toLowerCase()
-                    .indexOf(lowerSearch) !== -1 ||
+                (String(item.custom_title).indexOf(lowerSearch) !== -1 ||
+                  String(item.original_title).indexOf(lowerSearch) !== -1 ||
                   item.tags.filter((tag) => {
-                    return tag.label.toLowerCase().indexOf(lowerSearch) !== -1;
+                    return tag.title.indexOf(lowerSearch) !== -1;
                   }).length > 0),
             ),
           );
@@ -93,14 +89,10 @@ function TaobaoItems({ items }) {
             items.filter(
               (item) =>
                 !!item.is_archived === true &&
-                (String(item.custom_title)
-                  .toLowerCase()
-                  .indexOf(lowerSearch) !== -1 ||
-                  String(item.original_title)
-                    .toLowerCase()
-                    .indexOf(lowerSearch) !== -1 ||
+                (String(item.custom_title).indexOf(lowerSearch) !== -1 ||
+                  String(item.original_title).indexOf(lowerSearch) !== -1 ||
                   item.tags.filter((tag) => {
-                    return tag.label.toLowerCase().indexOf(lowerSearch) !== -1;
+                    return tag.title.indexOf(lowerSearch) !== -1;
                   }).length > 0),
             ),
           );
@@ -109,13 +101,10 @@ function TaobaoItems({ items }) {
           setActiveItems(
             items.filter(
               (item) =>
-                String(item.custom_title).toLowerCase().indexOf(lowerSearch) !==
-                  -1 ||
-                String(item.original_title)
-                  .toLowerCase()
-                  .indexOf(lowerSearch) !== -1 ||
+                String(item.custom_title).indexOf(lowerSearch) !== -1 ||
+                String(item.original_title).indexOf(lowerSearch) !== -1 ||
                 item.tags.filter((tag) => {
-                  return tag.label.toLowerCase().indexOf(lowerSearch) !== -1;
+                  return tag?.title?.indexOf(lowerSearch) !== -1;
                 }).length > 0,
             ),
           );
