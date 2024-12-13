@@ -1,1 +1,0 @@
-import{j as t}from"./app-jKCvGqK8.js";import{T as e}from"./text-BAevXw7b.js";function n(){return t.jsxs(e,{fontSize:"sm",textAlign:"center",children:["Copyright © CosManage ",new Date().getFullYear()]})}export{n as default};
