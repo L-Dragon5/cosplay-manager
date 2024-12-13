@@ -29,22 +29,22 @@ class TagService
             ->get();
 
         if (!empty($itemId)) {
-            $item_tags = Item::findOrFail($itemId)->tags()->pluck('_id')->toArray();
+            $item_tags = Item::findOrFail($itemId)->tags()->pluck('id')->toArray();
         }
         if (!empty($outfitId)) {
-            $outfit_tags = Outfit::findOrFail($outfitId)->tags()->pluck('_id')->toArray();
+            $outfit_tags = Outfit::findOrFail($outfitId)->tags()->pluck('id')->toArray();
         }
 
         $temp_tags = [];
         foreach ($tags as $tag) {
             $tag->name = $tag->title;
             $tag->label = $tag->title;
-            $tag->value = $tag->_id;
+            $tag->value = $tag->id;
 
-            if (!empty($item_tags) && in_array($tag->_id, $item_tags)) {
+            if (!empty($item_tags) && in_array($tag->id, $item_tags)) {
                 $tag->checked = true;
             }
-            if (!empty($outfit_tags) && in_array($tag->_id, $outfit_tags)) {
+            if (!empty($outfit_tags) && in_array($tag->id, $outfit_tags)) {
                 $tag->checked = true;
             }
 
@@ -63,10 +63,10 @@ class TagService
     /**
      * Create new Tag.
      *
-     * @param  string  $userId
+     * @param  int  $userId
      * @param  array  $validated
      */
-    public function create(string $userId, array $validated)
+    public function create(int $userId, array $validated)
     {
         if ($this->checkForDuplicate($validated['title'], 'title')) {
             return back()->withErrors(['title' => 'Tag already exists with this title']);
@@ -87,11 +87,11 @@ class TagService
     /**
      * Update existing tag.
      *
-     * @param  string  $userId
+     * @param  int  $userId
      * @param  \App\Models\Tag  $tag
      * @param  array  $validated
      */
-    public function update(string $userId, Tag $tag, array $validated)
+    public function update(int $userId, Tag $tag, array $validated)
     {
         if ($tag->user_id === $userId) {
             @['title' => $title] = $validated;
@@ -121,10 +121,10 @@ class TagService
     /**
      * Remove existing tag.
      *
-     * @param  string  $userId
+     * @param  int  $userId
      * @param  \App\Models\Tag  $tag
      */
-    public function delete(string $userId, Tag $tag)
+    public function delete(int $userId, Tag $tag)
     {
         if ($tag->user_id === $userId) {
             $success = $tag->delete();

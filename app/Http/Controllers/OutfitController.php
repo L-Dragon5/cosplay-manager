@@ -68,40 +68,34 @@ class OutfitController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \App\Http\Requests\OutfitUpdateRequest  $request
-     * @param  string  $outfit
+     * @param  \App\Models\Outfit  $outfit
      * @return \Illuminate\Http\Response
      */
-    public function update(OutfitUpdateRequest $request, $outfit)
+    public function update(OutfitUpdateRequest $request, Outfit $outfit)
     {
-        $outfit = Outfit::findOrFail($outfit);
-
         return $this->outfitService->update(Auth::user()->id, $outfit, $request->validated());
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  string  $outfit
+     * @param  \App\Models\Outfit  $outfit
      * @return \Illuminate\Http\Response
      */
-    public function destroy($outfit)
+    public function destroy(Outfit $outfit)
     {
-        $outfit = Outfit::findOrFail($outfit);
-
         return $this->outfitService->delete(Auth::user()->id, $outfit);
     }
 
     /**
      * Remove image from outfit.
      *
-     * @param  string  $outfit
+     * @param  \App\Models\Outfit  $outfit
      * @param  int  $index
      * @return \Illuminate\Http\Response
      */
-    public function deleteImage($outfit, int $index)
+    public function deleteImage(Outfit $outfit, int $index)
     {
-        $outfit = Outfit::findOrFail($outfit);
-
         return $this->outfitService->deleteImage(Auth::user()->id, $outfit, $index);
     }
 }

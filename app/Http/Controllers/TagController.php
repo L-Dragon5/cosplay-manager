@@ -35,13 +35,11 @@ class TagController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  string  $tag
+     * @param  App\Models\Tag  $tag
      * @return \Illuminate\Http\Response
      */
-    public function show($tag)
+    public function show(Tag $tag)
     {
-        $tag = Tag::findOrFail($tag);
-
         return $tag;
     }
 
@@ -60,26 +58,22 @@ class TagController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \App\Http\Requests\TagUpdateRequest  $request
-     * @param  string  $tag
+     * @param  \App\Models\Tag  $tag
      * @return \Illuminate\Http\Response
      */
-    public function update(TagUpdateRequest $request, $tag)
+    public function update(TagUpdateRequest $request, Tag $tag)
     {
-        $tag = Tag::findOrFail($tag);
-
         return $this->tagService->update(Auth::user()->id, $tag, $request->validated());
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  string  $tag
+     * @param  \App\Models\Tag  $tag
      * @return \Illuminate\Http\Response
      */
-    public function destroy($tag)
+    public function destroy(Tag $tag)
     {
-        $tag = Tag::findOrFail($tag);
-
         return $this->tagService->delete(Auth::user()->id, $tag);
     }
 }

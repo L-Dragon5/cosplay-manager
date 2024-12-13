@@ -54,13 +54,11 @@ class CharacterController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  string  $character
+     * @param  \App\Models\Character  $character
      * @return \Illuminate\Http\Response
      */
-    public function show($character)
+    public function show(Character $character)
     {
-        $character = Character::findOrFail($character);
-
         return Inertia::render('Characters/Show', ['character' => $character]);
     }
 
@@ -68,26 +66,22 @@ class CharacterController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \App\Http\Requests\CharacterUpdateRequest  $request
-     * @param  string  $character
+     * @param  \App\Models\Character  $character
      * @return \Illuminate\Http\Response
      */
-    public function update(CharacterUpdateRequest $request, $character)
+    public function update(CharacterUpdateRequest $request, Character $character)
     {
-        $character = Character::findOrFail($character);
-
         return $this->characterService->update(Auth::user()->id, $character, $request->validated());
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  string  $character
+     * @param  \App\Models\Character  $character
      * @return \Illuminate\Http\Response
      */
-    public function destroy($character)
+    public function destroy(Character $character)
     {
-        $character = Character::findOrFail($character);
-
         return $this->characterService->delete(Auth::user()->id, $character);
     }
 }

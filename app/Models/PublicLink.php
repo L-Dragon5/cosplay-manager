@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class PublicLink extends Model
 {
     protected $table = 'user_public_links';
-    protected $fillable = ['_id', 'user_id'];
+    protected $fillable = ['id', 'user_id'];
     protected $keyType = 'string';
     public $timestamps = false;
     public $incrementing = false;

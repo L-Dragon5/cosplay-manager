@@ -7,6 +7,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 use Intervention\Image\Encoders\JpegEncoder;
+use Illuminate\Support\Str;
 
 class DownloadThumbs extends Command
 {
@@ -52,7 +53,7 @@ class DownloadThumbs extends Command
         echo 'Items found to edit: ' . count($items) . PHP_EOL;
         foreach ($items as $item) {
             $url = $item->image_url;
-            echo 'Current item id: ' . $item->_id . PHP_EOL;
+            echo 'Current item id: ' . $item->id . PHP_EOL;
 
             $context = stream_context_create(['http' => ['timeout' => 10]]);
             $file = file_get_contents('https:'.$url, false, $context);
@@ -60,7 +61,7 @@ class DownloadThumbs extends Command
                 $img = Image::read($file)->resize(400, null, function ($constraint) {
                     $constraint->aspectRatio();
                 })->encode(new JpegEncoder(quality: 100));
-                $uuid = substr(bin2hex(random_bytes(ceil(26 / 2))), 0, 26);
+                $uuid = Str::orderedUuid();
                 $location = 'thumbs/' . $uuid . '.jpg';
                 $status = Storage::put($location, $img);
                 if ($status) {

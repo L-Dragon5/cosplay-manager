@@ -2,29 +2,29 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css';
 
 import { DeleteIcon, EditIcon, ViewIcon } from '@chakra-ui/icons';
 import {
-	ButtonGroup,
-	Card,
-	CardFooter,
-	CardHeader,
-	HStack,
-	IconButton,
-	Image,
-	Tag,
-	Text,
+  ButtonGroup,
+  Card,
+  CardFooter,
+  CardHeader,
+  HStack,
+  IconButton,
+  Image,
+  Tag,
+  Text,
 } from '@chakra-ui/react';
 import React from 'react';
 import LazyLoad from 'react-lazyload';
 import { Carousel } from 'react-responsive-carousel';
 
 function OutfitCard({ outfit, setDrawerType }) {
-	const { _id, tags, images_urls, character, title, status } = outfit;
-	const { name: character_name } = character;
+  const { id, tags, images_urls, character, title, status } = outfit;
+  const { name: character_name } = character;
 
-	const handleView = (id) => setDrawerType(`View-${id}`);
-	const handleEdit = (id) => setDrawerType(`Edit-${id}`);
-	const handleDelete = (id) => setDrawerType(`Delete-${id}`);
+  const handleView = (id) => setDrawerType(`View-${id}`);
+  const handleEdit = (id) => setDrawerType(`Edit-${id}`);
+  const handleDelete = (id) => setDrawerType(`Delete-${id}`);
 
-	/*
+  /*
   const handleRemovePhoto = (e, index) => {
     e.stopPropagation();
 
@@ -62,69 +62,69 @@ function OutfitCard({ outfit, setDrawerType }) {
   };
   */
 
-	// 0 = Future Cosplay, 1 = Owned & Unworn, 2 = Worn
-	return (
-		<LazyLoad key={`lazy-${_id}`} height={600} once offset={100}>
-			<Card
-				height="full"
-				maxW={400}
-				backgroundColor={
-					status == 0
-						? 'green.200'
-						: status == 1
-							? 'blue.200'
-							: status == 2
-								? 'red.100'
-								: 'white'
-				}
-				boxShadow="md"
-			>
-				<CardHeader flexGrow={1}>
-					<Text fontSize="lg">{title}</Text>
-					<Text fontSize="md" color="gray.600">
-						{character_name}
-					</Text>
-					<HStack>
-						{tags.map((tag, i) => (
-							<Tag key={tag._id} colorScheme="orange" variant="outline">
-								{tag.title}
-							</Tag>
-						))}
-					</HStack>
-				</CardHeader>
+  // 0 = Future Cosplay, 1 = Owned & Unworn, 2 = Worn
+  return (
+    <LazyLoad key={`lazy-${id}`} height={600} once offset={100}>
+      <Card
+        height="full"
+        maxW={400}
+        backgroundColor={
+          status === 0
+            ? 'green.200'
+            : status === 1
+              ? 'blue.200'
+              : status === 2
+                ? 'red.100'
+                : 'white'
+        }
+        boxShadow="md"
+      >
+        <CardHeader flexGrow={1}>
+          <Text fontSize="lg">{title}</Text>
+          <Text fontSize="md" color="gray.600">
+            {character_name}
+          </Text>
+          <HStack>
+            {tags.map((tag, i) => (
+              <Tag key={tag.id} colorScheme="orange" variant="outline">
+                {tag.title}
+              </Tag>
+            ))}
+          </HStack>
+        </CardHeader>
 
-				<Carousel autoPlay={false} showThumbs={false}>
-					{images_urls.map((image) => (
-						<Image key={image} src={image} />
-					))}
-				</Carousel>
+        <Carousel autoPlay={false} showThumbs={false}>
+          {images_urls.map((image) => (
+            <Image key={image} src={image} />
+          ))}
+        </Carousel>
 
-				<CardFooter p={0}>
-					<ButtonGroup size="lg" variant="outline" width="full" isAttached>
-						<IconButton
-							colorScheme="orange"
-							aria-label="View"
-							flex="1 0 auto"
-							icon={<ViewIcon />}
-							onClick={() => handleView(outfit._id)}
-						/>
-						<IconButton
-							colorScheme="orange"
-							aria-label="Edit"
-							icon={<EditIcon />}
-							onClick={() => handleEdit(outfit._id)}
-						/>
-						<IconButton
-							colorScheme="orange"
-							aria-label="Delete"
-							icon={<DeleteIcon />}
-							onClick={() => handleDelete(outfit._id)}
-						/>
-					</ButtonGroup>
-				</CardFooter>
-			</Card>
-		</LazyLoad>
-	);
+        <CardFooter p={0}>
+          <ButtonGroup size="lg" variant="outline" width="full" isAttached>
+            <IconButton
+              colorScheme="orange"
+              aria-label="View"
+              flex="1 0 auto"
+              icon={<ViewIcon />}
+              onClick={() => handleView(outfit.id)}
+            />
+            <IconButton
+              colorScheme="orange"
+              aria-label="Edit"
+              icon={<EditIcon />}
+              onClick={() => handleEdit(outfit.id)}
+            />
+            <IconButton
+              colorScheme="orange"
+              aria-label="Delete"
+              icon={<DeleteIcon />}
+              onClick={() => handleDelete(outfit.id)}
+            />
+          </ButtonGroup>
+        </CardFooter>
+      </Card>
+    </LazyLoad>
+  );
 }
 
 export default OutfitCard;

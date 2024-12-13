@@ -1,1 +1,414 @@
-import{r as i,b as $,h as p,j as e,M as N}from"./app-jKCvGqK8.js";import{u as V,A as q,S as U,l as P,C as Q,a as v,G as W,D as Y,M as J,b as K,c as X,d as Z,e as ee,f as te}from"./index-Cz7EXHCE.js";import re from"./Navbar-BvqPsX_u.js";import se from"./ItemCard-D55Cbigy.js";import ie from"./ItemEditForm-COKmARs_.js";import{B as C}from"./box-DZ06z6RF.js";import{H as I}from"./h-stack-DgkOJJod.js";import{H as oe}from"./heading-POHmOB42.js";import{S as ne,G as ae}from"./simple-grid-DS3nMfP1.js";import{F as g,I as _,b as le,a as ce}from"./input-Co9a23Ga.js";import{I as w,b as de,a as he}from"./input-element-C6Z8ckGb.js";import{B as h}from"./button-C2Gq51vH.js";import{F as me}from"./flex-Cgg7uoG9.js";import{V as k}from"./v-stack-CeaklOe-.js";import{I as ue,T as xe}from"./index-CQPbnsk2.js";import{T as o}from"./text-BAevXw7b.js";import{L as pe}from"./link-BPl0eTcv.js";import{B as ge}from"./button-group-jEtKEu1x.js";import"./stack-DnKf1WGz.js";import"./create-icon-dPcLk-so.js";import"./spacer-DMj9zHo6.js";import"./icon-button-Bu0BiuMR.js";import"./TagSelect-C7f4WRL3.js";import"./form-label-Duwlo-ac.js";import"./index-Chjiymov.js";function Ne({items:a}){const[r,L]=i.useState({}),[n,f]=i.useState(""),[j,m]=i.useState(a),[b,T]=i.useState(""),[S,E]=i.useState(3),[u,O]=i.useState(["active","archived"]),{data:y,setData:D,post:A,reset:B,processing:F,errors:l}=$({url:""}),{isOpen:x,onOpen:M,onClose:c}=V();function G(t){t.preventDefault(),A("/items",{preserveScroll:!0,onSuccess:()=>B("url")})}function H(){const t=String(b).toLowerCase();if(a!==null)switch(S){case 0:m(null);break;case 1:m(a.filter(s=>!s.is_archived&&(String(s.custom_title).toLowerCase().indexOf(t)!==-1||String(s.original_title).toLowerCase().indexOf(t)!==-1||s.tags.filter(d=>d.label.toLowerCase().indexOf(t)!==-1).length>0)));break;case 2:m(a.filter(s=>!!s.is_archived&&(String(s.custom_title).toLowerCase().indexOf(t)!==-1||String(s.original_title).toLowerCase().indexOf(t)!==-1||s.tags.filter(d=>d.label.toLowerCase().indexOf(t)!==-1).length>0)));break;case 3:m(a.filter(s=>String(s.custom_title).toLowerCase().indexOf(t)!==-1||String(s.original_title).toLowerCase().indexOf(t)!==-1||s.tags.filter(d=>d.label.toLowerCase().indexOf(t)!==-1).length>0));break}}const z=t=>T(t.target.value),R=t=>{p.delete(`/items/${r._id}`),c()};return i.useEffect(()=>{let t=0;u.includes("active")&&(t+=1),u.includes("archived")&&(t+=2),E(t)},[u]),i.useEffect(()=>{H()},[S,b,a]),i.useEffect(()=>{if(n!==""){const t=n.split("-").pop();n.includes("Archive")?p.put(`/items/${t}/archive`):n.includes("Unarchive")?p.put(`/items/${t}/unarchive`):(L(a.find(s=>s._id==t)),M())}},[n]),i.useEffect(()=>{x||f("")},[x]),e.jsxs(e.Fragment,{children:[e.jsx(N,{title:"Taobao Organizer"}),e.jsxs(C,{position:"sticky",top:0,zIndex:2,children:[e.jsx(re,{}),e.jsxs(I,{p:4,backgroundColor:"gray.50",borderBottom:"1px solid #ccc",children:[e.jsx(oe,{mr:12,children:"Items"}),e.jsxs(ne,{columns:2,spacing:2,width:"full",maxWidth:"1600px",children:[e.jsx("form",{onSubmit:G,children:e.jsxs(g,{id:"add-item",border:"1px solid #ddd",borderRadius:"md",p:1,isInvalid:!!(l!=null&&l.url),children:[e.jsxs(w,{size:"md",children:[e.jsx(_,{backgroundColor:"white",placeholder:"Add item",value:y.url,onChange:t=>D("url",t.target.value)}),e.jsx(de,{width:"120px",children:e.jsx(h,{leftIcon:e.jsx(q,{}),colorScheme:"orange",type:"submit",isLoading:F,children:"Add Item"})})]}),e.jsx(le,{children:"Enter json data here (links don't work anymore due to TB requiring login)"}),e.jsx(ce,{children:l==null?void 0:l.url})]})}),e.jsx(C,{}),e.jsx(g,{id:"search",border:"1px solid #ddd",borderRadius:"md",p:1,children:e.jsxs(w,{children:[e.jsx(he,{pointerEvents:"none",children:e.jsx(U,{color:"gray.300"})}),e.jsx(_,{as:P.DebounceInput,debounceTimeout:300,backgroundColor:"white",placeholder:"Search",onChange:z})]})}),e.jsx(g,{as:me,id:"filter",border:"1px solid #ddd",borderRadius:"md",p:1,alignItems:"center",children:e.jsx(Q,{colorScheme:"orange",value:u,size:"lg",onChange:t=>O(t),children:e.jsxs(I,{children:[e.jsx(v,{value:"active",children:"Active Items"}),e.jsx(v,{value:"archived",children:"Archived Items"})]})})})]})]})]}),e.jsx(ae,{gridTemplateColumns:"repeat(auto-fill, minmax(250px, 1fr))",gap:4,p:4,children:j&&j.map(t=>e.jsx(W,{as:se,item:t,setDrawerType:f},`i-${t._id}`))}),e.jsxs(Y,{size:"md",isOpen:x,placement:"right",onClose:c,children:[e.jsx(J,{}),e.jsxs(K,{children:[e.jsx(X,{}),e.jsxs(Z,{children:[n.split("-").shift()," -"," ",r.custom_title?r.custom_title:r.original_title]}),e.jsxs(ee,{children:[n.includes("View")&&e.jsxs(k,{alignItems:"flex-start",children:[e.jsx(ue,{src:r.image_url}),r.tags&&e.jsxs(o,{children:[e.jsx("strong",{children:"Tags:"})," ",r.tags.map((t,s)=>e.jsx(xe,{colorScheme:"orange",variant:"outline",children:t.title},t._id))]}),r.custom_title&&e.jsxs(o,{children:[e.jsx("strong",{children:"Custom Title:"})," ",r.custom_title]}),e.jsxs(o,{children:[e.jsx("strong",{children:"Original Title:"})," ",r.original_title]}),e.jsxs(o,{children:[e.jsx("strong",{children:"Seller:"})," ",r.seller_name]}),e.jsxs(o,{children:[e.jsx("strong",{children:"Price:"})," ",r.original_price]}),e.jsxs(o,{children:[e.jsx("strong",{children:"Quantity:"})," ",r.quantity]}),r.notes&&e.jsxs(o,{children:[e.jsx("strong",{children:"Notes:"})," ",r.notes]}),e.jsxs(o,{children:[e.jsx("strong",{children:"Created At:"})," ",new Date(r.created_at).toLocaleDateString()]}),e.jsxs(o,{children:[e.jsx("strong",{children:"Updated At:"})," ",new Date(r.updated_at).toLocaleDateString()]}),e.jsx(h,{as:pe,colorScheme:"orange",width:"full",href:r.listing_url,isExternal:!0,children:"Original Listing"})]}),n.includes("Edit")&&e.jsx(ie,{item:r,onClose:c}),n.includes("Delete")&&e.jsxs(k,{children:[e.jsxs(o,{children:["Are you sure you want to permanently delete [",r.custom_title?r.custom_title:r.original_title,"]? This action is irreversible."]}),e.jsxs(ge,{children:[e.jsx(h,{colorScheme:"red",variant:"outline",onClick:c,children:"No"}),e.jsx(h,{colorScheme:"red",onClick:R,children:"Yes"})]})]})]}),e.jsx(te,{children:e.jsx(h,{variant:"outline",mr:3,onClick:c,children:"Close"})})]})]})]})}export{Ne as default};
+import { r as i, b as $, h as p, j as e, M as N } from './app-jKCvGqK8.js';
+import {
+  u as V,
+  A as q,
+  S as U,
+  l as P,
+  C as Q,
+  a as v,
+  G as W,
+  D as Y,
+  M as J,
+  b as K,
+  c as X,
+  d as Z,
+  e as ee,
+  f as te,
+} from './index-Cz7EXHCE.js';
+import re from './Navbar-BvqPsX_u.js';
+import se from './ItemCard-D55Cbigy.js';
+import ie from './ItemEditForm-COKmARs_.js';
+import { B as C } from './box-DZ06z6RF.js';
+import { H as I } from './h-stack-DgkOJJod.js';
+import { H as oe } from './heading-POHmOB42.js';
+import { S as ne, G as ae } from './simple-grid-DS3nMfP1.js';
+import { F as g, I as _, b as le, a as ce } from './input-Co9a23Ga.js';
+import { I as w, b as de, a as he } from './input-element-C6Z8ckGb.js';
+import { B as h } from './button-C2Gq51vH.js';
+import { F as me } from './flex-Cgg7uoG9.js';
+import { V as k } from './v-stack-CeaklOe-.js';
+import { I as ue, T as xe } from './index-CQPbnsk2.js';
+import { T as o } from './text-BAevXw7b.js';
+import { L as pe } from './link-BPl0eTcv.js';
+import { B as ge } from './button-group-jEtKEu1x.js';
+import './stack-DnKf1WGz.js';
+import './create-icon-dPcLk-so.js';
+import './spacer-DMj9zHo6.js';
+import './icon-button-Bu0BiuMR.js';
+import './TagSelect-C7f4WRL3.js';
+import './form-label-Duwlo-ac.js';
+import './index-Chjiymov.js';
+function Ne({ items: a }) {
+  const [r, L] = i.useState({}),
+    [n, f] = i.useState(''),
+    [j, m] = i.useState(a),
+    [b, T] = i.useState(''),
+    [S, E] = i.useState(3),
+    [u, O] = i.useState(['active', 'archived']),
+    {
+      data: y,
+      setData: D,
+      post: A,
+      reset: B,
+      processing: F,
+      errors: l,
+    } = $({ url: '' }),
+    { isOpen: x, onOpen: M, onClose: c } = V();
+  function G(t) {
+    t.preventDefault(),
+      A('/items', { preserveScroll: !0, onSuccess: () => B('url') });
+  }
+  function H() {
+    const t = String(b).toLowerCase();
+    if (a !== null)
+      switch (S) {
+        case 0:
+          m(null);
+          break;
+        case 1:
+          m(
+            a.filter(
+              (s) =>
+                !s.is_archived &&
+                (String(s.custom_title).toLowerCase().indexOf(t) !== -1 ||
+                  String(s.original_title).toLowerCase().indexOf(t) !== -1 ||
+                  s.tags.filter((d) => d.label.toLowerCase().indexOf(t) !== -1)
+                    .length > 0),
+            ),
+          );
+          break;
+        case 2:
+          m(
+            a.filter(
+              (s) =>
+                !!s.is_archived &&
+                (String(s.custom_title).toLowerCase().indexOf(t) !== -1 ||
+                  String(s.original_title).toLowerCase().indexOf(t) !== -1 ||
+                  s.tags.filter((d) => d.label.toLowerCase().indexOf(t) !== -1)
+                    .length > 0),
+            ),
+          );
+          break;
+        case 3:
+          m(
+            a.filter(
+              (s) =>
+                String(s.custom_title).toLowerCase().indexOf(t) !== -1 ||
+                String(s.original_title).toLowerCase().indexOf(t) !== -1 ||
+                s.tags.filter((d) => d.label.toLowerCase().indexOf(t) !== -1)
+                  .length > 0,
+            ),
+          );
+          break;
+      }
+  }
+  const z = (t) => T(t.target.value),
+    R = (t) => {
+      p.delete(`/items/${r.id}`), c();
+    };
+  return (
+    i.useEffect(() => {
+      let t = 0;
+      u.includes('active') && (t += 1),
+        u.includes('archived') && (t += 2),
+        E(t);
+    }, [u]),
+    i.useEffect(() => {
+      H();
+    }, [S, b, a]),
+    i.useEffect(() => {
+      if (n !== '') {
+        const t = n.split('-').pop();
+        n.includes('Archive')
+          ? p.put(`/items/${t}/archive`)
+          : n.includes('Unarchive')
+            ? p.put(`/items/${t}/unarchive`)
+            : (L(a.find((s) => s.id == t)), M());
+      }
+    }, [n]),
+    i.useEffect(() => {
+      x || f('');
+    }, [x]),
+    e.jsxs(e.Fragment, {
+      children: [
+        e.jsx(N, { title: 'Taobao Organizer' }),
+        e.jsxs(C, {
+          position: 'sticky',
+          top: 0,
+          zIndex: 2,
+          children: [
+            e.jsx(re, {}),
+            e.jsxs(I, {
+              p: 4,
+              backgroundColor: 'gray.50',
+              borderBottom: '1px solid #ccc',
+              children: [
+                e.jsx(oe, { mr: 12, children: 'Items' }),
+                e.jsxs(ne, {
+                  columns: 2,
+                  spacing: 2,
+                  width: 'full',
+                  maxWidth: '1600px',
+                  children: [
+                    e.jsx('form', {
+                      onSubmit: G,
+                      children: e.jsxs(g, {
+                        id: 'add-item',
+                        border: '1px solid #ddd',
+                        borderRadius: 'md',
+                        p: 1,
+                        isInvalid: !!(l != null && l.url),
+                        children: [
+                          e.jsxs(w, {
+                            size: 'md',
+                            children: [
+                              e.jsx(_, {
+                                backgroundColor: 'white',
+                                placeholder: 'Add item',
+                                value: y.url,
+                                onChange: (t) => D('url', t.target.value),
+                              }),
+                              e.jsx(de, {
+                                width: '120px',
+                                children: e.jsx(h, {
+                                  leftIcon: e.jsx(q, {}),
+                                  colorScheme: 'orange',
+                                  type: 'submit',
+                                  isLoading: F,
+                                  children: 'Add Item',
+                                }),
+                              }),
+                            ],
+                          }),
+                          e.jsx(le, {
+                            children:
+                              "Enter json data here (links don't work anymore due to TB requiring login)",
+                          }),
+                          e.jsx(ce, { children: l == null ? void 0 : l.url }),
+                        ],
+                      }),
+                    }),
+                    e.jsx(C, {}),
+                    e.jsx(g, {
+                      id: 'search',
+                      border: '1px solid #ddd',
+                      borderRadius: 'md',
+                      p: 1,
+                      children: e.jsxs(w, {
+                        children: [
+                          e.jsx(he, {
+                            pointerEvents: 'none',
+                            children: e.jsx(U, { color: 'gray.300' }),
+                          }),
+                          e.jsx(_, {
+                            as: P.DebounceInput,
+                            debounceTimeout: 300,
+                            backgroundColor: 'white',
+                            placeholder: 'Search',
+                            onChange: z,
+                          }),
+                        ],
+                      }),
+                    }),
+                    e.jsx(g, {
+                      as: me,
+                      id: 'filter',
+                      border: '1px solid #ddd',
+                      borderRadius: 'md',
+                      p: 1,
+                      alignItems: 'center',
+                      children: e.jsx(Q, {
+                        colorScheme: 'orange',
+                        value: u,
+                        size: 'lg',
+                        onChange: (t) => O(t),
+                        children: e.jsxs(I, {
+                          children: [
+                            e.jsx(v, {
+                              value: 'active',
+                              children: 'Active Items',
+                            }),
+                            e.jsx(v, {
+                              value: 'archived',
+                              children: 'Archived Items',
+                            }),
+                          ],
+                        }),
+                      }),
+                    }),
+                  ],
+                }),
+              ],
+            }),
+          ],
+        }),
+        e.jsx(ae, {
+          gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
+          gap: 4,
+          p: 4,
+          children:
+            j &&
+            j.map((t) =>
+              e.jsx(W, { as: se, item: t, setDrawerType: f }, `i-${t.id}`),
+            ),
+        }),
+        e.jsxs(Y, {
+          size: 'md',
+          isOpen: x,
+          placement: 'right',
+          onClose: c,
+          children: [
+            e.jsx(J, {}),
+            e.jsxs(K, {
+              children: [
+                e.jsx(X, {}),
+                e.jsxs(Z, {
+                  children: [
+                    n.split('-').shift(),
+                    ' -',
+                    ' ',
+                    r.custom_title ? r.custom_title : r.original_title,
+                  ],
+                }),
+                e.jsxs(ee, {
+                  children: [
+                    n.includes('View') &&
+                      e.jsxs(k, {
+                        alignItems: 'flex-start',
+                        children: [
+                          e.jsx(ue, { src: r.image_url }),
+                          r.tags &&
+                            e.jsxs(o, {
+                              children: [
+                                e.jsx('strong', { children: 'Tags:' }),
+                                ' ',
+                                r.tags.map((t, s) =>
+                                  e.jsx(
+                                    xe,
+                                    {
+                                      colorScheme: 'orange',
+                                      variant: 'outline',
+                                      children: t.title,
+                                    },
+                                    t.id,
+                                  ),
+                                ),
+                              ],
+                            }),
+                          r.custom_title &&
+                            e.jsxs(o, {
+                              children: [
+                                e.jsx('strong', { children: 'Custom Title:' }),
+                                ' ',
+                                r.custom_title,
+                              ],
+                            }),
+                          e.jsxs(o, {
+                            children: [
+                              e.jsx('strong', { children: 'Original Title:' }),
+                              ' ',
+                              r.original_title,
+                            ],
+                          }),
+                          e.jsxs(o, {
+                            children: [
+                              e.jsx('strong', { children: 'Seller:' }),
+                              ' ',
+                              r.seller_name,
+                            ],
+                          }),
+                          e.jsxs(o, {
+                            children: [
+                              e.jsx('strong', { children: 'Price:' }),
+                              ' ',
+                              r.original_price,
+                            ],
+                          }),
+                          e.jsxs(o, {
+                            children: [
+                              e.jsx('strong', { children: 'Quantity:' }),
+                              ' ',
+                              r.quantity,
+                            ],
+                          }),
+                          r.notes &&
+                            e.jsxs(o, {
+                              children: [
+                                e.jsx('strong', { children: 'Notes:' }),
+                                ' ',
+                                r.notes,
+                              ],
+                            }),
+                          e.jsxs(o, {
+                            children: [
+                              e.jsx('strong', { children: 'Created At:' }),
+                              ' ',
+                              new Date(r.created_at).toLocaleDateString(),
+                            ],
+                          }),
+                          e.jsxs(o, {
+                            children: [
+                              e.jsx('strong', { children: 'Updated At:' }),
+                              ' ',
+                              new Date(r.updated_at).toLocaleDateString(),
+                            ],
+                          }),
+                          e.jsx(h, {
+                            as: pe,
+                            colorScheme: 'orange',
+                            width: 'full',
+                            href: r.listing_url,
+                            isExternal: !0,
+                            children: 'Original Listing',
+                          }),
+                        ],
+                      }),
+                    n.includes('Edit') && e.jsx(ie, { item: r, onClose: c }),
+                    n.includes('Delete') &&
+                      e.jsxs(k, {
+                        children: [
+                          e.jsxs(o, {
+                            children: [
+                              'Are you sure you want to permanently delete [',
+                              r.custom_title
+                                ? r.custom_title
+                                : r.original_title,
+                              ']? This action is irreversible.',
+                            ],
+                          }),
+                          e.jsxs(ge, {
+                            children: [
+                              e.jsx(h, {
+                                colorScheme: 'red',
+                                variant: 'outline',
+                                onClick: c,
+                                children: 'No',
+                              }),
+                              e.jsx(h, {
+                                colorScheme: 'red',
+                                onClick: R,
+                                children: 'Yes',
+                              }),
+                            ],
+                          }),
+                        ],
+                      }),
+                  ],
+                }),
+                e.jsx(te, {
+                  children: e.jsx(h, {
+                    variant: 'outline',
+                    mr: 3,
+                    onClick: c,
+                    children: 'Close',
+                  }),
+                }),
+              ],
+            }),
+          ],
+        }),
+      ],
+    })
+  );
+}
+export { Ne as default };

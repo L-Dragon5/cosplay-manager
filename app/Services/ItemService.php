@@ -22,10 +22,10 @@ class ItemService
     /**
      * Create new Item.
      *
-     * @param  string  $userId
+     * @param  int  $userId
      * @param  array  $validated
      */
-    public function create(string $userId, array $validated)
+    public function create(int $userId, array $validated)
     {
         $info = [];
 
@@ -132,11 +132,11 @@ class ItemService
     /**
      * Update existing item.
      *
-     * @param  string  $userId
+     * @param  int  $userId
      * @param  \App\Models\Item  $item
      * @param  array  $validated
      */
-    public function update(string $userId, Item $item, array $validated)
+    public function update(int $userId, Item $item, array $validated)
     {
         if ($item->user_id === $userId) {
             @['tags' => $incoming_tags] = $validated;
@@ -146,7 +146,7 @@ class ItemService
 
             // If they want to change tags.
             if (!empty($incoming_tags)) {
-                $old_tags = $item->tags()->pluck('_id')->toArray();
+                $old_tags = $item->tags()->pluck('id')->toArray();
                 $tags_to_remove = array_diff($old_tags, $incoming_tags);
                 $tags_to_insert = array_diff($incoming_tags, $old_tags);
 
@@ -174,10 +174,10 @@ class ItemService
     /**
      * Remove existing item.
      *
-     * @param  string  $userId
+     * @param  int  $userId
      * @param  \App\Models\Item  $item
      */
-    public function delete(string $userId, Item $item)
+    public function delete(int $userId, Item $item)
     {
         if ($item->user_id === $userId) {
             // Delete image associated with item
@@ -202,14 +202,14 @@ class ItemService
     /**
      * Archive item.
      *
-     * @param  string  $userId
+     * @param  int  $userId
      * @param  \App\Models\Item  $item
      */
-    public function archive(string $userId, Item $item)
+    public function archive(int $userId, Item $item)
     {
         if ($item->user_id === $userId) {
             $item->is_archived = true;
-            $item->archived_at = DB::raw('now()');
+            $item->archived_at = now();
             $success = $item->save();
 
             if ($success) {
@@ -225,10 +225,10 @@ class ItemService
     /**
      * Unarchive item.
      *
-     * @param  string  $userId
+     * @param  int  $userId
      * @param  \App\Models\Item  $item
      */
-    public function unarchive(string $userId, Item $item)
+    public function unarchive(int $userId, Item $item)
     {
         if ($item->user_id === $userId) {
             $item->is_archived = false;

@@ -1,1 +1,299 @@
-import{r as m,b as D,j as e}from"./app-jKCvGqK8.js";import{l as W}from"./react-cropper.es-CeJeJgf5.js";import k from"./TagSelect-C7f4WRL3.js";import{V as q}from"./v-stack-CeaklOe-.js";import{H as w}from"./h-stack-DgkOJJod.js";import{F as n,I as c,a as d,b as g}from"./input-Co9a23Ga.js";import{F as o}from"./form-label-Duwlo-ac.js";import{S as j}from"./select-r-8IvUpk.js";import{B as S}from"./box-DZ06z6RF.js";import{B as p}from"./button-C2Gq51vH.js";import"./stack-DnKf1WGz.js";function Q({tags:I,series:u,onClose:R}){var b,_;const[f,v]=m.useState(null),[h,y]=m.useState(""),{data:r,setData:s,post:F,processing:L,errors:t}=D({title:"",status:"",tags:[],creator:"",storage_location:"",times_worn:"",character_id:"",image:""}),x=m.useRef();function O(a){a.preventDefault(),F("/outfits",{onSuccess:()=>R()})}function T(a){const i=a.currentTarget;if(i.files!==null&&i.files.length>0){const l=i.files[0],C=new FileReader;C.addEventListener("load",A=>{v(A.target.result)},!1),l&&C.readAsDataURL(l)}}function U(){const a=prompt("Enter URL here"),i=new XMLHttpRequest;i.onload=()=>{const l=new FileReader;l.onloadend=()=>{v(l.result)},l.readAsDataURL(i.response)},i.open("GET",a),i.responseType="blob",i.send()}function E(){var a,i,l;s("image",(l=(i=(a=x==null?void 0:x.current)==null?void 0:a.cropper)==null?void 0:i.getCroppedCanvas())==null?void 0:l.toDataURL())}return m.useEffect(()=>{h!==""&&s("character_id","")},[h]),e.jsxs(q,{as:"form",onSubmit:O,children:[e.jsxs(w,{width:"full",children:[e.jsxs(n,{id:"outfit-series",isRequired:!0,children:[e.jsx(o,{children:"Outfit Series"}),e.jsx(j,{backgroundColor:"white",placeholder:"Select series",onChange:a=>y(a.target.value),value:h,children:u.map(a=>e.jsx("option",{value:a._id,children:a.title},a._id))})]}),e.jsxs(n,{id:"outfit-character",isRequired:!0,children:[e.jsx(o,{children:"Outfit Character"}),e.jsx(j,{backgroundColor:"white",placeholder:"Select character",onChange:a=>s("character_id",a.target.value),isDisabled:h==="",children:(_=(b=u==null?void 0:u.find(a=>a._id===h))==null?void 0:b.characters)==null?void 0:_.map(a=>e.jsx("option",{value:a._id,children:a.name},a._id))})]})]}),e.jsxs(n,{id:"title",isInvalid:!!(t!=null&&t.title),isRequired:!0,children:[e.jsx(o,{children:"Outfit Title"}),e.jsx(c,{placeholder:"Outfit title",value:r.title,onChange:a=>s("title",a.target.value)}),e.jsx(d,{children:t==null?void 0:t.title})]}),e.jsxs(n,{id:"status",isInvalid:!!(t!=null&&t.status),isRequired:!0,children:[e.jsx(o,{children:"Outfit Status"}),e.jsxs(j,{placeholder:"Select status",value:r.status,onChange:a=>s("status",a.target.value),children:[e.jsx("option",{value:0,children:"Future Cosplay"}),e.jsx("option",{value:1,children:"Owned & Unworn"}),e.jsx("option",{value:2,children:"Worn"})]}),e.jsx(d,{children:t==null?void 0:t.status})]}),e.jsxs(n,{id:"tags",isInvalid:!!(t!=null&&t.tags),children:[e.jsx(o,{children:"Tags"}),e.jsx(k,{tags:I,setData:s}),e.jsx(d,{children:t==null?void 0:t.tags})]}),e.jsx(S,{h:"50px"}),e.jsxs(n,{id:"creator",isInvalid:!!(t!=null&&t.creator),children:[e.jsx(o,{children:"Creator"}),e.jsx(c,{placeholder:"Creator",value:r.creator,onChange:a=>s("creator",a.target.value)}),e.jsx(g,{children:"Who made the outfit or what shop did you buy it from?"}),e.jsx(d,{children:t==null?void 0:t.creator})]}),e.jsxs(n,{id:"storage_location",isInvalid:!!(t!=null&&t.storage_location),children:[e.jsx(o,{children:"Storage Location"}),e.jsx(c,{placeholder:"Storage location",value:r.storage_location,onChange:a=>s("storage_location",a.target.value)}),e.jsx(g,{children:"Where is the outfit stored? A bin? What number?"}),e.jsx(d,{children:t==null?void 0:t.storage_location})]}),e.jsxs(n,{id:"times_worn",isInvalid:!!(t!=null&&t.times_worn),children:[e.jsx(o,{children:"Times Worn"}),e.jsx(c,{placeholder:"Times worn",value:r.times_worn,onChange:a=>s("times_worn",a.target.value)}),e.jsx(g,{children:"List out where/when you have worn this outfit"}),e.jsx(d,{children:t==null?void 0:t.times_worn})]}),e.jsxs(n,{id:"obtained_on",isInvalid:!!(t!=null&&t.obtained_on),children:[e.jsx(o,{children:"Obtained On"}),e.jsx(c,{type:"date",placeholder:"Obtained on",value:r.obtained_on,onChange:a=>s("obtained_on",a.target.value)}),e.jsx(g,{children:"When did you receive this outfit?"}),e.jsx(d,{children:t==null?void 0:t.obtained_on})]}),e.jsxs(w,{children:[e.jsx(n,{id:"image",children:e.jsxs(o,{children:[e.jsx(c,{type:"file",accept:"image/*",onChange:T,display:"none"}),e.jsx(p,{as:"span",colorScheme:"orange",children:"Upload Image"})]})}),e.jsx(n,{id:"image-url",children:e.jsx(p,{as:"span",colorScheme:"orange",onClick:U,children:"Get Image from URL"})})]}),f&&e.jsx(S,{children:e.jsx(W,{ref:x,viewMode:2,src:f,style:{maxHeight:350},guides:!1,autoCropArea:1,movable:!1,zoomable:!1,scalable:!1,rotatable:!1,crop:E})}),e.jsx(p,{type:"submit",colorScheme:"green",width:"full",isLoading:L,children:"Add Outfit"})]})}export{Q as default};
+import { r as m, b as D, j as e } from './app-jKCvGqK8.js';
+import { l as W } from './react-cropper.es-CeJeJgf5.js';
+import k from './TagSelect-C7f4WRL3.js';
+import { V as q } from './v-stack-CeaklOe-.js';
+import { H as w } from './h-stack-DgkOJJod.js';
+import { F as n, I as c, a as d, b as g } from './input-Co9a23Ga.js';
+import { F as o } from './form-label-Duwlo-ac.js';
+import { S as j } from './select-r-8IvUpk.js';
+import { B as S } from './box-DZ06z6RF.js';
+import { B as p } from './button-C2Gq51vH.js';
+import './stack-DnKf1WGz.js';
+function Q({ tags: I, series: u, onClose: R }) {
+  var b, _;
+  const [f, v] = m.useState(null),
+    [h, y] = m.useState(''),
+    {
+      data: r,
+      setData: s,
+      post: F,
+      processing: L,
+      errors: t,
+    } = D({
+      title: '',
+      status: '',
+      tags: [],
+      creator: '',
+      storage_location: '',
+      times_worn: '',
+      character_id: '',
+      image: '',
+    }),
+    x = m.useRef();
+  function O(a) {
+    a.preventDefault(), F('/outfits', { onSuccess: () => R() });
+  }
+  function T(a) {
+    const i = a.currentTarget;
+    if (i.files !== null && i.files.length > 0) {
+      const l = i.files[0],
+        C = new FileReader();
+      C.addEventListener(
+        'load',
+        (A) => {
+          v(A.target.result);
+        },
+        !1,
+      ),
+        l && C.readAsDataURL(l);
+    }
+  }
+  function U() {
+    const a = prompt('Enter URL here'),
+      i = new XMLHttpRequest();
+    (i.onload = () => {
+      const l = new FileReader();
+      (l.onloadend = () => {
+        v(l.result);
+      }),
+        l.readAsDataURL(i.response);
+    }),
+      i.open('GET', a),
+      (i.responseType = 'blob'),
+      i.send();
+  }
+  function E() {
+    var a, i, l;
+    s(
+      'image',
+      (l =
+        (i =
+          (a = x == null ? void 0 : x.current) == null ? void 0 : a.cropper) ==
+        null
+          ? void 0
+          : i.getCroppedCanvas()) == null
+        ? void 0
+        : l.toDataURL(),
+    );
+  }
+  return (
+    m.useEffect(() => {
+      h !== '' && s('character_id', '');
+    }, [h]),
+    e.jsxs(q, {
+      as: 'form',
+      onSubmit: O,
+      children: [
+        e.jsxs(w, {
+          width: 'full',
+          children: [
+            e.jsxs(n, {
+              id: 'outfit-series',
+              isRequired: !0,
+              children: [
+                e.jsx(o, { children: 'Outfit Series' }),
+                e.jsx(j, {
+                  backgroundColor: 'white',
+                  placeholder: 'Select series',
+                  onChange: (a) => y(a.target.value),
+                  value: h,
+                  children: u.map((a) =>
+                    e.jsx('option', { value: a.id, children: a.title }, a.id),
+                  ),
+                }),
+              ],
+            }),
+            e.jsxs(n, {
+              id: 'outfit-character',
+              isRequired: !0,
+              children: [
+                e.jsx(o, { children: 'Outfit Character' }),
+                e.jsx(j, {
+                  backgroundColor: 'white',
+                  placeholder: 'Select character',
+                  onChange: (a) => s('character_id', a.target.value),
+                  isDisabled: h === '',
+                  children:
+                    (_ =
+                      (b = u == null ? void 0 : u.find((a) => a.id === h)) ==
+                      null
+                        ? void 0
+                        : b.characters) == null
+                      ? void 0
+                      : _.map((a) =>
+                          e.jsx(
+                            'option',
+                            { value: a.id, children: a.name },
+                            a.id,
+                          ),
+                        ),
+                }),
+              ],
+            }),
+          ],
+        }),
+        e.jsxs(n, {
+          id: 'title',
+          isInvalid: !!(t != null && t.title),
+          isRequired: !0,
+          children: [
+            e.jsx(o, { children: 'Outfit Title' }),
+            e.jsx(c, {
+              placeholder: 'Outfit title',
+              value: r.title,
+              onChange: (a) => s('title', a.target.value),
+            }),
+            e.jsx(d, { children: t == null ? void 0 : t.title }),
+          ],
+        }),
+        e.jsxs(n, {
+          id: 'status',
+          isInvalid: !!(t != null && t.status),
+          isRequired: !0,
+          children: [
+            e.jsx(o, { children: 'Outfit Status' }),
+            e.jsxs(j, {
+              placeholder: 'Select status',
+              value: r.status,
+              onChange: (a) => s('status', a.target.value),
+              children: [
+                e.jsx('option', { value: 0, children: 'Future Cosplay' }),
+                e.jsx('option', { value: 1, children: 'Owned & Unworn' }),
+                e.jsx('option', { value: 2, children: 'Worn' }),
+              ],
+            }),
+            e.jsx(d, { children: t == null ? void 0 : t.status }),
+          ],
+        }),
+        e.jsxs(n, {
+          id: 'tags',
+          isInvalid: !!(t != null && t.tags),
+          children: [
+            e.jsx(o, { children: 'Tags' }),
+            e.jsx(k, { tags: I, setData: s }),
+            e.jsx(d, { children: t == null ? void 0 : t.tags }),
+          ],
+        }),
+        e.jsx(S, { h: '50px' }),
+        e.jsxs(n, {
+          id: 'creator',
+          isInvalid: !!(t != null && t.creator),
+          children: [
+            e.jsx(o, { children: 'Creator' }),
+            e.jsx(c, {
+              placeholder: 'Creator',
+              value: r.creator,
+              onChange: (a) => s('creator', a.target.value),
+            }),
+            e.jsx(g, {
+              children: 'Who made the outfit or what shop did you buy it from?',
+            }),
+            e.jsx(d, { children: t == null ? void 0 : t.creator }),
+          ],
+        }),
+        e.jsxs(n, {
+          id: 'storage_location',
+          isInvalid: !!(t != null && t.storage_location),
+          children: [
+            e.jsx(o, { children: 'Storage Location' }),
+            e.jsx(c, {
+              placeholder: 'Storage location',
+              value: r.storage_location,
+              onChange: (a) => s('storage_location', a.target.value),
+            }),
+            e.jsx(g, {
+              children: 'Where is the outfit stored? A bin? What number?',
+            }),
+            e.jsx(d, { children: t == null ? void 0 : t.storage_location }),
+          ],
+        }),
+        e.jsxs(n, {
+          id: 'times_worn',
+          isInvalid: !!(t != null && t.times_worn),
+          children: [
+            e.jsx(o, { children: 'Times Worn' }),
+            e.jsx(c, {
+              placeholder: 'Times worn',
+              value: r.times_worn,
+              onChange: (a) => s('times_worn', a.target.value),
+            }),
+            e.jsx(g, {
+              children: 'List out where/when you have worn this outfit',
+            }),
+            e.jsx(d, { children: t == null ? void 0 : t.times_worn }),
+          ],
+        }),
+        e.jsxs(n, {
+          id: 'obtained_on',
+          isInvalid: !!(t != null && t.obtained_on),
+          children: [
+            e.jsx(o, { children: 'Obtained On' }),
+            e.jsx(c, {
+              type: 'date',
+              placeholder: 'Obtained on',
+              value: r.obtained_on,
+              onChange: (a) => s('obtained_on', a.target.value),
+            }),
+            e.jsx(g, { children: 'When did you receive this outfit?' }),
+            e.jsx(d, { children: t == null ? void 0 : t.obtained_on }),
+          ],
+        }),
+        e.jsxs(w, {
+          children: [
+            e.jsx(n, {
+              id: 'image',
+              children: e.jsxs(o, {
+                children: [
+                  e.jsx(c, {
+                    type: 'file',
+                    accept: 'image/*',
+                    onChange: T,
+                    display: 'none',
+                  }),
+                  e.jsx(p, {
+                    as: 'span',
+                    colorScheme: 'orange',
+                    children: 'Upload Image',
+                  }),
+                ],
+              }),
+            }),
+            e.jsx(n, {
+              id: 'image-url',
+              children: e.jsx(p, {
+                as: 'span',
+                colorScheme: 'orange',
+                onClick: U,
+                children: 'Get Image from URL',
+              }),
+            }),
+          ],
+        }),
+        f &&
+          e.jsx(S, {
+            children: e.jsx(W, {
+              ref: x,
+              viewMode: 2,
+              src: f,
+              style: { maxHeight: 350 },
+              guides: !1,
+              autoCropArea: 1,
+              movable: !1,
+              zoomable: !1,
+              scalable: !1,
+              rotatable: !1,
+              crop: E,
+            }),
+          }),
+        e.jsx(p, {
+          type: 'submit',
+          colorScheme: 'green',
+          width: 'full',
+          isLoading: L,
+          children: 'Add Outfit',
+        }),
+      ],
+    })
+  );
+}
+export { Q as default };

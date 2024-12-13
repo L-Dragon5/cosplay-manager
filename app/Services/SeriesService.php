@@ -37,10 +37,10 @@ class SeriesService
     /**
      * Create new Series.
      *
-     * @param  string  $userId
+     * @param  int  $userId
      * @param  array  $validated
      */
-    public function create(string $userId, array $validated)
+    public function create(int $userId, array $validated)
     {
         if ($this->checkForDuplicate($validated['title'], 'title')) {
             return back()->withErrors(['title' => 'Series already exists with this title']);
@@ -73,11 +73,11 @@ class SeriesService
     /**
      * Update existing series.
      *
-     * @param  string  $userId
+     * @param  int  $userId
      * @param  \App\Models\Series  $series
      * @param  array  $validated
      */
-    public function update(string $userId, Series $series, array $validated)
+    public function update(int $userId, Series $series, array $validated)
     {
         if ($series->user_id === $userId) {
             @['title' => $title, 'image' => $image] = $validated;
@@ -118,10 +118,10 @@ class SeriesService
     /**
      * Remove existing series.
      *
-     * @param  string  $userId
+     * @param  int  $userId
      * @param  \App\Models\Series  $series
      */
-    public function delete(string $userId, Series $series)
+    public function delete(int $userId, Series $series)
     {
         if ($series->user_id === $userId) {
             // Delete all images from related characters and outfits

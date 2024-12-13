@@ -55,10 +55,10 @@ class OutfitService
     /**
      * Create new Outfit.
      *
-     * @param  string  $userId
+     * @param  int  $userId
      * @param  array  $validated
      */
-    public function create(string $userId, array $validated)
+    public function create(int $userId, array $validated)
     {
         if ($this->checkForDuplicate($validated['title'], 'title')) {
             return back()->withErrors(['title' => 'Outfit already exists with this title']);
@@ -115,11 +115,11 @@ class OutfitService
     /**
      * Update existing outfit.
      *
-     * @param  string  $userId
+     * @param  int  $userId
      * @param  \App\Models\Outfit  $outfit
      * @param  array  $validated
      */
-    public function update(string $userId, Outfit $outfit, array $validated)
+    public function update(int $userId, Outfit $outfit, array $validated)
     {
         if ($outfit->user_id === $userId) {
             @['title' => $title, 'image' => $image, 'tags' => $incoming_tags] = $validated;
@@ -148,7 +148,7 @@ class OutfitService
 
             // If they want to change tags
             if (!empty($incoming_tags)) {
-                $old_tags = $outfit->tags()->pluck('_id')->toArray();
+                $old_tags = $outfit->tags()->pluck('id')->toArray();
                 $tags_to_remove = array_diff($old_tags, $incoming_tags);
                 $tags_to_insert = array_diff($incoming_tags, $old_tags);
 
@@ -185,7 +185,7 @@ class OutfitService
             $success = $outfit->save();
 
             if ($success) {
-                return to_route('cosplay-management');
+                return back();
             } else {
                 return back()->withErrors('Something went wrong while trying to update outfit');
             }
@@ -197,10 +197,10 @@ class OutfitService
     /**
      * Remove existing outfit.
      *
-     * @param  string  $userId
+     * @param  int  $userId
      * @param  \App\Models\Outfit  $outfit
      */
-    public function delete(string $userId, Outfit $outfit)
+    public function delete(int $userId, Outfit $outfit)
     {
         if ($outfit->user_id === $userId) {
             // Delete outfit images
@@ -230,11 +230,11 @@ class OutfitService
     /**
      * Delete image associated to outfit.
      *
-     * @param  string  $userId
+     * @param  int  $userId
      * @param  \App\Models\Outfit  $outfit
      * @param  int  $index
      */
-    public function deleteImage(string $userId, Outfit $outfit, int $index)
+    public function deleteImage(int $userId, Outfit $outfit, int $index)
     {
         if ($outfit->user_id === $userId) {
             // Get stored images as an array

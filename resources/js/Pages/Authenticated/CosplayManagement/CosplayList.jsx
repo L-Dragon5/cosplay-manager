@@ -2,34 +2,34 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css';
 
 import { AddIcon, SearchIcon } from '@chakra-ui/icons';
 import {
-	Box,
-	Button,
-	ButtonGroup,
-	Checkbox,
-	CheckboxGroup,
-	Drawer,
-	DrawerBody,
-	DrawerCloseButton,
-	DrawerContent,
-	DrawerFooter,
-	DrawerHeader,
-	DrawerOverlay,
-	Flex,
-	FormControl,
-	Grid,
-	GridItem,
-	HStack,
-	Heading,
-	Image,
-	Input,
-	InputGroup,
-	InputLeftElement,
-	Select,
-	SimpleGrid,
-	Tag,
-	Text,
-	VStack,
-	useDisclosure,
+  Box,
+  Button,
+  ButtonGroup,
+  Checkbox,
+  CheckboxGroup,
+  Drawer,
+  DrawerBody,
+  DrawerCloseButton,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
+  Flex,
+  FormControl,
+  Grid,
+  GridItem,
+  HStack,
+  Heading,
+  Image,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  Select,
+  SimpleGrid,
+  Tag,
+  Text,
+  VStack,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { Head, router } from '@inertiajs/react';
 import React, { useEffect, useState } from 'react';
@@ -44,392 +44,391 @@ import OutfitEditForm from './forms/OutfitEditForm';
 import SeriesAddForm from './forms/SeriesAddForm';
 
 function CosplayList({ outfits, series, tags }) {
-	/**
-	 * Filter
-	 * 0 = none
-	 * 1 = future
-	 * 2 = owned & unworn
-	 * 4 = worn
-	 */
+  /**
+   * Filter
+   * 0 = none
+   * 1 = future
+   * 2 = owned & unworn
+   * 4 = worn
+   */
 
-	const [activeOutfit, setActiveOutfit] = useState({});
-	const [filterSeries, setFilterSeries] = useState('');
-	const [filterCharacter, setFilterCharacter] = useState('');
-	const [drawerType, setDrawerType] = useState('');
-	const [activeOutfits, setActiveOutfits] = useState(outfits); // All outfits available
-	const [search, setSearch] = useState(''); // Search input
-	const [filter, setFilter] = useState(7); // Filter mask
-	const [checkboxes, setCheckboxes] = useState(['future', 'unworn', 'worn']);
+  const [activeOutfit, setActiveOutfit] = useState({});
+  const [filterSeries, setFilterSeries] = useState('');
+  const [filterCharacter, setFilterCharacter] = useState('');
+  const [drawerType, setDrawerType] = useState('');
+  const [activeOutfits, setActiveOutfits] = useState(outfits); // All outfits available
+  const [search, setSearch] = useState(''); // Search input
+  const [filter, setFilter] = useState(7); // Filter mask
+  const [checkboxes, setCheckboxes] = useState(['future', 'unworn', 'worn']);
 
-	const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
-	function filterOutfits() {
-		const lowerSearch = String(search).toLowerCase();
-		const searchBool = (item) => {
-			return (
-				String(item.title).toLowerCase().indexOf(lowerSearch) !== -1 ||
-				String(item?.character?.name).toLowerCase().indexOf(lowerSearch) !==
-					-1 ||
-				item.tags.filter((tag) => {
-					return tag.label.toLowerCase().indexOf(lowerSearch) !== -1;
-				}).length > 0
-			);
-		};
+  function filterOutfits() {
+    const lowerSearch = String(search).toLowerCase();
+    const searchBool = (item) => {
+      return (
+        String(item.title).toLowerCase().indexOf(lowerSearch) !== -1 ||
+        String(item?.character?.name).toLowerCase().indexOf(lowerSearch) !==
+          -1 ||
+        item.tags.filter((tag) => {
+          return tag.label.toLowerCase().indexOf(lowerSearch) !== -1;
+        }).length > 0
+      );
+    };
 
-		const filterBool = (item) => {
-			if (filterSeries === 0 || filterSeries === '') {
-				return true;
-			}
+    const filterBool = (item) => {
+      if (filterSeries === 0 || filterSeries === '') {
+        return true;
+      }
 
-			if (filterCharacter === 0 || filterCharacter === '') {
-				return item?.character?.series_id == filterSeries;
-			}
+      if (filterCharacter === 0 || filterCharacter === '') {
+        return item?.character?.series_id == filterSeries;
+      }
 
-			return (
-				item?.character?.series_id === filterSeries &&
-				item?.character_id === filterCharacter
-			);
-		};
+      return (
+        item?.character?.series_id === filterSeries &&
+        item?.character_id === filterCharacter
+      );
+    };
 
-		switch (filter) {
-			case 0: // None
-				setActiveOutfits([]);
-				break;
-			case 1: // Future Only
-				setActiveOutfits(
-					outfits.filter(
-						(item) => item.status == 0 && searchBool(item) && filterBool(item),
-					),
-				);
-				break;
-			case 2: // Unworn Only
-				setActiveOutfits(
-					outfits.filter(
-						(item) => item.status == 1 && searchBool(item) && filterBool(item),
-					),
-				);
-				break;
-			case 3: // Future + Unworn
-				setActiveOutfits(
-					outfits.filter(
-						(item) =>
-							(item.status == 0 || item.status == 1) &&
-							searchBool(item) &&
-							filterBool(item),
-					),
-				);
-				break;
-			case 4: // Worn Only
-				setActiveOutfits(
-					outfits.filter(
-						(item) => item.status == 2 && searchBool(item) && filterBool(item),
-					),
-				);
-				break;
-			case 5: // Future + Worn
-				setActiveOutfits(
-					outfits.filter(
-						(item) =>
-							(item.status == 0 || item.status == 2) &&
-							searchBool(item) &&
-							filterBool(item),
-					),
-				);
-				break;
-			case 6: // Unworn + Worn
-				setActiveOutfits(
-					outfits.filter(
-						(item) =>
-							(item.status == 1 || item.status == 2) &&
-							searchBool(item) &&
-							filterBool(item),
-					),
-				);
-				break;
-			case 7: // Future + Unworn + Worn
-				setActiveOutfits(
-					outfits.filter((item) => searchBool(item) && filterBool(item)),
-				);
-				break;
-			default:
-				break;
-		}
-	}
+    switch (filter) {
+      case 0: // None
+        setActiveOutfits([]);
+        break;
+      case 1: // Future Only
+        setActiveOutfits(
+          outfits.filter(
+            (item) => item.status == 0 && searchBool(item) && filterBool(item),
+          ),
+        );
+        break;
+      case 2: // Unworn Only
+        setActiveOutfits(
+          outfits.filter(
+            (item) => item.status == 1 && searchBool(item) && filterBool(item),
+          ),
+        );
+        break;
+      case 3: // Future + Unworn
+        setActiveOutfits(
+          outfits.filter(
+            (item) =>
+              (item.status == 0 || item.status == 1) &&
+              searchBool(item) &&
+              filterBool(item),
+          ),
+        );
+        break;
+      case 4: // Worn Only
+        setActiveOutfits(
+          outfits.filter(
+            (item) => item.status == 2 && searchBool(item) && filterBool(item),
+          ),
+        );
+        break;
+      case 5: // Future + Worn
+        setActiveOutfits(
+          outfits.filter(
+            (item) =>
+              (item.status == 0 || item.status == 2) &&
+              searchBool(item) &&
+              filterBool(item),
+          ),
+        );
+        break;
+      case 6: // Unworn + Worn
+        setActiveOutfits(
+          outfits.filter(
+            (item) =>
+              (item.status == 1 || item.status == 2) &&
+              searchBool(item) &&
+              filterBool(item),
+          ),
+        );
+        break;
+      case 7: // Future + Unworn + Worn
+        setActiveOutfits(
+          outfits.filter((item) => searchBool(item) && filterBool(item)),
+        );
+        break;
+      default:
+        break;
+    }
+  }
 
-	const handleSearch = (e) => setSearch(e.target.value);
-	const handleDelete = (e) => {
-		router.delete(`/outfits/${activeOutfit._id}`);
-		onClose();
-	};
+  const handleSearch = (e) => setSearch(e.target.value);
+  const handleDelete = (e) => {
+    router.delete(`/outfits/${activeOutfit.id}`);
+    onClose();
+  };
 
-	// Set filter mask based on checkboxes.
-	useEffect(() => {
-		let mask = 0;
+  // Set filter mask based on checkboxes.
+  useEffect(() => {
+    let mask = 0;
 
-		if (checkboxes.includes('future')) {
-			mask += 1;
-		}
+    if (checkboxes.includes('future')) {
+      mask += 1;
+    }
 
-		if (checkboxes.includes('unworn')) {
-			mask += 2;
-		}
+    if (checkboxes.includes('unworn')) {
+      mask += 2;
+    }
 
-		if (checkboxes.includes('worn')) {
-			mask += 4;
-		}
+    if (checkboxes.includes('worn')) {
+      mask += 4;
+    }
 
-		setFilter(mask);
-	}, [checkboxes]);
+    setFilter(mask);
+  }, [checkboxes]);
 
-	// Set outfits based on search and filters.
-	useEffect(() => {
-		filterOutfits();
-	}, [filter, filterSeries, filterCharacter, search, outfits]);
+  // Set outfits based on search and filters.
+  useEffect(() => {
+    filterOutfits();
+  }, [filter, filterSeries, filterCharacter, search, outfits]);
 
-	useEffect(() => {
-		if (drawerType !== '') {
-			const id = drawerType.split('-').pop();
-			setActiveOutfit(outfits.find((outfit) => outfit._id == id));
-			onOpen();
-		}
-	}, [drawerType]);
+  useEffect(() => {
+    if (drawerType !== '') {
+      const id = drawerType.split('-').pop();
+      setActiveOutfit(outfits.find((outfit) => outfit.id == id));
+      onOpen();
+    }
+  }, [drawerType]);
 
-	useEffect(() => {
-		if (!isOpen) setDrawerType('');
-	}, [isOpen]);
+  useEffect(() => {
+    if (!isOpen) setDrawerType('');
+  }, [isOpen]);
 
-	useEffect(() => {
-		if (filterSeries !== '') {
-			setFilterCharacter('');
-		}
-	}, [filterSeries]);
+  useEffect(() => {
+    if (filterSeries !== '') {
+      setFilterCharacter('');
+    }
+  }, [filterSeries]);
 
-	return (
-		<>
-			<Head title="Cosplay Management" />
-			<Box position="sticky" top={0} zIndex={2}>
-				<Navbar />
-				<HStack p={4} backgroundColor="gray.50" borderBottom="1px solid #ccc">
-					<Heading mr={12} flexBasis="280px">
-						Cosplay List
-					</Heading>
-					<Button
-						colorScheme="orange"
-						leftIcon={<AddIcon />}
-						onClick={() => setDrawerType('Add')}
-					>
-						Add
-					</Button>
-					<SimpleGrid columns={2} spacing={2} width="full" maxWidth="1600px">
-						<FormControl
-							id="search"
-							border="1px solid #ddd"
-							borderRadius="md"
-							p={1}
-						>
-							<InputGroup>
-								<InputLeftElement
-									pointerEvents="none"
-									children={<SearchIcon color="gray.300" />}
-								/>
-								<Input
-									as={DebounceInput}
-									debounceTimeout={300}
-									backgroundColor="white"
-									placeholder="Search"
-									onChange={handleSearch}
-								/>
-							</InputGroup>
-						</FormControl>
+  return (
+    <>
+      <Head title="Cosplay Management" />
+      <Box position="sticky" top={0} zIndex={2}>
+        <Navbar />
+        <HStack p={4} backgroundColor="gray.50" borderBottom="1px solid #ccc">
+          <Heading mr={12} flexBasis="280px">
+            Cosplay List
+          </Heading>
+          <Button
+            colorScheme="orange"
+            leftIcon={<AddIcon />}
+            onClick={() => setDrawerType('Add')}
+          >
+            Add
+          </Button>
+          <SimpleGrid columns={2} spacing={2} width="full" maxWidth="1600px">
+            <FormControl
+              id="search"
+              border="1px solid #ddd"
+              borderRadius="md"
+              p={1}
+            >
+              <InputGroup>
+                <InputLeftElement
+                  pointerEvents="none"
+                  children={<SearchIcon color="gray.300" />}
+                />
+                <Input
+                  as={DebounceInput}
+                  debounceTimeout={300}
+                  backgroundColor="white"
+                  placeholder="Search"
+                  onChange={handleSearch}
+                />
+              </InputGroup>
+            </FormControl>
 
-						<FormControl
-							as={Flex}
-							id="filter"
-							border="1px solid #ddd"
-							borderRadius="md"
-							p={1}
-							alignItems="center"
-						>
-							<CheckboxGroup
-								colorScheme="orange"
-								value={checkboxes}
-								size="lg"
-								onChange={(e) => setCheckboxes(e)}
-							>
-								<HStack>
-									<Checkbox value="future">Future</Checkbox>
-									<Checkbox value="unworn">Owned & Unworn</Checkbox>
-									<Checkbox value="worn">Worn</Checkbox>
-								</HStack>
-							</CheckboxGroup>
-						</FormControl>
+            <FormControl
+              as={Flex}
+              id="filter"
+              border="1px solid #ddd"
+              borderRadius="md"
+              p={1}
+              alignItems="center"
+            >
+              <CheckboxGroup
+                colorScheme="orange"
+                value={checkboxes}
+                size="lg"
+                onChange={(e) => setCheckboxes(e)}
+              >
+                <HStack>
+                  <Checkbox value="future">Future</Checkbox>
+                  <Checkbox value="unworn">Owned & Unworn</Checkbox>
+                  <Checkbox value="worn">Worn</Checkbox>
+                </HStack>
+              </CheckboxGroup>
+            </FormControl>
 
-						<HStack>
-							<Select
-								backgroundColor="white"
-								placeholder="Select series"
-								onChange={(e) => setFilterSeries(e.target.value)}
-							>
-								{series.map((item) => (
-									<option key={item._id} value={item._id}>
-										{item.title}
-									</option>
-								))}
-							</Select>
-							<Select
-								backgroundColor="white"
-								placeholder="Select character"
-								onChange={(e) => setFilterCharacter(e.target.value)}
-								isDisabled={filterSeries === ''}
-							>
-								{series
-									?.find((item) => item._id === filterSeries)
-									?.characters?.map((character) => (
-										<option key={character._id} value={character._id}>
-											{character.name}
-										</option>
-									))}
-							</Select>
-						</HStack>
-						<HStack>
-							<Button
-								colorScheme="teal"
-								leftIcon={<AddIcon />}
-								onClick={() => setDrawerType('Series')}
-							>
-								Add Series
-							</Button>
-							<Button
-								colorScheme="teal"
-								leftIcon={<AddIcon />}
-								onClick={() => setDrawerType('Character')}
-							>
-								Add Character
-							</Button>
-						</HStack>
-					</SimpleGrid>
-				</HStack>
-			</Box>
+            <HStack>
+              <Select
+                backgroundColor="white"
+                placeholder="Select series"
+                onChange={(e) => setFilterSeries(e.target.value)}
+              >
+                {series.map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.title}
+                  </option>
+                ))}
+              </Select>
+              <Select
+                backgroundColor="white"
+                placeholder="Select character"
+                onChange={(e) => setFilterCharacter(e.target.value)}
+                isDisabled={filterSeries === ''}
+              >
+                {series
+                  ?.find((item) => item.id === filterSeries)
+                  ?.characters?.map((character) => (
+                    <option key={character.id} value={character.id}>
+                      {character.name}
+                    </option>
+                  ))}
+              </Select>
+            </HStack>
+            <HStack>
+              <Button
+                colorScheme="teal"
+                leftIcon={<AddIcon />}
+                onClick={() => setDrawerType('Series')}
+              >
+                Add Series
+              </Button>
+              <Button
+                colorScheme="teal"
+                leftIcon={<AddIcon />}
+                onClick={() => setDrawerType('Character')}
+              >
+                Add Character
+              </Button>
+            </HStack>
+          </SimpleGrid>
+        </HStack>
+      </Box>
 
-			<Grid
-				gridTemplateColumns="repeat(auto-fill, minmax(250px, 1fr))"
-				gap={4}
-				p={4}
-			>
-				{activeOutfits &&
-					activeOutfits.map((outfit) => {
-						return (
-							<GridItem
-								as={OutfitCard}
-								key={`o-${outfit._id}`}
-								outfit={outfit}
-								setDrawerType={setDrawerType}
-							/>
-						);
-					})}
-			</Grid>
+      <Grid
+        gridTemplateColumns="repeat(auto-fill, minmax(250px, 1fr))"
+        gap={4}
+        p={4}
+      >
+        {activeOutfits?.map((outfit) => {
+          return (
+            <GridItem
+              as={OutfitCard}
+              key={`o-${outfit.id}`}
+              outfit={outfit}
+              setDrawerType={setDrawerType}
+            />
+          );
+        })}
+      </Grid>
 
-			<Drawer size="lg" isOpen={isOpen} placement="right" onClose={onClose}>
-				<DrawerOverlay />
-				<DrawerContent>
-					<DrawerCloseButton />
-					<DrawerHeader>
-						{drawerType.split('-').shift()} -{' '}
-						{activeOutfit?.title ?? 'New Outfit'}
-					</DrawerHeader>
-					<DrawerBody>
-						{drawerType.includes('Add') && (
-							<OutfitAddForm tags={tags} series={series} onClose={onClose} />
-						)}
+      <Drawer size="lg" isOpen={isOpen} placement="right" onClose={onClose}>
+        <DrawerOverlay />
+        <DrawerContent>
+          <DrawerCloseButton />
+          <DrawerHeader>
+            {drawerType.split('-').shift()} -{' '}
+            {activeOutfit?.title ?? 'New Outfit'}
+          </DrawerHeader>
+          <DrawerBody>
+            {drawerType.includes('Add') && (
+              <OutfitAddForm tags={tags} series={series} onClose={onClose} />
+            )}
 
-						{drawerType.includes('Series') && (
-							<SeriesAddForm onClose={onClose} />
-						)}
+            {drawerType.includes('Series') && (
+              <SeriesAddForm onClose={onClose} />
+            )}
 
-						{drawerType.includes('Character') && (
-							<CharacterAddForm series={series} onClose={onClose} />
-						)}
+            {drawerType.includes('Character') && (
+              <CharacterAddForm series={series} onClose={onClose} />
+            )}
 
-						{drawerType.includes('View') && (
-							<VStack alignItems="flex-start">
-								<Carousel autoPlay={false} showThumbs={false}>
-									{activeOutfit?.images_urls?.map((image) => (
-										<Image key={image} src={image} />
-									))}
-								</Carousel>
-								<Text>
-									<strong>Status:</strong>{' '}
-									{activeOutfit?.status == 0
-										? 'Future'
-										: activeOutfit?.status == 1
-											? 'Owned & Unworn'
-											: activeOutfit?.status == 2
-												? 'Worn'
-												: ''}
-								</Text>
-								{activeOutfit?.character?.name && (
-									<Text>
-										<strong>Character:</strong> {activeOutfit.character.name}
-									</Text>
-								)}
-								{activeOutfit?.tags && (
-									<Text>
-										<strong>Tags:</strong>{' '}
-										{activeOutfit.tags.map((tag, i) => (
-											<Tag key={tag._id} colorScheme="orange" variant="outline">
-												{tag.title}
-											</Tag>
-										))}
-									</Text>
-								)}
-								<Text>
-									<strong>Storage Location:</strong>{' '}
-									{activeOutfit?.storage_location}
-								</Text>
-								<Text>
-									<strong>Times Worn:</strong> {activeOutfit?.times_worn}
-								</Text>
-								<Text>
-									<strong>Creator:</strong> {activeOutfit?.creator}
-								</Text>
-							</VStack>
-						)}
+            {drawerType.includes('View') && (
+              <VStack alignItems="flex-start">
+                <Carousel autoPlay={false} showThumbs={false}>
+                  {activeOutfit?.images_urls?.map((image) => (
+                    <Image key={image} src={image} />
+                  ))}
+                </Carousel>
+                <Text>
+                  <strong>Status:</strong>{' '}
+                  {activeOutfit?.status == 0
+                    ? 'Future'
+                    : activeOutfit?.status == 1
+                      ? 'Owned & Unworn'
+                      : activeOutfit?.status == 2
+                        ? 'Worn'
+                        : ''}
+                </Text>
+                {activeOutfit?.character?.name && (
+                  <Text>
+                    <strong>Character:</strong> {activeOutfit.character.name}
+                  </Text>
+                )}
+                {activeOutfit?.tags && (
+                  <Text>
+                    <strong>Tags:</strong>{' '}
+                    {activeOutfit.tags.map((tag, i) => (
+                      <Tag key={tag.id} colorScheme="orange" variant="outline">
+                        {tag.title}
+                      </Tag>
+                    ))}
+                  </Text>
+                )}
+                <Text>
+                  <strong>Storage Location:</strong>{' '}
+                  {activeOutfit?.storage_location}
+                </Text>
+                <Text>
+                  <strong>Times Worn:</strong> {activeOutfit?.times_worn}
+                </Text>
+                <Text>
+                  <strong>Creator:</strong> {activeOutfit?.creator}
+                </Text>
+              </VStack>
+            )}
 
-						{drawerType.includes('Edit') && (
-							<OutfitEditForm
-								outfit={activeOutfit}
-								tags={tags}
-								series={series}
-								onClose={onClose}
-							/>
-						)}
+            {drawerType.includes('Edit') && (
+              <OutfitEditForm
+                outfit={activeOutfit}
+                tags={tags}
+                series={series}
+                onClose={onClose}
+              />
+            )}
 
-						{drawerType.includes('Delete') && (
-							<VStack>
-								<Text>
-									Are you sure you want to permanently delete [
-									{activeOutfit.title}]? This action is irreversible.
-								</Text>
-								<ButtonGroup>
-									<Button colorScheme="red" variant="outline" onClick={onClose}>
-										No
-									</Button>
-									<Button colorScheme="red" onClick={handleDelete}>
-										Yes
-									</Button>
-								</ButtonGroup>
-							</VStack>
-						)}
-					</DrawerBody>
-					<DrawerFooter>
-						<Button variant="outline" mr={3} onClick={onClose}>
-							Close
-						</Button>
-					</DrawerFooter>
-				</DrawerContent>
-			</Drawer>
-		</>
-	);
+            {drawerType.includes('Delete') && (
+              <VStack>
+                <Text>
+                  Are you sure you want to permanently delete [
+                  {activeOutfit.title}]? This action is irreversible.
+                </Text>
+                <ButtonGroup>
+                  <Button colorScheme="red" variant="outline" onClick={onClose}>
+                    No
+                  </Button>
+                  <Button colorScheme="red" onClick={handleDelete}>
+                    Yes
+                  </Button>
+                </ButtonGroup>
+              </VStack>
+            )}
+          </DrawerBody>
+          <DrawerFooter>
+            <Button variant="outline" mr={3} onClick={onClose}>
+              Close
+            </Button>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
+    </>
+  );
 }
 
 export default CosplayList;

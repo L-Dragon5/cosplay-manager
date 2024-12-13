@@ -46,10 +46,10 @@ class CharacterService
     /**
      * Create new Character.
      *
-     * @param  string  $userId
+     * @param  int  $userId
      * @param  array  $validated
      */
-    public function create(string $userId, array $validated)
+    public function create(int $userId, array $validated)
     {
         if ($this->checkForDuplicate($validated['name'], 'name')) {
             return back()->withErrors(['name' => 'Character already exists with this name']);
@@ -81,11 +81,11 @@ class CharacterService
     /**
      * Update existing character.
      *
-     * @param  string  $userId
+     * @param  int  $userId
      * @param  \App\Models\Character  $character
      * @param  array  $validated
      */
-    public function update(string $userId, Character $character, array $validated)
+    public function update(int $userId, Character $character, array $validated)
     {
         if ($character->user_id === $userId) {
             // If they want to change name
@@ -122,10 +122,10 @@ class CharacterService
     /**
      * Remove existing character.
      *
-     * @param  string  $userId
+     * @param  int  $userId
      * @param  \App\Models\Character  $character
      */
-    public function delete(string $userId, Character $character)
+    public function delete(int $userId, Character $character)
     {
         if ($character->user_id === $userId) {
             // Delete all images from related outfits

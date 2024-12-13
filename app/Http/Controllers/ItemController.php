@@ -7,6 +7,7 @@ use App\Http\Requests\ItemUpdateRequest;
 use App\Models\Item;
 use App\Services\ItemService;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class ItemController extends Controller
@@ -42,52 +43,44 @@ class ItemController extends Controller
      * Update the specified item in storage.
      *
      * @param  \App\Http\Requests\ItemUpdateRequest  $request
-     * @param  string  $item
+     * @param  \App\Models\Item  $item
      * @return \Illuminate\Http\Response
      */
-    public function update(ItemUpdateRequest $request, $item)
+    public function update(ItemUpdateRequest $request, Item $item)
     {
-        $item = Item::findOrFail($item);
-
         return $this->itemService->update(Auth::user()->id, $item, $request->validated());
     }
 
     /**
      * Archive selected item.
      *
-     * @param  string  $item
+     * @param  \App\Models\Item  $item
      * @return \Illuminate\Http\Response
      */
-    public function archive($item)
+    public function archive(Item $item)
     {
-        $item = Item::findOrFail($item);
-
         return $this->itemService->archive(Auth::user()->id, $item);
     }
 
     /**
      * Unarchived selected item.
      *
-     * @param  string  $item
+     * @param  \App\Models\Item  $item
      * @return \Illuminate\Http\Response
      */
-    public function unarchive($item)
+    public function unarchive(Item $item)
     {
-        $item = Item::findOrFail($item);
-
         return $this->itemService->unarchive(Auth::user()->id, $item);
     }
 
     /**
      * Remove selected item.
      *
-     * @param  string  $item
+     * @param  \App\Models\Item  $item
      * @return \Illuminate\Http\Response
      */
-    public function destroy($item)
+    public function destroy(Item $item)
     {
-        $item = Item::findOrFail($item);
-
         return $this->itemService->delete(Auth::user()->id, $item);
     }
 }
