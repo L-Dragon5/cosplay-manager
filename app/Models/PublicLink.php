@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Support\Str;
-use Jenssegers\Mongodb\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model;
 
 class PublicLink extends Model
 {

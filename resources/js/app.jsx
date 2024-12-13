@@ -1,14 +1,17 @@
 import { ChakraProvider } from '@chakra-ui/react';
 import { createInertiaApp } from '@inertiajs/react';
-import * as React from 'react';
+import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
 
 createInertiaApp({
-  title: (title) => `${title} | CosManage`,
-  resolve: (name) => require(`./Pages/${name}.jsx`),
+  resolve: (name) =>
+    resolvePageComponent(
+      `./Pages/${name}.jsx`,
+      import.meta.glob('./Pages/**/*.jsx'),
+    ),
   setup({ el, App, props }) {
     createRoot(el).render(
-      <ChakraProvider resetCSS>
+      <ChakraProvider>
         <App {...props} />
       </ChakraProvider>,
     );

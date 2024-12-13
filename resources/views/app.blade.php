@@ -6,9 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Scripts -->
-    <script src="{{ mix('js/app.js') }}" defer></script>
     <script src='https://www.google.com/recaptcha/api.js' defer></script>
-
+    @viteReactRefresh
+    @vite('resources/js/app.jsx')
     @inertiaHead
 </head>
 <body>

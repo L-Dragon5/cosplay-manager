@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Models\Scopes\UserIdScope;
-use Jenssegers\Mongodb\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model;
 
 class Tag extends Model
 {

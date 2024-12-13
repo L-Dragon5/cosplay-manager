@@ -6,6 +6,7 @@ use App\Models\Item;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
+use Intervention\Image\Encoders\JpegEncoder;
 
 class DownloadThumbs extends Command
 {
@@ -56,9 +57,9 @@ class DownloadThumbs extends Command
             $context = stream_context_create(['http' => ['timeout' => 10]]);
             $file = file_get_contents('https:'.$url, false, $context);
             if (!empty($file)) {
-                $img = Image::make($file)->resize(400, null, function ($constraint) {
+                $img = Image::read($file)->resize(400, null, function ($constraint) {
                     $constraint->aspectRatio();
-                })->encode('jpg', 100);
+                })->encode(new JpegEncoder(quality: 100));
                 $uuid = substr(bin2hex(random_bytes(ceil(26 / 2))), 0, 26);
                 $location = 'thumbs/' . $uuid . '.jpg';
                 $status = Storage::put($location, $img);

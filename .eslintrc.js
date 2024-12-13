@@ -5,11 +5,11 @@ module.exports = {
   },
   plugins: ['prettier', 'simple-import-sort', 'import'],
   extends: [
-    'airbnb',
     'eslint:recommended',
     'plugin:import/recommended',
     'plugin:react/recommended',
     'plugin:prettier/recommended',
+    'plugin:react/jsx-runtime',
   ],
   env: {
     browser: true,

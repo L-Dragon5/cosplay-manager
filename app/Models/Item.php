@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Models\Scopes\UserIdScope;
 use Illuminate\Support\Facades\Storage;
-use Jenssegers\Mongodb\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model;
 
 class Item extends Model
 {
