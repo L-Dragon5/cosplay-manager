@@ -13,7 +13,7 @@ class CreateItemsTagsTable extends Migration
      */
     public function up()
     {
-        Schema::create('items_tags', function (Blueprint $table) {
+        Schema::create('item_tag', function (Blueprint $table) {
             $table->unsignedBigInteger('item_id');
             $table->unsignedBigInteger('tag_id');
 
@@ -29,6 +29,6 @@ class CreateItemsTagsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('items_tags');
+        Schema::dropIfExists('item_tag');
     }
 }

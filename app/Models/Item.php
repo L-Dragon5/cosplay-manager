@@ -37,6 +37,6 @@ class Item extends Model
 
     public function tags()
     {
-        return $this->belongsToMany(Tag::class, null, 'item_ids', 'tag_ids');
+        return $this->belongsToMany(Tag::class, null, 'item_id', 'tag_id');
     }
 }

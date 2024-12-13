@@ -21,11 +21,11 @@ class Tag extends Model
 
     public function items()
     {
-        return $this->belongsToMany(Item::class, null, 'tag_ids', 'item_ids');
+        return $this->belongsToMany(Item::class, null, 'tag_id', 'item_id');
     }
 
     public function outfits()
     {
-        return $this->belongsToMany(Outfit::class, null, 'tag_ids', 'outfit_ids');
+        return $this->belongsToMany(Outfit::class, null, 'tag_id', 'outfit_id');
     }
 }

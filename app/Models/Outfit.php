@@ -42,6 +42,6 @@ class Outfit extends Model
 
     public function tags()
     {
-        return $this->belongsToMany(Tag::class, null, 'outfit_ids', 'tag_ids');
+        return $this->belongsToMany(Tag::class, null, 'outfit_id', 'tag_id');
     }
 }

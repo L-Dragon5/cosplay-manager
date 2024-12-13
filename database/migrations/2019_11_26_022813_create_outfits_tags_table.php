@@ -13,7 +13,7 @@ class CreateOutfitsTagsTable extends Migration
      */
     public function up()
     {
-        Schema::create('outfits_tags', function (Blueprint $table) {
+        Schema::create('outfit_tag', function (Blueprint $table) {
             $table->unsignedBigInteger('outfit_id');
             $table->unsignedBigInteger('tag_id');
 
@@ -29,6 +29,6 @@ class CreateOutfitsTagsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('outfits_tags');
+        Schema::dropIfExists('outfit_tag');
     }
 }
