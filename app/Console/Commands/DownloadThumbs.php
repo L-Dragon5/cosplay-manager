@@ -52,20 +52,30 @@ class DownloadThumbs extends Command
 
         echo 'Items found to edit: ' . count($items) . PHP_EOL;
         foreach ($items as $item) {
-            $url = $item->image_url;
+            $saved_urls = [];
+            $urls = explode('||', $item->image_url);
             echo 'Current item id: ' . $item->id . PHP_EOL;
 
-            $context = stream_context_create(['http' => ['timeout' => 10]]);
-            $file = file_get_contents('https:'.$url, false, $context);
-            if (!empty($file)) {
-                $img = Image::read($file)->scaleDown(width: 400)->encode(new JpegEncoder(quality: 100));
-                $uuid = Str::orderedUuid();
-                $location = 'thumbs/' . $uuid . '.jpg';
-                $status = Storage::put($location, $img);
-                if ($status) {
-                    $item->image_url = $location;
-                    $item->save();
+            foreach ($urls as $url) {
+                if (!str_contains($url, 'https:')) {
+                    $url = 'https:' . $url;
                 }
+                $context = stream_context_create(['http' => ['timeout' => 10]]);
+                $file = file_get_contents($url, false, $context);
+                if (!empty($file)) {
+                    $img = Image::read($file)->scaleDown(width: 400)->encode(new JpegEncoder(quality: 100));
+                    $uuid = Str::orderedUuid();
+                    $location = 'thumbs/' . $uuid . '.jpg';
+                    $status = Storage::put($location, $img);
+                    if ($status) {
+                        $saved_urls[] = $location;
+                    }
+                }
+            }
+
+            if (!empty($saved_urls)) {
+                $item->image_url = implode('||', $saved_urls);
+                $item->save();
             }
         }
     }

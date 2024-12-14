@@ -1,3 +1,5 @@
+import 'react-responsive-carousel/lib/styles/carousel.min.css';
+
 import { AddIcon, SearchIcon } from '@chakra-ui/icons';
 import {
   Box,
@@ -35,6 +37,7 @@ import {
 import { Head, router, useForm } from '@inertiajs/react';
 import React, { useEffect, useState } from 'react';
 import { DebounceInput } from 'react-debounce-input';
+import { Carousel } from 'react-responsive-carousel';
 
 import Navbar from '../../components/Navbar';
 import ItemCard from './ItemCard';
@@ -275,7 +278,11 @@ function TaobaoItems({ items }) {
           <DrawerBody>
             {drawerType.includes('View') && (
               <VStack alignItems="flex-start">
-                <Image src={activeItem.image_url} />
+                <Carousel autoPlay={false} infiniteLoop showThumbs={false}>
+                  {activeItem?.images?.map((image) => (
+                    <Image key={image} src={image} objectFit="cover" />
+                  ))}
+                </Carousel>
                 {activeItem.tags && (
                   <Text>
                     <strong>Tags:</strong>{' '}

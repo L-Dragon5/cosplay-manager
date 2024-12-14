@@ -1,7 +1,7 @@
 {
   "name": "CosManage - Taobao Scraper",
-  "description": "Scraping taobao listing information for CosManage for Katherine",
-  "version": "1.0",
+  "description": "Scraping taobao listing information for CosManage",
+  "version": "2.0",
   "manifest_version": 3,
   "permissions": ["activeTab", "tabs", "scripting"],
   "action": {

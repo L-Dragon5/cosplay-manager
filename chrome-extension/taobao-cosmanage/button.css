@@ -1,8 +1,38 @@
+body {
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  width: 120px;
+  align-items: center;
+  justify-content: center;
+}
+
+p {
+  margin-top: 0;
+}
+
 button {
-  width: 100%;
+  width: 100px;
+  height: 36px;
+  background-color: aliceblue;
   outline: none;
-  margin: 10px;
-  border: none;
-  border-radius: 2px;
+  border: 1px solid #dcdcdc;
+  border-radius: 8px;
   cursor: pointer;
+}
+
+#copied {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background-color: rgb(125, 177, 125);
+  z-index: 2;
+  transition: all 0.25s;
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+
+#copied span {
+  font-size: 1.1rem;
 }

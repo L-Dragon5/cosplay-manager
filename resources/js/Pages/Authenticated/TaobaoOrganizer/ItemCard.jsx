@@ -1,3 +1,5 @@
+import 'react-responsive-carousel/lib/styles/carousel.min.css';
+
 import { CalendarIcon, DeleteIcon, EditIcon, ViewIcon } from '@chakra-ui/icons';
 import {
   ButtonGroup,
@@ -12,10 +14,10 @@ import {
 } from '@chakra-ui/react';
 import React from 'react';
 import LazyLoad from 'react-lazyload';
+import { Carousel } from 'react-responsive-carousel';
 
 function ItemCard({ item, setDrawerType }) {
-  const { id, tags, image_url, original_title, custom_title, is_archived } =
-    item;
+  const { id, tags, images, original_title, custom_title, is_archived } = item;
 
   const handleView = (id) => setDrawerType(`View-${id}`);
   const handleEdit = (id) => setDrawerType(`Edit-${id}`);
@@ -52,7 +54,11 @@ function ItemCard({ item, setDrawerType }) {
           </HStack>
         </CardHeader>
 
-        <Image src={image_url} height={300} objectFit="cover" />
+        <Carousel autoPlay={false} infiniteLoop showThumbs={false}>
+          {images?.map((image) => (
+            <Image key={image} src={image} height={300} objectFit="cover" />
+          ))}
+        </Carousel>
 
         <CardFooter p={0}>
           <ButtonGroup size="lg" variant="outline" width="full" isAttached>

@@ -185,7 +185,7 @@ class OutfitService
             $success = $outfit->save();
 
             if ($success) {
-                return back();
+                return to_route('cosplay-management');
             } else {
                 return back()->withErrors('Something went wrong while trying to update outfit');
             }

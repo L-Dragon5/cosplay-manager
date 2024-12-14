@@ -1,64 +1,48 @@
-const exportData = document.getElementById("exportData");
+const exportData = document.getElementById('exportData');
 
-exportData.addEventListener("click", async () => {
-  let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+exportData.addEventListener('click', async () => {
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
   chrome.scripting.executeScript({
     target: { tabId: tab.id },
     function: getItemInfo,
   });
+
+  const copied = document.getElementById('copied');
+  copied.style.display = 'flex';
+  setTimeout(() => {
+    copied.style.display = 'none';
+  }, 500);
 });
 
 function getItemInfo() {
-  const scripts = document.head.getElementsByTagName('script');
-  let script = null;
-
-  for (let i = 0; i < scripts.length; i++) {
-    if (scripts[i].innerHTML.includes('var g_config')) {
-      script = scripts[i];
-      break;
-    }
-  }
-
-  if (script !== null) {
-    const config = script.innerHTML;
-    const scriptParts = config.split('};');
-    const firstCurlyBracket = scriptParts[0].indexOf('{');
-    const jsObj = scriptParts[0].substring(firstCurlyBracket + 1);
-    const jsObjSplit = jsObj.split(',');
-  
-    const productArray = {};
-  
-    jsObjSplit.map((item) => {
-      const colonSplit = item.split(':');
-      const key = colonSplit[0].trim();
-      let value = "";
-      if (colonSplit[1] !== null && colonSplit[1] !== '') {
-        value = colonSplit[1];
-      }
-  
-      productArray[key] = value?.replaceAll("'", '').trim();
+  const price = document.querySelector('span[class*="priceText--"]')?.innerHTML;
+  const imagesNode = document.querySelectorAll('li[class*="thumbnail--"] img');
+  const images = new Set();
+  const seller = document.querySelector('span[class*="shopName--"]')?.innerHTML;
+  const title = document
+    .querySelector('div[class*="ItemTitle--"] h1')
+    ?.innerHTML?.replace(/\\u([0-9a-fA-F]{4})/g, (whole, group1) => {
+      return String.fromCharCode(Number.parseInt(group1, 16));
     });
-  
-    const finalProduct = {
-      price: productArray['price'] !== '' ? productArray['price'] : -1,
-      image: productArray['pic'],
-      seller: productArray['sellerNick'],
-      title: productArray['title'].replace(/\\u([0-9a-fA-F]{4})/g, function (whole, group1) {
-          return String.fromCharCode(parseInt(group1, 16));
-      }),
-      url: window.location.href,
-    };
-  
-    const copyFrom = document.createElement("textarea");
-    copyFrom.textContent = JSON.stringify(finalProduct);
-    document.body.appendChild(copyFrom);
-    copyFrom.select();
-    document.execCommand('copy');
-    copyFrom.blur();
-    document.body.removeChild(copyFrom);
-    alert('Copied');
-  } else {
-    alert("Couldn't find config.");
+
+  for (let i = 0; i < imagesNode.length; i++) {
+    images.add(imagesNode[i].src);
   }
+
+  const finalProduct = {
+    price: price !== '' ? price : -1,
+    images: Array.from(images),
+    seller,
+    title,
+    url: window.location.href,
+  };
+
+  const copyFrom = document.createElement('textarea');
+  copyFrom.textContent = JSON.stringify(finalProduct);
+  document.body.appendChild(copyFrom);
+  copyFrom.select();
+  document.execCommand('copy');
+  copyFrom.blur();
+  document.body.removeChild(copyFrom);
 }

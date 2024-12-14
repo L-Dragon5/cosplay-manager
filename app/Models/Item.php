@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Scopes\UserIdScope;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Model;
 
@@ -23,16 +24,28 @@ class Item extends Model
         'archived_at',
     ];
 
+    protected function images(): Attribute
+    {
+        return Attribute::make(
+            get: function (mixed $value, array $attributes) {
+                $images = explode('||', $attributes['image_url']);
+                $image_paths = [];
+
+                foreach ($images as $image) {
+                    // If local image, add / for root directory
+                    if (str_contains($image, 'thumbs')) {
+                        $image_paths[] = Storage::url($image);
+                    }
+                }
+
+                return $image_paths;
+            }
+        );
+    }
+
     protected static function booted()
     {
         static::addGlobalScope(new UserIdScope);
-
-        static::retrieved(function (Item $item) {
-            // If local image, add / for root directory
-            if (str_contains($item->image_url, 'thumbs')) {
-                $item->image_url = Storage::url($item->image_url);
-            }
-        });
     }
 
     public function tags()
