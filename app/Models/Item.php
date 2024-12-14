@@ -35,6 +35,8 @@ class Item extends Model
                     // If local image, add / for root directory
                     if (str_contains($image, 'thumbs')) {
                         $image_paths[] = Storage::url($image);
+                    } else {
+                        $image_paths[] = $image;
                     }
                 }
 
