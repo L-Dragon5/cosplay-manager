@@ -20,11 +20,7 @@ function getItemInfo() {
   const imagesNode = document.querySelectorAll('li[class*="thumbnail--"] img');
   const images = new Set();
   const seller = document.querySelector('span[class*="shopName--"]')?.innerHTML;
-  const title = document
-    .querySelector('div[class*="ItemTitle--"] h1')
-    ?.innerHTML?.replace(/\\u([0-9a-fA-F]{4})/g, (whole, group1) => {
-      return String.fromCharCode(Number.parseInt(group1, 16));
-    });
+  const title = document.querySelector('div[class*="mainTitle--"]')?.innerHTML;
 
   for (let i = 0; i < imagesNode.length; i++) {
     images.add(imagesNode[i].src);

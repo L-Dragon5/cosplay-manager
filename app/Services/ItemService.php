@@ -63,11 +63,11 @@ class ItemService
             } else {
                 $item = Item::create([
                     'user_id' => $userId,
-                    'image_url' => implode('||', $info['images']),
-                    'original_title' => $info['title'],
-                    'seller_name' => $info['seller'],
-                    'listing_url' => $info['url'],
-                    'original_price' => $info['price'],
+                    'image_url' => implode('||', $info['images'] ?? []),
+                    'original_title' => $info['title'] ?? '',
+                    'seller_name' => $info['seller'] ?? '',
+                    'listing_url' => $info['url'] ?? '',
+                    'original_price' => $info['price'] ?? -1,
                 ]);
 
                 if (!empty($item)) {

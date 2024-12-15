@@ -38,7 +38,7 @@ console_command = 'php /var/www/html/artisan tinker'
   PHP_POST_MAX_SIZE = '20M'
   PHP_UPLOAD_MAX_FILE_SIZE = '10M'
   SESSION_DRIVER = 'cookie'
-  SESSION_LIFETIME = '120'
+  SESSION_LIFETIME = '2678400'
   SESSION_SECURE_COOKIE = 'true'
 
 [[mounts]]
