@@ -16,11 +16,15 @@ exportData.addEventListener('click', async () => {
 });
 
 function getItemInfo() {
-  const price = document.querySelector('span[class*="priceText--"]')?.innerHTML;
+  const price = document.querySelector(
+    'span[class*="priceText--"]',
+  )?.textContent;
   const imagesNode = document.querySelectorAll('li[class*="thumbnail--"] img');
   const images = new Set();
-  const seller = document.querySelector('span[class*="shopName--"]')?.innerHTML;
-  const title = document.querySelector('div[class*="mainTitle--"]')?.innerHTML;
+  const seller = document.querySelector(
+    'span[class*="shopName--"]',
+  )?.textContent;
+  const title = document.querySelector('h1[class*="mainTitle--"]')?.textContent;
 
   for (let i = 0; i < imagesNode.length; i++) {
     images.add(imagesNode[i].src);
