@@ -6,6 +6,7 @@ use App\Models\Item;
 use App\Models\Tag;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ItemService
 {
@@ -130,15 +131,19 @@ class ItemService
     public function delete(int $userId, Item $item)
     {
         if ($item->user_id === $userId) {
-            // Delete image associated with item
-            $images = explode('||', $item->image_url);
-            foreach ($images as $image) {
-                if (!filter_var($image, FILTER_VALIDATE_URL)) {
+            if (!empty($item->image_url)) {
+                // Delete image associated with item
+                $images = explode('||', $item->image_url);
+                foreach ($images as $image) {
+                    // If not empty and it's not a URL
+                    if (!empty($image) && !Str::of($image)->isUrl()) {
                         if (Storage::exists($image)) {
                             Storage::delete($image);
                         }
+                    }
                 }
             }
+            
 
             $success = $item->delete();
         } else {

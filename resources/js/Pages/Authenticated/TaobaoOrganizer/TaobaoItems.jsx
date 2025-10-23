@@ -190,6 +190,7 @@ function TaobaoItems({ items }) {
                       colorScheme="orange"
                       type="submit"
                       isLoading={processing}
+                      disabled={data.url.length < 1}
                     >
                       Add Item
                     </Button>

@@ -1,1 +1,0 @@
-import{f as r,o as i,F as c,j as l,c as m,b as f}from"./app-DiDHy3-1.js";const x=r(function(e,n){const{className:s,centerContent:a,...t}=i(e),o=c("Container",e);return l.jsx(m.div,{ref:n,className:f("chakra-container",s),...t,__css:{...o,...a&&{display:"flex",flexDirection:"column",alignItems:"center"}}})});x.displayName="Container";export{x as C};
