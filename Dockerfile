@@ -1,7 +1,7 @@
 # syntax = docker/dockerfile:experimental
 
-ARG PHP_VERSION=8.4
-ARG NODE_VERSION=22
+ARG PHP_VERSION=8.2
+ARG NODE_VERSION=18
 FROM ubuntu:22.04 as base
 LABEL fly_launch_runtime="laravel"
 
@@ -62,9 +62,7 @@ RUN composer install --optimize-autoloader --no-dev \
     && php artisan optimize:clear \
     && chown -R www-data:www-data /var/www/html \
     && echo "MAILTO=\"\"\n* * * * * www-data /usr/bin/php /var/www/html/artisan schedule:run" > /etc/cron.d/laravel \
-    && sed -i='' '/->withMiddleware(function (Middleware \$middleware) {/a\
-        \$middleware->trustProxies(at: "*");\
-    ' bootstrap/app.php; \ 
+    && sed -i 's/protected \$proxies/protected \$proxies = "*"/g' app/Http/Middleware/TrustProxies.php;\
     if [ -d .fly ]; then cp .fly/entrypoint.sh /entrypoint; chmod +x /entrypoint; fi;
 
 
@@ -85,7 +83,7 @@ COPY --from=base /var/www/html/vendor /app/vendor
 # lock file we might find. Defaults to
 # NPM if no lock file is found.
 # Note: We run "production" for Mix and "build" for Vite
-RUN if [ -f "vite.config.js" ]; then \
+RUN if [ -f "vite.config.js" ] || [ -f "vite.config.ts" ]; then \
         ASSET_CMD="build"; \
     else \
         ASSET_CMD="production"; \
@@ -116,7 +114,7 @@ FROM base
 COPY --from=node_modules_go_brrr /app/public /var/www/html/public-npm
 RUN rsync -ar /var/www/html/public-npm/ /var/www/html/public/ \
     && rm -rf /var/www/html/public-npm \
-    && chown -R www-data:www-data /var/www/html/public
+    && chown -R www-data:www-data /var/www/html
 
 # 5. Setup Entrypoint
 EXPOSE 8080

@@ -53,6 +53,11 @@ console_command = 'php /var/www/html/artisan tinker'
   min_machines_running = 0
   processes = ['app']
 
+[[services.ports]]
+  handlers = ["http"]
+  port = 80
+  force_https = true  # optional
+
 [[vm]]
   memory = '1gb'
   cpu_kind = 'shared'
