@@ -29,12 +29,19 @@ import {
   InputRightElement,
   Link,
   SimpleGrid,
+  Table,
+  TableContainer,
   Tag,
+  Tbody,
+  Td,
   Text,
+  Th,
+  Thead,
+  Tr,
   VStack,
   useDisclosure,
 } from '@chakra-ui/react';
-import { Head, router, useForm } from '@inertiajs/react';
+import { Head, InfiniteScroll, router, useForm } from '@inertiajs/react';
 import React, { useEffect, useState } from 'react';
 import { DebounceInput } from 'react-debounce-input';
 import { Carousel } from 'react-responsive-carousel';
@@ -46,7 +53,7 @@ import ItemEditForm from './ItemEditForm';
 function TaobaoItems({ items }) {
   const [activeItem, setActiveItem] = useState({});
   const [drawerType, setDrawerType] = useState('');
-  const [activeItems, setActiveItems] = useState(items);
+  const [activeItems, setActiveItems] = useState(items.data);
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState(3);
   const [checkboxes, setCheckboxes] = useState(['active', 'archived']);
@@ -76,7 +83,7 @@ function TaobaoItems({ items }) {
           break;
         case 1: // Active Only
           setActiveItems(
-            items.filter(
+            items.data.filter(
               (item) =>
                 !!item.is_archived === false &&
                 (String(item.custom_title).indexOf(lowerSearch) !== -1 ||
@@ -89,7 +96,7 @@ function TaobaoItems({ items }) {
           break;
         case 2: // Archive Only
           setActiveItems(
-            items.filter(
+            items.data.filter(
               (item) =>
                 !!item.is_archived === true &&
                 (String(item.custom_title).indexOf(lowerSearch) !== -1 ||
@@ -102,7 +109,7 @@ function TaobaoItems({ items }) {
           break;
         case 3: // Active & Archive
           setActiveItems(
-            items.filter(
+            items.data.filter(
               (item) =>
                 String(item.custom_title).indexOf(lowerSearch) !== -1 ||
                 String(item.original_title).indexOf(lowerSearch) !== -1 ||
@@ -122,6 +129,14 @@ function TaobaoItems({ items }) {
   const handleDelete = (e) => {
     router.delete(`/items/${activeItem.id}`);
     onClose();
+  };
+
+  const copyText = async (text) => {
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch (err) {
+      console.error('Failed to copy text');
+    }
   };
 
   // Set filter mask based on checkboxes.
@@ -151,7 +166,7 @@ function TaobaoItems({ items }) {
       } else if (drawerType.includes('Unarchive')) {
         router.put(`/items/${id}/unarchive`);
       } else {
-        setActiveItem(items.find((item) => item.id == id));
+        setActiveItem(items.data.find((item) => item.id == id));
         onOpen();
       }
     }
@@ -251,20 +266,22 @@ function TaobaoItems({ items }) {
         </HStack>
       </Box>
 
-      <Grid
-        gridTemplateColumns="repeat(auto-fill, minmax(250px, 1fr))"
-        gap={4}
-        p={4}
-      >
-        {activeItems?.map((item) => (
-          <GridItem
-            as={ItemCard}
-            key={`i-${item.id}`}
-            item={item}
-            setDrawerType={setDrawerType}
-          />
-        ))}
-      </Grid>
+      <InfiniteScroll data="items" buffer={500}>
+        <Grid
+          gridTemplateColumns="repeat(auto-fill, minmax(250px, 1fr))"
+          gap={4}
+          p={4}
+        >
+          {activeItems?.map((item) => (
+            <GridItem
+              as={ItemCard}
+              key={`i-${item.id}`}
+              item={item}
+              setDrawerType={setDrawerType}
+            />
+          ))}
+        </Grid>
+      </InfiniteScroll>
 
       <Drawer size="md" isOpen={isOpen} placement="right" onClose={onClose}>
         <DrawerOverlay />
@@ -284,46 +301,84 @@ function TaobaoItems({ items }) {
                     <Image key={image} src={image} objectFit="cover" />
                   ))}
                 </Carousel>
-                {activeItem.tags && (
-                  <Text>
-                    <strong>Tags:</strong>{' '}
-                    {activeItem.tags.map((tag, i) => (
-                      <Tag key={tag.id} colorScheme="orange" variant="outline">
-                        {tag.title}
-                      </Tag>
-                    ))}
-                  </Text>
-                )}
-                {activeItem.custom_title && (
-                  <Text>
-                    <strong>Custom Title:</strong> {activeItem.custom_title}
-                  </Text>
-                )}
-                <Text>
-                  <strong>Original Title:</strong> {activeItem.original_title}
-                </Text>
-                <Text>
-                  <strong>Seller:</strong> {activeItem.seller_name}
-                </Text>
-                <Text>
-                  <strong>Price:</strong> {activeItem.original_price}
-                </Text>
-                <Text>
-                  <strong>Quantity:</strong> {activeItem.quantity}
-                </Text>
-                {activeItem.notes && (
-                  <Text>
-                    <strong>Notes:</strong> {activeItem.notes}
-                  </Text>
-                )}
-                <Text>
-                  <strong>Created At:</strong>{' '}
-                  {new Date(activeItem.created_at).toLocaleDateString()}
-                </Text>
-                <Text>
-                  <strong>Updated At:</strong>{' '}
-                  {new Date(activeItem.updated_at).toLocaleDateString()}
-                </Text>
+
+                <TableContainer>
+                  <Table>
+                    <Thead>
+                      <Tr>
+                        <Th>Field</Th>
+                        <Th>Value</Th>
+                      </Tr>
+                    </Thead>
+                    <Tbody>
+                      {activeItem.tags && (
+                        <Tr>
+                          <Td>Tags:</Td>{' '}
+                          <Td>
+                            {activeItem.tags.map((tag, i) => (
+                              <Tag
+                                key={tag.id}
+                                colorScheme="orange"
+                                variant="outline"
+                              >
+                                {tag.title}
+                              </Tag>
+                            ))}
+                          </Td>
+                        </Tr>
+                      )}
+
+                      {activeItem.custom_title && (
+                        <Tr>
+                          <Td>Custom Title:</Td>
+                          <Td>{activeItem.custom_title}</Td>
+                        </Tr>
+                      )}
+
+                      <Tr>
+                        <Td>Original Title:</Td>
+                        <Td>{activeItem.original_title}</Td>
+                      </Tr>
+                      <Tr>
+                        <Td>Seller:</Td>
+                        <Td>{activeItem.seller_name}</Td>
+                      </Tr>
+                      <Tr>
+                        <Td>Price:</Td>
+                        <Td>{activeItem.original_price}</Td>
+                      </Tr>
+                      <Tr>
+                        <Td>Quantity:</Td>
+                        <Td>{activeItem.quantity}</Td>
+                      </Tr>
+                      {activeItem.notes && (
+                        <Tr>
+                          <Td>Notes:</Td>
+                          <Td>{activeItem.notes}</Td>
+                        </Tr>
+                      )}
+                      <Tr>
+                        <Td>Created At:</Td>
+                        <Td>
+                          {new Date(activeItem.created_at).toLocaleDateString()}
+                        </Td>
+                      </Tr>
+                      <Tr>
+                        <Td>Updated At:</Td>
+                        <Td>
+                          {new Date(activeItem.updated_at).toLocaleDateString()}
+                        </Td>
+                      </Tr>
+                      <Tr>
+                        <Td>URL</Td>
+                        <Td onClick={() => copyText(activeItem.listing_url)}>
+                          {activeItem.listing_url}
+                        </Td>
+                      </Tr>
+                    </Tbody>
+                  </Table>
+                </TableContainer>
+
                 <Button
                   as={Link}
                   colorScheme="orange"

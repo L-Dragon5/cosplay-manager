@@ -23,9 +23,14 @@ class ItemController extends Controller
      */
     public function index()
     {
-        $items = $this->itemService->retrieveAll();
+        $items = Item::with(['tags' => fn ($query) => $query->orderBy('title', 'ASC')])
+            ->orderBy('created_at', 'DESC')
+            ->paginate(20);
+        //$items = $this->itemService->retrieveAll();
 
-        return Inertia::render('Authenticated/TaobaoOrganizer/TaobaoItems', ['items' => $items]);
+        return Inertia::render('Authenticated/TaobaoOrganizer/TaobaoItems', [
+            'items' => Inertia::scroll(fn () => $items)
+        ]);
     }
 
     /**

@@ -24,6 +24,8 @@ class Item extends Model
         'archived_at',
     ];
 
+    protected $appends = ['images'];
+
     protected function images(): Attribute
     {
         return Attribute::make(

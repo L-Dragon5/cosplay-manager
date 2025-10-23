@@ -1,1 +1,0 @@
-import{f as n,F as o,o as i,t as r,j as x,c as m,b as l}from"./app-vwgaIHA1.js";const f=n(function(a,t){const s=o("Text",a),{className:T,align:d,decoration:u,casing:N,...e}=i(a),c=r({textAlign:a.align,textDecoration:a.decoration,textTransform:a.casing});return x.jsx(m.p,{ref:t,className:l("chakra-text",a.className),...c,...e,__css:s})});f.displayName="Text";export{f as T};

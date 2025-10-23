@@ -1,0 +1,1 @@
+import{f as n,G as o,o as i,s as r,j as x,c as m,b as l}from"./app-CoLNBVyY.js";const f=n(function(a,s){const t=o("Text",a),{className:T,align:d,decoration:u,casing:N,...e}=i(a),c=r({textAlign:a.align,textDecoration:a.decoration,textTransform:a.casing});return x.jsx(m.p,{ref:s,className:l("chakra-text",a.className),...c,...e,__css:t})});f.displayName="Text";export{f as T};
