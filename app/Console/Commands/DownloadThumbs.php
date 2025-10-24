@@ -3,11 +3,13 @@
 namespace App\Console\Commands;
 
 use App\Models\Item;
+use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Laravel\Facades\Image;
 use Intervention\Image\Encoders\JpegEncoder;
 use Illuminate\Support\Str;
+use Intervention\Image\Exceptions\DecoderException;
 
 class DownloadThumbs extends Command
 {
@@ -61,15 +63,21 @@ class DownloadThumbs extends Command
                     $url = 'https:' . $url;
                 }
                 $context = stream_context_create(['http' => ['timeout' => 10]]);
-                $file = file_get_contents($url, false, $context);
-                if (!empty($file)) {
-                    $img = Image::read($file)->scaleDown(width: 400)->encode(new JpegEncoder(quality: 100));
-                    $uuid = Str::orderedUuid();
-                    $location = 'thumbs/' . $uuid . '.jpg';
-                    $status = Storage::put($location, $img);
-                    if ($status) {
-                        $saved_urls[] = $location;
+                $file = @file_get_contents($url, false, $context);
+                if ($file !== false) {
+                    try {
+                        $img = Image::read($file)->scaleDown(width: 400)->encode(new JpegEncoder(quality: 100));
+                        $uuid = Str::orderedUuid();
+                        $location = 'thumbs/' . $uuid . '.jpg';
+                        $status = Storage::put($location, $img);
+                        if ($status) {
+                            $saved_urls[] = $location;
+                        }
+                    } catch (DecoderException $e) {
+                        $saved_urls[] = $url;
                     }
+                } else {
+                    $saved_urls[] = $url;
                 }
             }
 

@@ -55,7 +55,7 @@ console_command = 'php /var/www/html/artisan tinker'
 
 [[services.ports]]
   handlers = ["http"]
-  port = 80
+  port = 8080
   force_https = true  # optional
 
 [[vm]]
